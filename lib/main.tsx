@@ -1,6 +1,6 @@
 import * as React from 'react'
 import './globals.css'
-import { Editor } from "./components/NotionLike";
+import { Editor } from "./components/Tapwrite";
 import { AppContextProvider } from './context';
 import { TiptapEditorUtils } from './utils/tiptapEditorUtils';
 
