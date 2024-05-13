@@ -2,7 +2,7 @@
 
 ### Demo
 
-![DEMO](./tapwrite-demo.gif "Tapwrite Demo")
+[Tapwrite-demo.webm](https://github.com/pagevamp/tapwrite/assets/38468429/1e6f78b2-1496-4263-b77a-0868fe7d4a8a)
 
 ### Installation
 
