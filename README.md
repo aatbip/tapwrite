@@ -2,7 +2,7 @@
 
 ### Demo
 
-[Tapwrite-demo.webm](https://github.com/pagevamp/tapwrite/assets/38468429/1e6f78b2-1496-4263-b77a-0868fe7d4a8a)
+[Tapwrite-demo.webm](https://github.com/pagevamp/tapwrite/assets/38468429/7421d83a-750a-473b-9416-50d4b662873e)
 
 ### Installation
 
