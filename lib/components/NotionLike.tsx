@@ -25,11 +25,9 @@ import Strike from '@tiptap/extension-strike'
 import Gapcursor from '@tiptap/extension-gapcursor'
 import History from '@tiptap/extension-history'
 import Placeholder from '@tiptap/extension-placeholder'
-import Mention from '@tiptap/extension-mention'
 import FloatingCommandExtension from './tiptap/floatingMenu/floatingCommandExtension'
 import Hardbreak from '@tiptap/extension-hard-break'
 import { floatingMenuSuggestion } from './tiptap/floatingMenu/floatingMenuSuggestion'
-import { autofillMenuSuggestion } from './tiptap/autofieldSelector/autofillMenuSuggestion'
 import { ImageResize } from './tiptap/image/image'
 import ControlledBubbleMenu from './tiptap/bubbleMenu/ControlledBubbleMenu'
 import BubbleMenuContainer from './tiptap/bubbleMenu/BubbleMenu'
@@ -37,8 +35,10 @@ import { AutofillExtension } from './tiptap/autofieldSelector/ext_autofill'
 import { IframeExtension } from './tiptap/iframe/ext_iframe'
 
 import './../globals.css'
+import { useAppState } from '../context/useAppState'
+import { NotionLikeProps } from '../main'
 
-export const NotionLike = () => {
+export const Editor = ({ uploadFn, getContent, content }: NotionLikeProps) => {
 
   const initialEditorContent = 'Type "/" for commands'
 
@@ -103,15 +103,6 @@ export const NotionLike = () => {
       Table.configure({
         resizable: true,
       }),
-      Mention.configure({
-        HTMLAttributes: {
-          class: 'autofill-pill',
-        },
-        suggestion: autofillMenuSuggestion,
-        renderLabel({ node }) {
-          return `${node.attrs.label ?? node.attrs.id}`
-        },
-      }),
       TableRow,
       TableCell,
       TableHeader.configure({
@@ -122,11 +113,18 @@ export const NotionLike = () => {
       CodeBlock,
       Code,
     ],
-    content: '',
+    content: content,
+    onUpdate: ({ editor }) => {
+      getContent(editor.getHTML())
+    }
   })
+
+  const appState = useAppState()
 
   useEffect(() => {
     if (editor) {
+      appState?.setEditor(editor)
+      appState?.setUploadFn(uploadFn)
       const handleKeyDown = (event: KeyboardEvent) => {
         if (event.metaKey && event.key === 'z') {
           event.preventDefault() // Prevent the default behavior of Cmd+Z (e.g., browser undo)

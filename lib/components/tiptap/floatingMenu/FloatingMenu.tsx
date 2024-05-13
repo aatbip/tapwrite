@@ -5,14 +5,16 @@ import {
   H2Icon,
   H3Icon,
   TextIcon,
-  AutofillIcon,
   NumberedListIcon,
   BulletListIcon,
   UploadIcon2,
   CalloutIcon,
   TableIcon,
-  EmbedIcon,
 } from './../../../icons'
+import { useAppState } from '../../../context/useAppState'
+import { ImagePickerUtils } from '../../../utils/imagePickerUtils'
+import { TiptapEditorUtils } from '../../../utils/tiptapEditorUtils'
+import { Editor } from '@tiptap/react'
 
 const FloatingContainerBtn = ({
   handleClick,
@@ -40,22 +42,16 @@ const FloatingContainerBtn = ({
           <H3Icon />
         ) : label === 'Text' ? (
           <TextIcon />
-        ) : label === 'Autofill Fields' ? (
-          <AutofillIcon />
         ) : label === 'Bullet List' ? (
           <BulletListIcon />
         ) : label === 'Numbered List' ? (
           <NumberedListIcon />
         ) : label === 'Upload' ? (
           <UploadIcon2 />
-        ) : label === 'Embed' ? (
-          <EmbedIcon />
         ) : label === 'Table' ? (
           <TableIcon />
         ) : label === 'Callout' ? (
           <CalloutIcon />
-        ) : label === 'Embed' ? (
-          <EmbedIcon />
         ) : (
           <></>
         )}
@@ -70,14 +66,32 @@ const FloatingContainerBtn = ({
 export const FloatingMenu = forwardRef((props: any, ref: any) => {
 
   const [selectedIndex, setSelectedIndex] = useState(0)
+  const appState = useAppState()
+
+  async function handleFileUpload() {
+    const tiptapEditorUtils = new TiptapEditorUtils(appState?.editor as Editor)
+    const imagePickerUtils = new ImagePickerUtils()
+    const file = await imagePickerUtils.selectImageFromLocalDrive()
+    if (file) {
+      const fn = appState?.uploadFn
+      if (fn) {
+        fn(file, tiptapEditorUtils)
+      }
+      // if (data.contentType === 'application/pdf') {
+      //   tiptapEditorUtils.insertPdf(data.filename, data.url)
+      // } else {
+      //   tiptapEditorUtils.setImage(data.url as string)
+      // }
+    }
+  }
 
   const selectItem = (index: any) => {
     const item = props.items[index]
 
     if (item) {
       props.command({ id: item })
-      if (item.title === 'Embed') {
-        // appState?.setShowEmbedInput(true)
+      if (item.title === 'Upload') {
+        handleFileUpload()
       }
     }
   }
@@ -94,10 +108,6 @@ export const FloatingMenu = forwardRef((props: any, ref: any) => {
 
   const enterHandler = () => {
     selectItem(selectedIndex)
-    //handle link input here
-    if (props.items[0].title === 'Link') {
-      // appState?.toggleShowLinkInput(true)
-    }
   }
 
   useEffect(() => {
