@@ -2,7 +2,13 @@
 
 ### Demo
 
-[video](./tapwrite-demo.webm)
+![DEMO](./tapwrite-demo.gif "Tapwrite Demo")
+
+### Installation
+
+```
+npm i tapwrite
+```
 
 ### Usage
 
@@ -23,3 +29,6 @@ import { Tapwrite, ImagePickerUtils } from 'tapwrite'
   getContent={(content) => console.log(content)}
 />
 ```
+
+### Contributions
+We welcome anyone who wants to contribute to this project. 
