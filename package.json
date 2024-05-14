@@ -1,7 +1,7 @@
 {
   "name": "tapwrite",
   "private": false,
-  "version": "1.0.7",
+  "version": "1.0.8",
   "type": "module",
   "main": "dist/main.js",
   "types": "dist/main.d.ts",
@@ -23,7 +23,7 @@
     "react-dom": "^18.2.0"
   },
   "repository": {
-    "url": "https://github.com/pagevamp/notion-like"
+    "url": "https://github.com/pagevamp/tapwrite"
   },
   "devDependencies": {
     "@emotion/react": "^11.11.4",
