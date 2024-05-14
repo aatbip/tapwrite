@@ -4,14 +4,14 @@ Enhance your web applications with `Tapwrite`, a robust text editor component de
 
  ### Demo
 
-Watch `Tapwrite` in action: [View Demo](https://github.com/pagevamp/tapwrite/assets/38468429/e2f6b2d4-8746-459d-a279-015a07cffdea)
+[View Demo](https://github.com/pagevamp/tapwrite/assets/38468429/e2f6b2d4-8746-459d-a279-015a07cffdea)
 
 ### Installation
 
 Install `Tapwrite` with npm by running the following command:
 
 ```bash
-npm install tapwrite
+npm i tapwrite
 ```
 
 ### Usage
