@@ -25,6 +25,10 @@ const FloatingContainerBtn = ({
   label: string
   focus: boolean
 }) => {
+  const appState = useAppState()
+  if (label === 'Upload' && !appState?.uploadFn) {
+    return null
+  }
   return (
     <button
       className={`flex flex-row gap-x-2.5 items-center py-1.5 px-3 cursor-pointer outline-none ${focus && 'bg-new-white-2'
@@ -77,11 +81,6 @@ export const FloatingMenu = forwardRef((props: any, ref: any) => {
       if (fn) {
         fn(file, tiptapEditorUtils)
       }
-      // if (data.contentType === 'application/pdf') {
-      //   tiptapEditorUtils.insertPdf(data.filename, data.url)
-      // } else {
-      //   tiptapEditorUtils.setImage(data.url as string)
-      // }
     }
   }
 

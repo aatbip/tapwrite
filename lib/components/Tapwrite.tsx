@@ -124,7 +124,9 @@ export const Editor = ({ uploadFn, getContent, content }: NotionLikeProps) => {
   useEffect(() => {
     if (editor) {
       appState?.setEditor(editor)
-      appState?.setUploadFn(uploadFn)
+      if (uploadFn) {
+        appState?.setUploadFn(uploadFn)
+      }
       const handleKeyDown = (event: KeyboardEvent) => {
         if (event.metaKey && event.key === 'z') {
           event.preventDefault() // Prevent the default behavior of Cmd+Z (e.g., browser undo)
@@ -136,7 +138,7 @@ export const Editor = ({ uploadFn, getContent, content }: NotionLikeProps) => {
         document.removeEventListener('keydown', handleKeyDown)
       }
     }
-  }, [editor])
+  }, [editor, uploadFn])
 
   if (!editor) return null
 

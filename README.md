@@ -1,34 +1,41 @@
-## A powerful text editor component
+## Tapwrite: A Powerful Text Editor Component
 
-### Demo
+Enhance your web applications with `Tapwrite`, a robust text editor component designed to integrate seamlessly into your projects. This component supports image and PDF file handling within the text editor environment, simplifying content management for users and developers alike.
 
-[Tapwrite-demo.webm](https://github.com/pagevamp/tapwrite/assets/38468429/e2f6b2d4-8746-459d-a279-015a07cffdea)
+ ### Demo
+
+Watch `Tapwrite` in action: [View Demo](https://github.com/pagevamp/tapwrite/assets/38468429/e2f6b2d4-8746-459d-a279-015a07cffdea)
 
 ### Installation
 
-```
-npm i tapwrite
+Install `Tapwrite` with npm by running the following command:
+
+```bash
+npm install tapwrite
 ```
 
 ### Usage
 
+Here’s how to implement `Tapwrite` in your project:
+
 ```javascript
-import { Tapwrite, ImagePickerUtils } from 'tapwrite'
+import { Tapwrite, ImagePickerUtils } from 'tapwrite';
 
 <Tapwrite
-  //function that is triggered after file is selected
+  // Function triggered after a file is selected. Parameter uploadFn is optional.
   uploadFn={async (file, tiptapEditorUtils) => {
-    //file is the selected image/pdf. Only image/pdf file are supported as of v1.0.0
+    // 'file' is the selected image or PDF. Support for image and PDF files is available as of v1.0.0.
 
-    //then use setImage or insertPdf methods from tiptapEditorUtils to render on the editor
+    // Utilize setImage or insertPdf methods from tiptapEditorUtils to render the file on the editor.
     tiptapEditorUtils.setImage(url || "");
   }}
-  //pass the content value that should render
+  // Pass the initial content to be rendered in the editor.
   content=""
-  //returns the content 
+  // Function to output the current content of the editor.
   getContent={(content) => console.log(content)}
 />
 ```
 
 ### Contributions
-We welcome anyone who wants to contribute to this project. 
+
+Contributions are vital for the continuous improvement of `Tapwrite`. If you're interested in contributing, please feel free to submit pull requests or share your ideas and feedback through issues on our GitHub repository.
