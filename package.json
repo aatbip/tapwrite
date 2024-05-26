@@ -23,8 +23,15 @@
     "react-dom": "^18.2.0"
   },
   "repository": {
-    "url": "https://github.com/pagevamp/tapwrite"
+    "url": "https://github.com/aatbip/tapwrite"
   },
+  "keywords": [
+    "WYSIWYG",
+    "tiptap",
+    "text editor",
+    "notion",
+    "rich text editor"
+  ],
   "devDependencies": {
     "@emotion/react": "^11.11.4",
     "@emotion/styled": "^11.11.5",
