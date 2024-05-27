@@ -38,7 +38,7 @@ import './../globals.css'
 import { useAppState } from '../context/useAppState'
 import { NotionLikeProps } from '../main'
 
-export const Editor = ({ uploadFn, getContent, content }: NotionLikeProps) => {
+export const Editor = ({ uploadFn, getContent, content, readonly }: NotionLikeProps) => {
 
   const initialEditorContent = 'Type "/" for commands'
 
@@ -127,6 +127,9 @@ export const Editor = ({ uploadFn, getContent, content }: NotionLikeProps) => {
       if (uploadFn) {
         appState?.setUploadFn(uploadFn)
       }
+      if (readonly) {
+        editor.setEditable(false)
+      }
       const handleKeyDown = (event: KeyboardEvent) => {
         if (event.metaKey && event.key === 'z') {
           event.preventDefault() // Prevent the default behavior of Cmd+Z (e.g., browser undo)
@@ -138,7 +141,7 @@ export const Editor = ({ uploadFn, getContent, content }: NotionLikeProps) => {
         document.removeEventListener('keydown', handleKeyDown)
       }
     }
-  }, [editor, uploadFn])
+  }, [editor, uploadFn, readonly])
 
   if (!editor) return null
 
@@ -149,25 +152,29 @@ export const Editor = ({ uploadFn, getContent, content }: NotionLikeProps) => {
         width: '100%',
         height: '100%'
       }}>
-        <div>
-          <ControlledBubbleMenu
-            editor={editor}
-            open={() => {
-              const { view, state } = editor
-              const { from, to } = view.state.selection
-              const text = state.doc.textBetween(from, to, '')
-              if (text !== '')
-                return true
-              return false
-            }}
-            offset={[0, 10]}
-          >
-            <BubbleMenuContainer editor={editor} />
-          </ControlledBubbleMenu>
-        </div>
+        {
+          !readonly &&
+          <div>
+            <ControlledBubbleMenu
+              editor={editor}
+              open={() => {
+                const { view, state } = editor
+                const { from, to } = view.state.selection
+                const text = state.doc.textBetween(from, to, '')
+                if (text !== '')
+                  return true
+                return false
+              }}
+              offset={[0, 10]}
+            >
+              <BubbleMenuContainer editor={editor} />
+            </ControlledBubbleMenu>
+          </div>
+        }
 
         <EditorContent
           editor={editor}
+          readOnly={readonly ? true : false}
         />
       </div>
     </>

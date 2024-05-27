@@ -8,15 +8,17 @@ export interface NotionLikeProps {
   uploadFn?: (file: File, tiptapEditorUtils: TiptapEditorUtils) => void;
   getContent: (content: string) => void;
   content: string;
+  readonly?: boolean;
 }
 
-export const Tapwrite = ({ uploadFn, getContent, content }: NotionLikeProps) => {
+export const Tapwrite = ({ uploadFn, getContent, content, readonly }: NotionLikeProps) => {
   return (
     <AppContextProvider>
       <Editor
         uploadFn={uploadFn}
         getContent={getContent}
         content={content}
+        readonly={readonly}
       />
     </AppContextProvider>
   )
