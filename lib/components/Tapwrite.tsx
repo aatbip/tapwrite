@@ -157,7 +157,6 @@ export const Editor = ({
           width: "100%",
           height: "100%",
         }}
-        className={className}
       >
         {!readonly && (
           <div>
@@ -177,7 +176,11 @@ export const Editor = ({
           </div>
         )}
 
-        <EditorContent editor={editor} readOnly={readonly ? true : false} />
+        <EditorContent
+          className={className}
+          editor={editor}
+          readOnly={readonly ? true : false}
+        />
       </div>
     </>
   );
