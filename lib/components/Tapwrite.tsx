@@ -45,6 +45,7 @@ export const Editor = ({
   readonly,
   className,
   placeholder,
+  onFocus,
 }: NotionLikeProps) => {
   const initialEditorContent = placeholder ?? 'Type "/" for commands';
 
@@ -122,6 +123,9 @@ export const Editor = ({
     content: content,
     onUpdate: ({ editor }) => {
       getContent(editor.getHTML());
+    },
+    onFocus: () => {
+      onFocus;
     },
   });
 

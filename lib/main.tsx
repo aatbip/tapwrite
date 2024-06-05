@@ -11,6 +11,7 @@ export interface NotionLikeProps {
   readonly?: boolean;
   className?: string;
   placeholder?: string;
+  onFocus?: () => void;
 }
 
 export const Tapwrite = ({
@@ -20,6 +21,7 @@ export const Tapwrite = ({
   readonly,
   className,
   placeholder,
+  onFocus,
 }: NotionLikeProps) => {
   return (
     <AppContextProvider>
@@ -30,6 +32,7 @@ export const Tapwrite = ({
         readonly={readonly}
         className={className}
         placeholder={placeholder}
+        onFocus={onFocus}
       />
     </AppContextProvider>
   );
