@@ -44,8 +44,10 @@ export const Editor = ({
   content,
   readonly,
   className,
+  placeholder,
+  onFocus,
 }: NotionLikeProps) => {
-  const initialEditorContent = 'Type "/" for commands';
+  const initialEditorContent = placeholder ?? 'Type "/" for commands';
 
   const editor = useEditor({
     extensions: [
@@ -121,6 +123,9 @@ export const Editor = ({
     content: content,
     onUpdate: ({ editor }) => {
       getContent(editor.getHTML());
+    },
+    onFocus: () => {
+      onFocus;
     },
   });
 
