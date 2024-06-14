@@ -3,6 +3,7 @@ import "./globals.css";
 import { Editor } from "./components/Tapwrite";
 import { AppContextProvider } from "./context";
 import { TiptapEditorUtils } from "./utils/tiptapEditorUtils";
+import { Editor as EditorType } from "@tiptap/react";
 
 export interface NotionLikeProps {
   uploadFn?: (file: File, tiptapEditorUtils: TiptapEditorUtils) => void;
@@ -12,6 +13,7 @@ export interface NotionLikeProps {
   className?: string;
   placeholder?: string;
   onFocus?: () => void;
+  getEditor?: (editor: EditorType | null) => void;
 }
 
 export const Tapwrite = ({
@@ -22,6 +24,7 @@ export const Tapwrite = ({
   className,
   placeholder,
   onFocus,
+  getEditor,
 }: NotionLikeProps) => {
   return (
     <AppContextProvider>
@@ -33,6 +36,7 @@ export const Tapwrite = ({
         className={className}
         placeholder={placeholder}
         onFocus={onFocus}
+        getEditor={getEditor}
       />
     </AppContextProvider>
   );
