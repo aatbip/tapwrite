@@ -44,8 +44,10 @@ export const Editor = ({
   content,
   readonly,
   className,
+  placeholder,
+  onFocus,
 }: NotionLikeProps) => {
-  const initialEditorContent = 'Type "/" for commands';
+  const initialEditorContent = placeholder ?? 'Type "/" for commands';
 
   const editor = useEditor({
     extensions: [
@@ -122,6 +124,9 @@ export const Editor = ({
     onUpdate: ({ editor }) => {
       getContent(editor.getHTML());
     },
+    onFocus: () => {
+      onFocus && onFocus();
+    },
   });
 
   const appState = useAppState();
@@ -157,7 +162,6 @@ export const Editor = ({
           width: "100%",
           height: "100%",
         }}
-        className={className}
       >
         {!readonly && (
           <div>
@@ -177,7 +181,11 @@ export const Editor = ({
           </div>
         )}
 
-        <EditorContent editor={editor} readOnly={readonly ? true : false} />
+        <EditorContent
+          className={className}
+          editor={editor}
+          readOnly={readonly ? true : false}
+        />
       </div>
     </>
   );
