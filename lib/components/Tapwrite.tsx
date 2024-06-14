@@ -125,7 +125,7 @@ export const Editor = ({
       getContent(editor.getHTML());
     },
     onFocus: () => {
-      onFocus;
+      onFocus && onFocus();
     },
   });
 
