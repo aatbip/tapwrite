@@ -12,6 +12,11 @@ export interface NotionLikeProps {
   className?: string;
   placeholder?: string;
   onFocus?: () => void;
+  editorRef?:
+    | ((instance: HTMLDivElement | null) => void)
+    | React.RefObject<HTMLDivElement>
+    | null
+    | undefined;
 }
 
 export const Tapwrite = ({
@@ -22,6 +27,7 @@ export const Tapwrite = ({
   className,
   placeholder,
   onFocus,
+  editorRef,
 }: NotionLikeProps) => {
   return (
     <AppContextProvider>
@@ -33,6 +39,7 @@ export const Tapwrite = ({
         className={className}
         placeholder={placeholder}
         onFocus={onFocus}
+        editorRef={editorRef}
       />
     </AppContextProvider>
   );
