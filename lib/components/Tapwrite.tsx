@@ -134,7 +134,7 @@ export const Editor = ({
           items: ({ query, editor }) => {
             const suggestions = editor.storage.MentionStorage.suggestions;
             return suggestions.filter((item: any) =>
-              item.toLowerCase().startsWith(query.toLowerCase())
+              item.label.toLowerCase().startsWith(query.toLowerCase())
             );
           },
         },
