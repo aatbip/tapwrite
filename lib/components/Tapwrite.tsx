@@ -1,5 +1,5 @@
 import * as React from "react";
-import { useEditor, EditorContent } from "@tiptap/react";
+import { useEditor, EditorContent, mergeAttributes } from "@tiptap/react";
 import { useEffect } from "react";
 
 import CalloutExtension from "./tiptap/callout/CalloutExtension";
@@ -24,6 +24,7 @@ import Italic from "@tiptap/extension-italic";
 import Strike from "@tiptap/extension-strike";
 import Gapcursor from "@tiptap/extension-gapcursor";
 import History from "@tiptap/extension-history";
+import Mentions from "@tiptap/extension-mention";
 import Placeholder from "@tiptap/extension-placeholder";
 import FloatingCommandExtension from "./tiptap/floatingMenu/floatingCommandExtension";
 import Hardbreak from "@tiptap/extension-hard-break";
@@ -120,6 +121,20 @@ export const Editor = ({
       }),
       CodeBlock,
       Code,
+      Mentions.configure({
+        renderText({ options, node }) {
+          return `${options.suggestion.char}${
+            node.attrs.label ?? node.attrs.id
+          }`;
+        },
+        renderHTML({ options, node }) {
+          return [
+            "a",
+            mergeAttributes({ href: "" }, options.HTMLAttributes),
+            `${options.suggestion.char}${node.attrs.label ?? node.attrs.id}`,
+          ];
+        },
+      }),
     ],
     content: content,
     onUpdate: ({ editor }) => {
