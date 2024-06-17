@@ -1,5 +1,5 @@
 import * as React from "react";
-import { useEditor, EditorContent, mergeAttributes } from "@tiptap/react";
+import { useEditor, EditorContent } from "@tiptap/react";
 import { useEffect } from "react";
 
 import CalloutExtension from "./tiptap/callout/CalloutExtension";
