@@ -38,6 +38,8 @@ import { IframeExtension } from "./tiptap/iframe/ext_iframe";
 import "./../globals.css";
 import { useAppState } from "../context/useAppState";
 import { NotionLikeProps } from "../main";
+import suggestion from "../components/tiptap/mention/suggestion.ts";
+import { MentionStorage } from "./tiptap/mention/MentionStorage.extension.ts";
 
 export const Editor = ({
   uploadFn,
@@ -48,6 +50,7 @@ export const Editor = ({
   placeholder,
   onFocus,
   editorRef,
+  suggestions,
 }: NotionLikeProps) => {
   const initialEditorContent = placeholder ?? 'Type "/" for commands';
 
@@ -65,6 +68,7 @@ export const Editor = ({
       Bold,
       Italic,
       Strike,
+      MentionStorage,
       CalloutExtension,
       LinkpdfExtension,
       Gapcursor,
@@ -122,17 +126,17 @@ export const Editor = ({
       CodeBlock,
       Code,
       Mentions.configure({
-        renderText({ options, node }) {
-          return `${options.suggestion.char}${
-            node.attrs.label ?? node.attrs.id
-          }`;
+        HTMLAttributes: {
+          class: "mention",
         },
-        renderHTML({ options, node }) {
-          return [
-            "a",
-            mergeAttributes({ href: "" }, options.HTMLAttributes),
-            `${options.suggestion.char}${node.attrs.label ?? node.attrs.id}`,
-          ];
+        suggestion: {
+          ...suggestion,
+          items: ({ query, editor }) => {
+            const suggestions = editor.storage.MentionStorage.suggestions;
+            return suggestions.filter((item: any) =>
+              item.toLowerCase().startsWith(query.toLowerCase())
+            );
+          },
         },
       }),
     ],
@@ -144,6 +148,12 @@ export const Editor = ({
       onFocus && onFocus();
     },
   });
+
+  useEffect(() => {
+    if (editor) {
+      editor.storage.MentionStorage.suggestions = suggestions;
+    }
+  }, [suggestions, editor]);
 
   const appState = useAppState();
 
