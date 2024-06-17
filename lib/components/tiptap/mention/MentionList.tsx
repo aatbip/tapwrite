@@ -14,7 +14,7 @@ export default forwardRef((props: any, ref) => {
     const item = props.items[index];
 
     if (item) {
-      props.command({ id: item });
+      props.command({ id: item.id, label: item.label });
     }
   };
 
@@ -64,7 +64,7 @@ export default forwardRef((props: any, ref) => {
             key={index}
             onClick={() => selectItem(index)}
           >
-            {item}
+            {item.label}
           </button>
         ))
       ) : (
