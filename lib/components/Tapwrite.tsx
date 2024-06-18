@@ -49,11 +49,10 @@ export const Editor = ({
   className,
   placeholder,
   onFocus,
-  editorRef,
+  getEditor,
   suggestions,
 }: NotionLikeProps) => {
   const initialEditorContent = placeholder ?? 'Type "/" for commands';
-
   const editor = useEditor({
     extensions: [
       AutofillExtension,
@@ -177,6 +176,7 @@ export const Editor = ({
         document.removeEventListener("keydown", handleKeyDown);
       };
     }
+    getEditor && getEditor(editor);
   }, [editor, uploadFn, readonly]);
 
   if (!editor) return null;
@@ -211,7 +211,6 @@ export const Editor = ({
           className={className}
           editor={editor}
           readOnly={readonly ? true : false}
-          ref={editorRef}
         />
       </div>
     </>
