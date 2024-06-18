@@ -24,6 +24,7 @@ import Italic from "@tiptap/extension-italic";
 import Strike from "@tiptap/extension-strike";
 import Gapcursor from "@tiptap/extension-gapcursor";
 import History from "@tiptap/extension-history";
+import Mentions from "@tiptap/extension-mention";
 import Placeholder from "@tiptap/extension-placeholder";
 import FloatingCommandExtension from "./tiptap/floatingMenu/floatingCommandExtension";
 import Hardbreak from "@tiptap/extension-hard-break";
@@ -37,6 +38,8 @@ import { IframeExtension } from "./tiptap/iframe/ext_iframe";
 import "./../globals.css";
 import { useAppState } from "../context/useAppState";
 import { NotionLikeProps } from "../main";
+import suggestion from "../components/tiptap/mention/suggestion.ts";
+import { MentionStorage } from "./tiptap/mention/MentionStorage.extension.ts";
 
 export const Editor = ({
   uploadFn,
@@ -47,6 +50,7 @@ export const Editor = ({
   placeholder,
   onFocus,
   getEditor,
+  suggestions,
 }: NotionLikeProps) => {
   const initialEditorContent = placeholder ?? 'Type "/" for commands';
   const editor = useEditor({
@@ -63,6 +67,7 @@ export const Editor = ({
       Bold,
       Italic,
       Strike,
+      MentionStorage,
       CalloutExtension,
       LinkpdfExtension,
       Gapcursor,
@@ -119,6 +124,20 @@ export const Editor = ({
       }),
       CodeBlock,
       Code,
+      Mentions.configure({
+        HTMLAttributes: {
+          class: "mention",
+        },
+        suggestion: {
+          ...suggestion,
+          items: ({ query, editor }) => {
+            const suggestions = editor.storage.MentionStorage.suggestions;
+            return suggestions.filter((item: any) =>
+              item.label.toLowerCase().startsWith(query.toLowerCase())
+            );
+          },
+        },
+      }),
     ],
     content: content,
     onUpdate: ({ editor }) => {
@@ -128,6 +147,12 @@ export const Editor = ({
       onFocus && onFocus();
     },
   });
+
+  useEffect(() => {
+    if (editor) {
+      editor.storage.MentionStorage.suggestions = suggestions;
+    }
+  }, [suggestions, editor]);
 
   const appState = useAppState();
 
