@@ -13,7 +13,6 @@ export interface NotionLikeProps {
   className?: string;
   placeholder?: string;
   onFocus?: () => void;
-  getEditor?: (editor: EditorType | null) => void;
   suggestions?: any;
 }
 
@@ -25,7 +24,6 @@ export const Tapwrite = ({
   className,
   placeholder,
   onFocus,
-  getEditor,
   suggestions,
 }: NotionLikeProps) => {
   return (
@@ -38,7 +36,6 @@ export const Tapwrite = ({
         className={className}
         placeholder={placeholder}
         onFocus={onFocus}
-        getEditor={getEditor}
         suggestions={suggestions}
       />
     </AppContextProvider>

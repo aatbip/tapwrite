@@ -49,7 +49,6 @@ export const Editor = ({
   className,
   placeholder,
   onFocus,
-  getEditor,
   suggestions,
 }: NotionLikeProps) => {
   const initialEditorContent = placeholder ?? 'Type "/" for commands';
@@ -176,7 +175,6 @@ export const Editor = ({
         document.removeEventListener("keydown", handleKeyDown);
       };
     }
-    getEditor && getEditor(editor);
   }, [editor, uploadFn, readonly]);
 
   if (!editor) return null;
