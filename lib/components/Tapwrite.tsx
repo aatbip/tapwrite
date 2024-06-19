@@ -146,7 +146,7 @@ export const Editor = ({
     onUpdate: ({ editor }) => {
       getContent(editor.getHTML());
     },
-    onFocus: onFocus && onFocus,
+    onFocus: () => onFocus && onFocus,
   });
 
   useEffect(() => {
