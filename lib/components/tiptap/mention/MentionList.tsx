@@ -1,5 +1,4 @@
 import { Button, Stack, Typography } from "@mui/material";
-import "./MentionList.scss";
 
 import React, {
   forwardRef,
@@ -61,15 +60,22 @@ export default forwardRef((props: any, ref) => {
       <Stack
         borderRight="2px solid rgb(203 213 225)"
         direction="column"
-        justifyContent="center"
+        justifyContent="left"
+        alignItems={"flex-start"}
       >
         {props.items.length ? (
           props.items.slice(0, 10).map((item: any, index: number) => (
             <Button
               variant="text"
               disableRipple
-              sx={{ textTransform: "none", color: "#212B36" }}
-              className={index === selectedIndex ? "is-selected" : ""}
+              sx={{
+                textTransform: "none",
+                color: "#212B36",
+                background: index === selectedIndex ? "#DFE1E4" : "",
+                width: "100%",
+                justifyContent: "left",
+                alignItems: "flex-start",
+              }}
               key={index}
               onClick={() => selectItem(index)}
             >
