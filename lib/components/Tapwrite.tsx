@@ -55,7 +55,7 @@ export const Editor = ({
   const initialEditorContent = placeholder ?? 'Type "/" for commands';
 
   const isTextInputClassName =
-    "p-1.5 px-2.5 focus-within:text-black focus-within:border-black border-gray-300 bg-white border focus:border-black hover:border-gray-300 rounded-md hover:rounded-md text-sm";
+    "p-1.5 px-2.5  focus-within:border-black border-gray-300 bg-white border focus:border-black rounded-100  text-sm";
   const editor = useEditor({
     extensions: [
       AutofillExtension,
