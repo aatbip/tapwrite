@@ -1,3 +1,4 @@
+import { Button, Stack, Typography } from "@mui/material";
 import "./MentionList.scss";
 
 import React, {
@@ -56,20 +57,34 @@ export default forwardRef((props: any, ref) => {
   }));
 
   return (
-    <div className="dropdown-menu">
-      {props.items.length ? (
-        props.items.map((item: any, index: number) => (
-          <button
-            className={index === selectedIndex ? "is-selected" : ""}
-            key={index}
-            onClick={() => selectItem(index)}
+    <div className="flex flex-row border border-slate-300 rounded bg-white w-fit shadow-variant-1">
+      <Stack
+        borderRight="2px solid rgb(203 213 225)"
+        direction="column"
+        justifyContent="center"
+      >
+        {props.items.length ? (
+          props.items.slice(0, 10).map((item: any, index: number) => (
+            <Button
+              variant="text"
+              disableRipple
+              sx={{ textTransform: "none", color: "#212B36" }}
+              className={index === selectedIndex ? "is-selected" : ""}
+              key={index}
+              onClick={() => selectItem(index)}
+            >
+              {item.label}
+            </Button>
+          ))
+        ) : (
+          <Typography
+            className="flex flex-row gap-x-2.5 items-center py-1.5 px-3 hover:bg-new-white-2 cursor-pointer outline-none"
+            sx={{ textTransform: "none", color: "#212B36" }}
           >
-            {item.label}
-          </button>
-        ))
-      ) : (
-        <div className="item">No result</div>
-      )}
+            No result
+          </Typography>
+        )}
+      </Stack>
     </div>
   );
 });

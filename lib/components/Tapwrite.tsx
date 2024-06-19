@@ -204,7 +204,6 @@ export const Editor = ({
             </ControlledBubbleMenu>
           </div>
         )}
-
         <EditorContent
           className={className}
           editor={editor}
