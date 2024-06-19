@@ -222,6 +222,23 @@ table {
   padding: 0.4rem;
   position: relative;
 }
+.Button {
+  align-items: center;
+  background-color: transparent;
+  display: flex;
+  gap: 0.25rem;
+  text-align: left;
+  width: 100%;
+
+  &:hover,
+  &:hover.is-selected {
+    background-color: var(--gray-3);
+  }
+
+  &.is-selected {
+    background-color: var(--gray-2);
+  }
+}
 
 .tiptap {
   :first-child {
@@ -232,6 +249,6 @@ table {
     border-radius: 0.4rem;
     box-decoration-break: clone;
     padding: 0.1rem 0.3rem;
-    font-weight: 600;
+    font-weight: 500;
   }
 }

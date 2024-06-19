@@ -70,7 +70,7 @@ export default forwardRef((props: any, ref) => {
               disableRipple
               sx={{
                 textTransform: "none",
-                color: "#212B36",
+                color: "#6B6F76",
                 background: index === selectedIndex ? "#DFE1E4" : "",
                 width: "100%",
                 justifyContent: "left",
@@ -85,7 +85,7 @@ export default forwardRef((props: any, ref) => {
         ) : (
           <Typography
             className="flex flex-row gap-x-2.5 items-center py-1.5 px-3 hover:bg-new-white-2 cursor-pointer outline-none"
-            sx={{ textTransform: "none", color: "#212B36" }}
+            sx={{ textTransform: "none", color: "#6B6F76" }}
           >
             No result
           </Typography>
