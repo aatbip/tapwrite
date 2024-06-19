@@ -13,6 +13,7 @@ export interface NotionLikeProps {
   placeholder?: string;
   onFocus?: () => void;
   suggestions?: any;
+  isTextInput?: boolean;
 }
 
 export const Tapwrite = ({
@@ -23,6 +24,7 @@ export const Tapwrite = ({
   className,
   placeholder,
   onFocus,
+  isTextInput = false,
   suggestions,
 }: NotionLikeProps) => {
   return (
@@ -36,6 +38,7 @@ export const Tapwrite = ({
         placeholder={placeholder}
         onFocus={onFocus}
         suggestions={suggestions}
+        isTextInput={isTextInput}
       />
     </AppContextProvider>
   );

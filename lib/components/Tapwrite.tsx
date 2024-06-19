@@ -50,8 +50,12 @@ export const Editor = ({
   placeholder,
   onFocus,
   suggestions,
+  isTextInput,
 }: NotionLikeProps) => {
   const initialEditorContent = placeholder ?? 'Type "/" for commands';
+
+  const isTextInputClassName =
+    "p-1.5 px-2.5 focus-within:text-black focus-within:border-black border-gray-300 bg-white border focus:border-black hover:border-gray-300 rounded-md hover:rounded-md text-sm";
   const editor = useEditor({
     extensions: [
       AutofillExtension,
@@ -142,9 +146,7 @@ export const Editor = ({
     onUpdate: ({ editor }) => {
       getContent(editor.getHTML());
     },
-    onFocus: () => {
-      onFocus && onFocus();
-    },
+    onFocus: onFocus,
   });
 
   useEffect(() => {
@@ -205,7 +207,9 @@ export const Editor = ({
           </div>
         )}
         <EditorContent
-          className={className}
+          className={
+            isTextInput ? `${className} ${isTextInputClassName}` : className
+          }
           editor={editor}
           readOnly={readonly ? true : false}
         />
