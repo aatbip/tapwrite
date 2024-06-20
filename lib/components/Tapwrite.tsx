@@ -150,6 +150,11 @@ export const Editor = ({
   });
 
   useEffect(() => {
+    if (content == "") {
+      editor?.commands.clearContent();
+    }
+  }, [editor, content]);
+  useEffect(() => {
     if (editor) {
       editor.storage.MentionStorage.suggestions = suggestions;
     }
