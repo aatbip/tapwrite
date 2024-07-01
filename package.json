@@ -1,7 +1,11 @@
 {
   "name": "tapwrite",
   "private": false,
+<<<<<<< HEAD
   "version": "1.0.37",
+=======
+  "version": "1.0.35",
+>>>>>>> b9ab4840a712f6888ec803d5ec1c132ebb1ea337
   "type": "module",
   "main": "dist/main.js",
   "types": "dist/main.d.ts",

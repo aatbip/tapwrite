@@ -51,13 +51,22 @@ export const Editor = ({
   onFocus,
   suggestions,
   isTextInput,
+<<<<<<< HEAD
   onBlur,
+=======
+  editorClass
+>>>>>>> b9ab4840a712f6888ec803d5ec1c132ebb1ea337
 }: NotionLikeProps) => {
   const initialEditorContent = placeholder ?? 'Type "/" for commands';
 
   const isTextInputClassName =
     "p-1.5 px-2.5  focus-within:border-black border-gray-300 bg-white border focus:border-black rounded-100  text-sm";
   const editor = useEditor({
+    editorProps: {
+      attributes: {
+        class: editorClass
+      }
+    },
     extensions: [
       AutofillExtension,
       IframeExtension.configure({
@@ -167,6 +176,7 @@ export const Editor = ({
   useEffect(() => {
     if (editor) {
       appState?.setEditor(editor);
+
       if (uploadFn) {
         appState?.setUploadFn(uploadFn);
       }

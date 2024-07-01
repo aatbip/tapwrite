@@ -2,6 +2,7 @@
 @tailwind components;
 @tailwind utilities;
 
+
 .editable .pill-extension {
   display: inline-flex;
   flex-wrap: wrap;
