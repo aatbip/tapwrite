@@ -51,6 +51,7 @@ export const Editor = ({
   onFocus,
   suggestions,
   isTextInput,
+  onBlur,
 }: NotionLikeProps) => {
   const initialEditorContent = placeholder ?? 'Type "/" for commands';
 
@@ -146,7 +147,8 @@ export const Editor = ({
     onUpdate: ({ editor }) => {
       getContent(editor.getHTML());
     },
-    onFocus: () => onFocus && onFocus,
+    onFocus: () => onFocus && onFocus(),
+    onBlur: () => onBlur && onBlur(),
   });
 
   useEffect(() => {
