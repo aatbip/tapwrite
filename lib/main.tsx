@@ -14,6 +14,7 @@ export interface NotionLikeProps {
   onFocus?: () => void;
   suggestions?: any;
   isTextInput?: boolean;
+  editorClass?: string;
 }
 
 export const Tapwrite = ({

@@ -51,6 +51,7 @@ export const Editor = ({
   onFocus,
   suggestions,
   isTextInput,
+  editorClass
 }: NotionLikeProps) => {
   const initialEditorContent = placeholder ?? 'Type "/" for commands';
 
@@ -147,6 +148,11 @@ export const Editor = ({
       getContent(editor.getHTML());
     },
     onFocus: () => onFocus && onFocus,
+    editorProps: {
+      attributes: {
+        class: editorClass || ""
+      }
+    }
   });
 
   useEffect(() => {
