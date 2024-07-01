@@ -214,11 +214,13 @@ export const Editor = ({
           </div>
         )}
         <EditorContent
+          editor={editor}
+          readOnly={readonly ? true : false}
           className={
             isTextInput ? `${className} ${isTextInputClassName}` : className
           }
-          editor={editor}
-          readOnly={readonly ? true : false}
+          onFocus={() => editor.commands.focus()}
+          tabIndex={0}
         />
       </div>
     </>
