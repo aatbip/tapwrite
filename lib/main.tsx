@@ -14,11 +14,8 @@ export interface NotionLikeProps {
   onFocus?: () => void;
   suggestions?: any;
   isTextInput?: boolean;
-<<<<<<< HEAD
   onBlur?: () => void;
-=======
   editorClass: string;
->>>>>>> b9ab4840a712f6888ec803d5ec1c132ebb1ea337
 }
 
 export const Tapwrite = ({
@@ -31,11 +28,8 @@ export const Tapwrite = ({
   onFocus,
   isTextInput = false,
   suggestions,
-<<<<<<< HEAD
   onBlur,
-=======
-  editorClass
->>>>>>> b9ab4840a712f6888ec803d5ec1c132ebb1ea337
+  editorClass,
 }: NotionLikeProps) => {
   return (
     <AppContextProvider>
@@ -49,11 +43,8 @@ export const Tapwrite = ({
         onFocus={onFocus}
         suggestions={suggestions}
         isTextInput={isTextInput}
-<<<<<<< HEAD
         onBlur={onBlur}
-=======
         editorClass={editorClass}
->>>>>>> b9ab4840a712f6888ec803d5ec1c132ebb1ea337
       />
     </AppContextProvider>
   );
