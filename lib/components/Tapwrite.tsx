@@ -51,11 +51,8 @@ export const Editor = ({
   onFocus,
   suggestions,
   isTextInput,
-<<<<<<< HEAD
   onBlur,
-=======
-  editorClass
->>>>>>> b9ab4840a712f6888ec803d5ec1c132ebb1ea337
+  editorClass,
 }: NotionLikeProps) => {
   const initialEditorContent = placeholder ?? 'Type "/" for commands';
 
@@ -64,8 +61,8 @@ export const Editor = ({
   const editor = useEditor({
     editorProps: {
       attributes: {
-        class: editorClass
-      }
+        class: editorClass,
+      },
     },
     extensions: [
       AutofillExtension,
