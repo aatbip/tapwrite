@@ -14,6 +14,7 @@ ReactDOM.createRoot(document.getElementById('root')!).render(
         }}
         content=""
         getContent={() => { }}
+        editorClass=""
       />
     </div>
   </React.StrictMode>,

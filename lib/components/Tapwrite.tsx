@@ -58,6 +58,11 @@ export const Editor = ({
   const isTextInputClassName =
     "p-1.5 px-2.5  focus-within:border-black border-gray-300 bg-white border focus:border-black rounded-100  text-sm";
   const editor = useEditor({
+    editorProps: {
+      attributes: {
+        class: editorClass
+      }
+    },
     extensions: [
       AutofillExtension,
       IframeExtension.configure({
@@ -148,11 +153,6 @@ export const Editor = ({
       getContent(editor.getHTML());
     },
     onFocus: () => onFocus && onFocus,
-    editorProps: {
-      attributes: {
-        class: editorClass || ""
-      }
-    }
   });
 
   useEffect(() => {
@@ -171,6 +171,7 @@ export const Editor = ({
   useEffect(() => {
     if (editor) {
       appState?.setEditor(editor);
+
       if (uploadFn) {
         appState?.setUploadFn(uploadFn);
       }
