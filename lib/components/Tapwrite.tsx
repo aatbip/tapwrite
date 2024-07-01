@@ -24,6 +24,7 @@ import Italic from "@tiptap/extension-italic";
 import Strike from "@tiptap/extension-strike";
 import Gapcursor from "@tiptap/extension-gapcursor";
 import History from "@tiptap/extension-history";
+import Mentions from "@tiptap/extension-mention";
 import Placeholder from "@tiptap/extension-placeholder";
 import FloatingCommandExtension from "./tiptap/floatingMenu/floatingCommandExtension";
 import Hardbreak from "@tiptap/extension-hard-break";
@@ -37,6 +38,8 @@ import { IframeExtension } from "./tiptap/iframe/ext_iframe";
 import "./../globals.css";
 import { useAppState } from "../context/useAppState";
 import { NotionLikeProps } from "../main";
+import suggestion from "../components/tiptap/mention/suggestion.ts";
+import { MentionStorage } from "./tiptap/mention/MentionStorage.extension.ts";
 
 export const Editor = ({
   uploadFn,
@@ -46,9 +49,13 @@ export const Editor = ({
   className,
   placeholder,
   onFocus,
+  suggestions,
+  isTextInput,
 }: NotionLikeProps) => {
   const initialEditorContent = placeholder ?? 'Type "/" for commands';
 
+  const isTextInputClassName =
+    "p-1.5 px-2.5  focus-within:border-black border-gray-300 bg-white border focus:border-black rounded-100  text-sm";
   const editor = useEditor({
     extensions: [
       AutofillExtension,
@@ -63,6 +70,7 @@ export const Editor = ({
       Bold,
       Italic,
       Strike,
+      MentionStorage,
       CalloutExtension,
       LinkpdfExtension,
       Gapcursor,
@@ -119,15 +127,38 @@ export const Editor = ({
       }),
       CodeBlock,
       Code,
+      Mentions.configure({
+        HTMLAttributes: {
+          class: "mention",
+        },
+        suggestion: {
+          ...suggestion,
+          items: ({ query, editor }) => {
+            const suggestions = editor.storage.MentionStorage.suggestions;
+            return suggestions.filter((item: any) =>
+              item.label.toLowerCase().startsWith(query.toLowerCase())
+            );
+          },
+        },
+      }),
     ],
     content: content,
     onUpdate: ({ editor }) => {
       getContent(editor.getHTML());
     },
-    onFocus: () => {
-      onFocus && onFocus();
-    },
+    onFocus: () => onFocus && onFocus,
   });
+
+  useEffect(() => {
+    if (content == "") {
+      editor?.commands.clearContent();
+    }
+  }, [editor, content]);
+  useEffect(() => {
+    if (editor) {
+      editor.storage.MentionStorage.suggestions = suggestions;
+    }
+  }, [suggestions, editor]);
 
   const appState = useAppState();
 
@@ -180,9 +211,10 @@ export const Editor = ({
             </ControlledBubbleMenu>
           </div>
         )}
-
         <EditorContent
-          className={className}
+          className={
+            isTextInput ? `${className} ${isTextInputClassName}` : className
+          }
           editor={editor}
           readOnly={readonly ? true : false}
         />
