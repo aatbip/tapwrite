@@ -177,15 +177,15 @@ const DropdownBubbleMenu: FC<IBubbleMenuContainer> = ({ editor }) => {
               setAnchorEl(null)
             }}
           />
-          <BubbleDropdownBtnContainer
-            icon={formatterIcon[Formatter.callout]}
-            label={Formatter.callout}
-            handleClick={() => {
-              const text = tiptapEditorUtils.getSelectedText()
-              tiptapEditorUtils.insertCallout(text)
-              setAnchorEl(null)
-            }}
-          />
+          {/* <BubbleDropdownBtnContainer */}
+          {/*   icon={formatterIcon[Formatter.callout]} */}
+          {/*   label={Formatter.callout} */}
+          {/*   handleClick={() => { */}
+          {/*     const text = tiptapEditorUtils.getSelectedText() */}
+          {/*     tiptapEditorUtils.insertCallout(text) */}
+          {/*     setAnchorEl(null) */}
+          {/*   }} */}
+          {/* /> */}
         </Stack>
       </Popper>
     </Stack>
