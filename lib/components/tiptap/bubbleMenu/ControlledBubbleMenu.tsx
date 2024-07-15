@@ -43,6 +43,7 @@ const ControlledBubbleMenu: React.FC<Props> = ({
         },
       },
     ]}
+    sx={{ zIndex: '9999' }}
     anchorEl={() => {
       // The logic here is taken from the positioning implementation in Tiptap's BubbleMenuPlugin
       // https://github.com/ueberdosis/tiptap/blob/16bec4e9d0c99feded855b261edb6e0d3f0bad21/packages/extension-bubble-menu/src/bubble-menu-plugin.ts#L183-L193
