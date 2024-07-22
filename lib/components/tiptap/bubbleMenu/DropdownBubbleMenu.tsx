@@ -135,6 +135,7 @@ const DropdownBubbleMenu: FC<IBubbleMenuContainer> = ({ editor }) => {
             },
           },
         ]}
+        sx={{ zIndex: 9999 }}
       >
         <Stack
           direction='column'
