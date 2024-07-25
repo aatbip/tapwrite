@@ -54,43 +54,36 @@
   min-width: 100%;
 }
 
-.tiptap p {
-  font-size: 14px;
-  font-style: normal;
-  font-weight: 400;
-  line-height: 22px;
-}
-
 .tiptap h1 {
-font-size: 16px;
-font-style: normal;
-font-weight: 500;
-line-height: 24px;
-  color: #212b36;
+font-size: 16px !important;
+font-style: normal !important;
+font-weight: 500 !important;
+line-height: 24px !important;
+  color: #212b36 !important;
 }
 
 .tiptap h2 {
-  font-size: 14px;
-font-style: normal;
-font-weight: 500;
-line-height: 22px;
-  color: #212b36;
+  font-size: 14px !important;
+font-style: normal !important;
+font-weight: 500 !important;
+line-height: 22px !important;
+  color: #212b36 !important;
 }
 
 .tiptap h3 {
-  font-size: 13px;
-font-style: normal;
-font-weight: 500;
-line-height: 21px;
-  color: #212b36;
+  font-size: 13px !important;
+font-style: normal !important;
+font-weight: 500 !important;
+line-height: 21px !important;
+  color: #212b36 !important;
 }
 
 .tiptap p {
-  font-size: 14px;
-font-style: normal;
-font-weight: 400;
-line-height: 22px; 
-  color: #6B6F76;
+  font-size: 14px !important;
+font-style: normal !important;
+font-weight: 400 !important;
+line-height: 22px !important; 
+  color: #6B6F76 !important;
 }
 
 .tiptap a {
