@@ -154,26 +154,25 @@ export const Editor = ({
       getContent(editor.getHTML());
     },
     onFocus: () => onFocus && onFocus(),
-    onBlur: () => onBlur && onBlur(),
   });
 
-  useEffect(() => {
-    if (content == "") {
-      editor?.commands.clearContent();
-    }
-  }, [editor, content]);
   useEffect(() => {
     if (editor) {
       editor.storage.MentionStorage.suggestions = suggestions;
     }
   }, [suggestions, editor]);
 
+  useEffect(() => {
+    if (editor && content !== editor.getHTML()) {
+      editor.commands.setContent(content);
+    }
+  }, [content, editor]);
+
   const appState = useAppState();
 
   useEffect(() => {
     if (editor) {
       appState?.setEditor(editor);
-
       if (uploadFn) {
         appState?.setUploadFn(uploadFn);
       }
@@ -233,3 +232,4 @@ export const Editor = ({
     </>
   );
 };
+

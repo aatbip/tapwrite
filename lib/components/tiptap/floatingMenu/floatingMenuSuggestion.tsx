@@ -6,6 +6,7 @@ import { TiptapEditorUtils } from './../../../utils/tiptapEditorUtils'
 
 export const floatingMenuSuggestion = {
   items: ({ query }: any) => {
+    const normalizedQuery = query.toLowerCase().replace(' ', '');
     return [
       {
         title: 'Heading 1',
@@ -55,37 +56,41 @@ export const floatingMenuSuggestion = {
           tiptapEditorUtils.toggleNumberedList()
         },
       },
-      {
-        title: 'Upload',
-        command: async ({ editor, range }: { editor: Editor; range: any }) => {
-          const tiptapEditorUtils = new TiptapEditorUtils(editor)
-          tiptapEditorUtils.deleteRange(range)
-        },
-      },
-      {
-        title: 'Table',
-        command: ({ editor, range }: { editor: Editor; range: any }) => {
-          const tiptapEditorUtils = new TiptapEditorUtils(editor)
-          tiptapEditorUtils.deleteRange(range)
-          tiptapEditorUtils.insertTable({ rows: 3, cols: 3 })
-        },
-      },
-      {
-        title: 'Callout',
-        command: ({ editor, range }: { editor: Editor; range: any }) => {
-          const tiptapEditorUtils = new TiptapEditorUtils(editor)
-          tiptapEditorUtils.deleteRange(range)
-          tiptapEditorUtils.insertCallout('')
-        },
-      },
+      // {
+      //   title: 'Upload',
+      //   command: async ({ editor, range }: { editor: Editor; range: any }) => {
+      //     const tiptapEditorUtils = new TiptapEditorUtils(editor)
+      //     tiptapEditorUtils.deleteRange(range)
+      //   },
+      // },
+      // {
+      //   title: 'Table',
+      //   command: ({ editor, range }: { editor: Editor; range: any }) => {
+      //     const tiptapEditorUtils = new TiptapEditorUtils(editor)
+      //     tiptapEditorUtils.deleteRange(range)
+      //     tiptapEditorUtils.insertTable({ rows: 3, cols: 3 })
+      //   },
+      // },
+      // {
+      //   title: 'Callout',
+      //   command: ({ editor, range }: { editor: Editor; range: any }) => {
+      //     const tiptapEditorUtils = new TiptapEditorUtils(editor)
+      //     tiptapEditorUtils.deleteRange(range)
+      //     tiptapEditorUtils.insertCallout('')
+      //   },
+      // },
     ]
-      .filter((item) =>
-        item.title
-          .toLowerCase()
-          .replace(' ', '')
-          .startsWith(query.toLowerCase()),
-      )
-      .slice(0, 12)
+      .filter((item) => {
+        if (item.title.startsWith('Heading')) {
+          const level = item.title.split(' ')[1];
+          return (
+            item.title.toLowerCase().replace(' ', '').startsWith(normalizedQuery) ||
+            `h${level}`.startsWith(normalizedQuery)
+          );
+        }
+        return item.title.toLowerCase().replace(' ', '').startsWith(normalizedQuery);
+      })
+      .slice(0, 12);
   },
 
   render: () => {
