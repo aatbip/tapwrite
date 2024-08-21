@@ -49,9 +49,8 @@ export const Editor = ({
   className,
   placeholder,
   onFocus,
-  suggestions,
+  // suggestions,
   isTextInput,
-  onBlur,
   editorClass,
 }: NotionLikeProps) => {
   const initialEditorContent = placeholder ?? 'Type "/" for commands';
@@ -156,11 +155,11 @@ export const Editor = ({
     onFocus: () => onFocus && onFocus(),
   });
 
-  useEffect(() => {
-    if (editor) {
-      editor.storage.MentionStorage.suggestions = suggestions;
-    }
-  }, [suggestions, editor]);
+  // useEffect(() => {
+  //   if (editor) {
+  //     editor.storage.MentionStorage.suggestions = suggestions;
+  //   }
+  // }, [suggestions, editor]);
 
   useEffect(() => {
     if (editor && content !== editor.getHTML()) {
@@ -232,4 +231,3 @@ export const Editor = ({
     </>
   );
 };
-
