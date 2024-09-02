@@ -2,7 +2,6 @@ import { mergeAttributes, nodeInputRule } from "@tiptap/core";
 import { ReactNodeViewRenderer } from "@tiptap/react";
 import { ImageResizeComponent } from "./ImageResizeComponent";
 import Image from "@tiptap/extension-image";
-import { Padding } from "@mui/icons-material";
 
 export interface ImageOptions {
   inline: boolean;

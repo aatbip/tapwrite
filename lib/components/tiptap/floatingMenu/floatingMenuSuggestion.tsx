@@ -3,7 +3,6 @@ import tippy from "tippy.js";
 
 import { FloatingMenu } from "./FloatingMenu";
 import { TiptapEditorUtils } from "./../../../utils/tiptapEditorUtils";
-import { ImagePickerUtils } from "../../../utils/imagePickerUtils";
 
 export const floatingMenuSuggestion = {
   items: ({ query }: any) => {
