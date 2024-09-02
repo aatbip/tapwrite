@@ -2,7 +2,6 @@
 @tailwind components;
 @tailwind utilities;
 
-
 .editable .pill-extension {
   display: inline-flex;
   flex-wrap: wrap;
@@ -55,35 +54,35 @@
 }
 
 .tiptap h1 {
-font-size: 16px !important;
-font-style: normal !important;
-font-weight: 500 !important;
-line-height: 24px !important;
+  font-size: 16px !important;
+  font-style: normal !important;
+  font-weight: 500 !important;
+  line-height: 24px !important;
   color: #212b36 !important;
 }
 
 .tiptap h2 {
   font-size: 14px !important;
-font-style: normal !important;
-font-weight: 500 !important;
-line-height: 22px !important;
+  font-style: normal !important;
+  font-weight: 500 !important;
+  line-height: 22px !important;
   color: #212b36 !important;
 }
 
 .tiptap h3 {
   font-size: 13px !important;
-font-style: normal !important;
-font-weight: 500 !important;
-line-height: 21px !important;
+  font-style: normal !important;
+  font-weight: 500 !important;
+  line-height: 21px !important;
   color: #212b36 !important;
 }
 
 .tiptap p {
   font-size: 14px !important;
-font-style: normal !important;
-font-weight: 400 !important;
-line-height: 22px !important; 
-  color: #6B6F76 !important;
+  font-style: normal !important;
+  font-weight: 400 !important;
+  line-height: 22px !important;
+  color: #6b6f76 !important;
 }
 
 .tiptap a {
@@ -94,11 +93,11 @@ line-height: 22px !important;
 .tiptap ul,
 .tiptap ol {
   padding: 0 2.5rem;
-  color: #6B6F76;
+  color: #6b6f76;
   font-size: 14px;
-font-style: normal;
-font-weight: 400;
-line-height: 22px;
+  font-style: normal;
+  font-weight: 400;
+  line-height: 22px;
 }
 
 td,
@@ -250,4 +249,9 @@ table {
     padding: 0.1rem 0.3rem;
     font-weight: 500;
   }
+}
+
+.react-renderer.node-imageResize.ProseMirror-selectednode {
+  /* center the image by applying padding to the div above the div having image-resize class */
+  padding: 10px 20px 10px 20px;
 }

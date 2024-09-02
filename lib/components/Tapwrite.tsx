@@ -40,6 +40,7 @@ import { useAppState } from "../context/useAppState";
 import { NotionLikeProps } from "../main";
 // import suggestion from "../components/tiptap/mention/suggestion.ts";
 // import { MentionStorage } from "./tiptap/mention/MentionStorage.extension.ts";
+// mention turned off for now
 
 export const Editor = ({
   uploadFn,
@@ -76,7 +77,7 @@ export const Editor = ({
       Bold,
       Italic,
       Strike,
-      // MentionStorage,
+      // MentionStorage,    mention turned off for now
       CalloutExtension,
       LinkpdfExtension,
       Gapcursor,
@@ -147,6 +148,7 @@ export const Editor = ({
       //     },
       //   },
       // }),
+      // mention turned off for now
     ],
     content: content,
     onUpdate: ({ editor }) => {
@@ -160,6 +162,7 @@ export const Editor = ({
   //     editor.storage.MentionStorage.suggestions = suggestions;
   //   }
   // }, [suggestions, editor]);
+  // mention turned off for now
 
   useEffect(() => {
     if (editor && content !== editor.getHTML()) {
