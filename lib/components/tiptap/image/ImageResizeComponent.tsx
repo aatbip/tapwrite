@@ -1,20 +1,31 @@
 /* eslint-disable jsx-a11y/anchor-is-valid */
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { NodeViewWrapper } from "@tiptap/react";
 import { Resize } from "./resizeIcon";
 
 export const ImageResizeComponent = (props: any) => {
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(false);
   useEffect(() => {
-    // Execute the custom function from the extension options
-    if (props.editor) {
-      const { handleImageUpload } =
-        props.editor.options.extensions.find(
-          (ext: any) => ext.name === "imageResize"
-        )?.options || {};
-      if (handleImageUpload) {
-        handleImageUpload();
+    const handleUpload = async () => {
+      if (props.editor) {
+        const { handleImageUpload } =
+          props.editor.options.extensions.find(
+            (ext: any) => ext.name === "imageResize"
+          )?.options || {};
+        if (handleImageUpload) {
+          try {
+            await handleImageUpload();
+
+            setLoading(false);
+          } catch {
+            setError(true);
+          }
+        }
       }
-    }
+    };
+
+    handleUpload();
   }, [props.editor]);
 
   const handler = (
@@ -58,9 +69,23 @@ export const ImageResizeComponent = (props: any) => {
     document.body.addEventListener("mouseup", onMouseUp, { once: true });
   };
 
+  if (error) return null;
+
   return (
     <NodeViewWrapper className="image-resizer">
-      <img {...props.node.attrs} className="postimage" />
+      {loading ? (
+        <>
+          <img
+            {...props.node.attrs}
+            className={`postimage ${loading ? "dimmed" : ""}`}
+          />
+          <div className="spinner-overlay">
+            <div className="spinner" />
+          </div>
+        </>
+      ) : (
+        <img {...props.node.attrs} className="postimage" />
+      )}
       <div
         className="resize-trigger left"
         onMouseDown={(e: React.MouseEvent<HTMLImageElement>) =>

@@ -9,7 +9,7 @@ export interface ImageOptions {
   HTMLAttributes: Record<string, any>;
   useFigure: boolean;
   readOnly: boolean;
-  handleImageUpload?: () => void | undefined;
+  handleImageUpload?: () => Promise<void>;
 }
 declare module "@tiptap/core" {
   interface Commands<ReturnType> {
@@ -35,7 +35,7 @@ export const ImageResize = Image.extend<ImageOptions>({
       HTMLAttributes: {},
       useFigure: false,
       readOnly: false,
-      handleImageUpload: () => {},
+      handleImageUpload: async () => {},
     };
   },
   addAttributes() {

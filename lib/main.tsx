@@ -16,7 +16,7 @@ export interface NotionLikeProps {
   isTextInput?: boolean;
   onBlur?: () => void;
   editorClass: string;
-  handleEditorAttachments?: () => void;
+  handleEditorAttachments?: () => Promise<void>;
 }
 
 export const Tapwrite = ({
