@@ -16,6 +16,7 @@ export interface NotionLikeProps {
   isTextInput?: boolean;
   onBlur?: () => void;
   editorClass: string;
+  handleEditorAttachments?: () => void;
 }
 
 export const Tapwrite = ({
@@ -30,6 +31,7 @@ export const Tapwrite = ({
   suggestions,
   onBlur,
   editorClass,
+  handleEditorAttachments,
 }: NotionLikeProps) => {
   return (
     <AppContextProvider>
@@ -45,6 +47,7 @@ export const Tapwrite = ({
         isTextInput={isTextInput}
         onBlur={onBlur}
         editorClass={editorClass}
+        handleEditorAttachments={handleEditorAttachments}
       />
     </AppContextProvider>
   );

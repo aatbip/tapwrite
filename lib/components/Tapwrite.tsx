@@ -53,6 +53,7 @@ export const Editor = ({
   // suggestions,
   isTextInput,
   editorClass,
+  handleEditorAttachments,
 }: NotionLikeProps) => {
   const initialEditorContent = placeholder ?? 'Type "/" for commands';
 
@@ -121,7 +122,9 @@ export const Editor = ({
           class: "list-disc",
         },
       }),
-      ImageResize,
+      ImageResize.configure({
+        handleImageUpload: handleEditorAttachments && handleEditorAttachments,
+      }),
       Table.configure({
         resizable: true,
       }),

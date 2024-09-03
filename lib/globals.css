@@ -35,13 +35,24 @@
 
 .resize-trigger {
   position: absolute;
-  right: -10px;
+  top: 50%;
+  transform: translateY(-50%);
   opacity: 0;
   transition: opacity 0.3s ease;
   color: #3259a5;
   cursor: col-resize;
-  height: 100%;
+  height: 50%;
 }
+
+.resize-trigger.left {
+  left: -10px;
+  transform: translateY(-50%) scaleX(-1);
+}
+
+.resize-trigger.right {
+  right: -10px;
+}
+
 .image-resizer:hover .resize-trigger {
   opacity: 1;
 }
@@ -251,7 +262,10 @@ table {
   }
 }
 
-.react-renderer.node-imageResize.ProseMirror-selectednode {
+.react-renderer.node-imageResize {
   /* center the image by applying padding to the div above the div having image-resize class */
-  padding: 10px 20px 10px 20px;
+  padding: 10px 0px 10px 0px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
