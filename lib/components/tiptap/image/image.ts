@@ -37,8 +37,8 @@ export const ImageResize = Image.extend<ImageOptions>({
       HTMLAttributes: {},
       useFigure: false,
       readOnly: false,
-      handleImageUpload: async (id: string) => {},
-      deleteImage: async (id: string) => {},
+      handleImageUpload: undefined,
+      deleteImage: undefined,
     };
   },
   addCommands() {
