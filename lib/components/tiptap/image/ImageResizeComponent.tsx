@@ -6,7 +6,9 @@ import { Resize } from "./resizeIcon";
 export const ImageResizeComponent = (props: any) => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(false);
+
   useEffect(() => {
+    const { id } = props.node.attrs;
     const handleUpload = async () => {
       if (props.editor) {
         const { handleImageUpload } =
@@ -15,8 +17,7 @@ export const ImageResizeComponent = (props: any) => {
           )?.options || {};
         if (handleImageUpload) {
           try {
-            await handleImageUpload();
-
+            await handleImageUpload(id);
             setLoading(false);
           } catch {
             setError(true);
@@ -24,7 +25,6 @@ export const ImageResizeComponent = (props: any) => {
         }
       }
     };
-
     handleUpload();
   }, [props.editor]);
 

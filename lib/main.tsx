@@ -16,7 +16,8 @@ export interface NotionLikeProps {
   isTextInput?: boolean;
   onBlur?: () => void;
   editorClass: string;
-  handleEditorAttachments?: () => Promise<void>;
+  handleEditorAttachments?: (id: string) => Promise<void>;
+  deleteEditorAttachments?: (id: string) => Promise<void>;
 }
 
 export const Tapwrite = ({
@@ -32,6 +33,7 @@ export const Tapwrite = ({
   onBlur,
   editorClass,
   handleEditorAttachments,
+  deleteEditorAttachments,
 }: NotionLikeProps) => {
   return (
     <AppContextProvider>
@@ -48,6 +50,7 @@ export const Tapwrite = ({
         onBlur={onBlur}
         editorClass={editorClass}
         handleEditorAttachments={handleEditorAttachments}
+        deleteEditorAttachments={deleteEditorAttachments}
       />
     </AppContextProvider>
   );

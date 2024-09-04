@@ -9,8 +9,10 @@ export interface ImageOptions {
   HTMLAttributes: Record<string, any>;
   useFigure: boolean;
   readOnly: boolean;
-  handleImageUpload?: () => Promise<void>;
+  handleImageUpload?: (id: string) => Promise<void>;
+  deleteImage?: (id: string) => Promise<void>;
 }
+
 declare module "@tiptap/core" {
   interface Commands<ReturnType> {
     imageResize: {
@@ -35,11 +37,66 @@ export const ImageResize = Image.extend<ImageOptions>({
       HTMLAttributes: {},
       useFigure: false,
       readOnly: false,
-      handleImageUpload: async () => {},
+      handleImageUpload: async (id: string) => {},
+      deleteImage: async (id: string) => {},
+    };
+  },
+  addCommands() {
+    const { deleteImage } = this.options;
+    return {
+      setImage:
+        (options) =>
+        ({ commands }) => {
+          const uniqueId = `image-${Date.now()}-${Math.random()
+            .toString(36)
+            .substring(2, 11)}`;
+          return commands.insertContent({
+            type: this.name,
+            attrs: {
+              ...options,
+              id: uniqueId,
+            },
+          });
+        },
+      deleteCurrentNode:
+        () =>
+        ({ state, dispatch }) => {
+          const { selection } = state;
+
+          const node = state.doc.nodeAt(selection.from);
+
+          if (node && node.type.name === this.name) {
+            const imageId = node.attrs.id;
+
+            dispatch &&
+              dispatch(
+                state.tr.replaceWith(
+                  selection.from,
+                  selection.to,
+                  state.schema.nodes.paragraph.create()
+                )
+              );
+
+            if (deleteImage) {
+              deleteImage(imageId);
+            }
+
+            return true;
+          }
+
+          return false;
+        },
+    };
+  },
+  addKeyboardShortcuts() {
+    return {
+      Backspace: ({ editor }) => editor.commands.deleteCurrentNode(),
+      Delete: ({ editor }) => editor.commands.deleteCurrentNode(),
     };
   },
   addAttributes() {
     return {
+      id: { default: null },
       class: { default: "image-display" },
       width: {
         default: "100%",
