@@ -8,7 +8,8 @@ export const ImageResizeComponent = (props: any) => {
   const [error, setError] = useState(false);
 
   useEffect(() => {
-    const { id } = props.node.attrs;
+    const { file } = props.node.attrs;
+
     const handleUpload = async () => {
       if (props.editor) {
         const { handleImageUpload } =
@@ -17,11 +18,13 @@ export const ImageResizeComponent = (props: any) => {
           )?.options || {};
         if (handleImageUpload) {
           try {
-            await handleImageUpload(id);
+            await handleImageUpload(file);
             setLoading(false);
           } catch {
             setError(true);
           }
+        } else {
+          setLoading(false);
         }
       }
     };

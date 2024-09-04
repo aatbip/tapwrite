@@ -16,7 +16,7 @@ export interface NotionLikeProps {
   isTextInput?: boolean;
   onBlur?: () => void;
   editorClass: string;
-  handleEditorAttachments?: (id: string) => Promise<void>;
+  handleEditorAttachments?: (file: File) => Promise<void>;
   deleteEditorAttachments?: (id: string) => Promise<void>;
 }
 
