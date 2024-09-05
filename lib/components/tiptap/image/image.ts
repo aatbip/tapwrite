@@ -3,31 +3,12 @@ import { ReactNodeViewRenderer } from "@tiptap/react";
 import { ImageResizeComponent } from "./ImageResizeComponent";
 import Image from "@tiptap/extension-image";
 
-function dataURLToFile(dataURL: string, filename: string): File {
-  const [metadata, base64] = dataURL.split(",");
-  const mimeString = metadata.split(":")[1].split(";")[0];
-
-  const binaryString = window.atob(base64);
-  const arrayBuffer = new ArrayBuffer(binaryString.length);
-  const uint8Array = new Uint8Array(arrayBuffer);
-
-  for (let i = 0; i < binaryString.length; i++) {
-    uint8Array[i] = binaryString.charCodeAt(i);
-  }
-
-  const blob = new Blob([uint8Array], { type: mimeString });
-
-  const file = new File([blob], filename, { type: mimeString });
-  return file;
-}
-
 export interface ImageOptions {
   inline: boolean;
   allowBase64: boolean;
   HTMLAttributes: Record<string, any>;
   useFigure: boolean;
   readOnly: boolean;
-  handleImageUpload?: (file: File) => Promise<void>;
   deleteImage?: (id: string) => Promise<void>;
 }
 
@@ -55,7 +36,6 @@ export const ImageResize = Image.extend<ImageOptions>({
       HTMLAttributes: {},
       useFigure: false,
       readOnly: false,
-      handleImageUpload: undefined,
       deleteImage: undefined,
     };
   },
@@ -65,16 +45,11 @@ export const ImageResize = Image.extend<ImageOptions>({
       setImage:
         (options) =>
         ({ commands }) => {
-          const uniqueId = `image-${Date.now()}-${Math.random()
-            .toString(36)
-            .substring(2, 11)}`;
-          const file = dataURLToFile(options.src, uniqueId);
           return commands.insertContent({
             type: this.name,
             attrs: {
               ...options,
-              id: uniqueId,
-              file: file,
+              id: options.title,
             },
           });
         },
@@ -117,7 +92,6 @@ export const ImageResize = Image.extend<ImageOptions>({
   addAttributes() {
     return {
       id: { default: null },
-      file: { default: undefined },
       class: { default: "image-display" },
       width: {
         default: "100%",

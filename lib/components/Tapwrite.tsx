@@ -53,7 +53,7 @@ export const Editor = ({
   // suggestions,
   isTextInput,
   editorClass,
-  handleEditorAttachments,
+
   deleteEditorAttachments,
 }: NotionLikeProps) => {
   const initialEditorContent = placeholder ?? 'Type "/" for commands';
@@ -124,7 +124,6 @@ export const Editor = ({
         },
       }),
       ImageResize.configure({
-        handleImageUpload: handleEditorAttachments && handleEditorAttachments,
         deleteImage: deleteEditorAttachments && deleteEditorAttachments,
       }),
       Table.configure({

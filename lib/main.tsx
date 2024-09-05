@@ -3,7 +3,6 @@ import "./globals.css";
 import { Editor } from "./components/Tapwrite";
 import { AppContextProvider } from "./context";
 import { TiptapEditorUtils } from "./utils/tiptapEditorUtils";
-import { ImagePickerUtils } from "./utils/imagePickerUtils";
 
 export interface NotionLikeProps {
   uploadFn?: (file: File, tiptapEditorUtils: TiptapEditorUtils) => void;
@@ -22,11 +21,7 @@ export interface NotionLikeProps {
 }
 
 export const Tapwrite = ({
-  uploadFn = async (file, tiptapEditorUtils) => {
-    const imgUtil = new ImagePickerUtils();
-    const url = await imgUtil.imageUrl(file);
-    tiptapEditorUtils.setImage(url || "");
-  },
+  uploadFn,
   getContent,
   content,
   readonly,
@@ -37,10 +32,9 @@ export const Tapwrite = ({
   suggestions,
   onBlur,
   editorClass,
-  handleEditorAttachments,
+
   deleteEditorAttachments,
 }: NotionLikeProps) => {
-  console.log(uploadFn);
   return (
     <AppContextProvider>
       <Editor
@@ -55,7 +49,6 @@ export const Tapwrite = ({
         isTextInput={isTextInput}
         onBlur={onBlur}
         editorClass={editorClass}
-        handleEditorAttachments={handleEditorAttachments}
         deleteEditorAttachments={deleteEditorAttachments}
       />
     </AppContextProvider>

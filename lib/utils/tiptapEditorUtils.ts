@@ -104,8 +104,8 @@ export class TiptapEditorUtils {
     this.editor.chain().focus().extendMarkRange('link').unsetLink().run()
   }
 
-  setImage(imgUrl: string) {
-    this.editor.chain().focus().setImage({ src: imgUrl }).run()
+  setImage(imgUrl: string, title: string) {
+    this.editor.chain().focus().setImage({ src: imgUrl, title: title }).run()
   }
 
   insertTable({ rows, cols }: { rows: number; cols: number }) {
@@ -160,4 +160,3 @@ export class TiptapEditorUtils {
     return text
   }
 }
-

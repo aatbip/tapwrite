@@ -10,12 +10,12 @@ ReactDOM.createRoot(document.getElementById('root')!).render(
         uploadFn={async (file, tiptapEditorUtils) => {
           const imgUtil = new ImagePickerUtils()
           const url = await imgUtil.imageUrl(file)
-          tiptapEditorUtils.setImage(url || '')
+          tiptapEditorUtils.setImage(url || '', 'randomId')
         }}
-        content=""
-        getContent={() => { }}
-        editorClass=""
+        content=''
+        getContent={() => {}}
+        editorClass=''
       />
     </div>
-  </React.StrictMode>,
+  </React.StrictMode>
 )
