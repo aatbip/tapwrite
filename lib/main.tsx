@@ -3,7 +3,6 @@ import './globals.css'
 import { Editor } from './components/Tapwrite'
 import { AppContextProvider } from './context'
 import { TiptapEditorUtils } from './utils/tiptapEditorUtils'
-import { ImagePickerUtils } from './utils/imagePickerUtils'
 
 export interface NotionLikeProps {
   uploadFn?: (file: File, tiptapEditorUtils: TiptapEditorUtils) => void
