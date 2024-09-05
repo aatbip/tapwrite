@@ -4,11 +4,6 @@ import { NodeViewWrapper } from '@tiptap/react'
 import { Resize } from './resizeIcon'
 
 export const ImageResizeComponent = (props: any) => {
-  const [loading, setLoading] = useState(false)
-
-  useEffect(() => {
-    props.node.attrs.id === 'loading' ? setLoading(true) : setLoading(false)
-  }, [props.node.attrs.id])
   const handler = (
     mouseDownEvent: React.MouseEvent<HTMLImageElement>,
     side: 'left' | 'right' = 'right'
@@ -51,7 +46,7 @@ export const ImageResizeComponent = (props: any) => {
 
   return (
     <NodeViewWrapper className='image-resizer'>
-      {loading ? (
+      {props.node.attrs.id === 'loading' ? (
         <>
           <img {...props.node.attrs} className='postimage' />
           <div className='spinner-overlay'>
