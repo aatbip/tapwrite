@@ -1,23 +1,24 @@
-import * as React from "react";
-import "./globals.css";
-import { Editor } from "./components/Tapwrite";
-import { AppContextProvider } from "./context";
-import { TiptapEditorUtils } from "./utils/tiptapEditorUtils";
+import * as React from 'react'
+import './globals.css'
+import { Editor } from './components/Tapwrite'
+import { AppContextProvider } from './context'
+import { TiptapEditorUtils } from './utils/tiptapEditorUtils'
+import { ImagePickerUtils } from './utils/imagePickerUtils'
 
 export interface NotionLikeProps {
-  uploadFn?: (file: File, tiptapEditorUtils: TiptapEditorUtils) => void;
-  getContent: (content: string) => void;
-  content: string;
-  readonly?: boolean;
-  className?: string;
-  placeholder?: string;
-  onFocus?: () => void;
-  suggestions?: any;
-  isTextInput?: boolean;
-  onBlur?: () => void;
-  editorClass: string;
-  handleEditorAttachments?: (file: File) => Promise<void>;
-  deleteEditorAttachments?: (id: string) => Promise<void>;
+  uploadFn?: (file: File, tiptapEditorUtils: TiptapEditorUtils) => void
+  getContent: (content: string) => void
+  content: string
+  readonly?: boolean
+  className?: string
+  placeholder?: string
+  onFocus?: () => void
+  suggestions?: any
+  isTextInput?: boolean
+  onBlur?: () => void
+  editorClass: string
+  handleEditorAttachments?: (file: File) => Promise<void>
+  deleteEditorAttachments?: (id: string) => Promise<void>
 }
 
 export const Tapwrite = ({
@@ -52,7 +53,7 @@ export const Tapwrite = ({
         deleteEditorAttachments={deleteEditorAttachments}
       />
     </AppContextProvider>
-  );
-};
+  )
+}
 
-export { TiptapEditorUtils };
+export { TiptapEditorUtils }

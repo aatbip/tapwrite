@@ -1,34 +1,34 @@
-import { mergeAttributes, nodeInputRule } from "@tiptap/core";
-import { ReactNodeViewRenderer } from "@tiptap/react";
-import { ImageResizeComponent } from "./ImageResizeComponent";
-import Image from "@tiptap/extension-image";
+import { mergeAttributes, nodeInputRule } from '@tiptap/core'
+import { ReactNodeViewRenderer } from '@tiptap/react'
+import { ImageResizeComponent } from './ImageResizeComponent'
+import Image from '@tiptap/extension-image'
 
 export interface ImageOptions {
-  inline: boolean;
-  allowBase64: boolean;
-  HTMLAttributes: Record<string, any>;
-  useFigure: boolean;
-  readOnly: boolean;
-  deleteImage?: (id: string) => Promise<void>;
+  inline: boolean
+  allowBase64: boolean
+  HTMLAttributes: Record<string, any>
+  useFigure: boolean
+  readOnly: boolean
+  deleteImage?: (id: string) => Promise<void>
 }
 
-declare module "@tiptap/core" {
+declare module '@tiptap/core' {
   interface Commands<ReturnType> {
     imageResize: {
       setImage: (options: {
-        src: string;
-        alt?: string;
-        title?: string;
-        width?: string | number;
-        height?: string | number;
-        isDraggable?: boolean;
-      }) => ReturnType;
-    };
+        src: string
+        alt?: string
+        title?: string
+        width?: string | number
+        height?: string | number
+        isDraggable?: boolean
+      }) => ReturnType
+    }
   }
 }
-export const inputRegex = /(!\[(.+|:?)]\((\S+)(?:(?:\s+)["'](\S+)["'])?\))$/;
+export const inputRegex = /(!\[(.+|:?)]\((\S+)(?:(?:\s+)["'](\S+)["'])?\))$/
 export const ImageResize = Image.extend<ImageOptions>({
-  name: "imageResize",
+  name: 'imageResize',
   addOptions() {
     return {
       inline: false,
@@ -37,10 +37,10 @@ export const ImageResize = Image.extend<ImageOptions>({
       useFigure: false,
       readOnly: false,
       deleteImage: undefined,
-    };
+    }
   },
   addCommands() {
-    const { deleteImage } = this.options;
+    const { deleteImage } = this.options
     return {
       setImage:
         (options) =>
@@ -51,17 +51,17 @@ export const ImageResize = Image.extend<ImageOptions>({
               ...options,
               id: options.title,
             },
-          });
+          })
         },
       deleteCurrentNode:
         () =>
         ({ state, dispatch }) => {
-          const { selection } = state;
+          const { selection } = state
 
-          const node = state.doc.nodeAt(selection.from);
+          const node = state.doc.nodeAt(selection.from)
 
           if (node && node.type.name === this.name) {
-            const imageId = node.attrs.id;
+            const imageId = node.attrs.id
 
             dispatch &&
               dispatch(
@@ -70,79 +70,79 @@ export const ImageResize = Image.extend<ImageOptions>({
                   selection.to,
                   state.schema.nodes.paragraph.create()
                 )
-              );
+              )
 
             if (deleteImage) {
-              deleteImage(imageId);
+              deleteImage(imageId)
             }
 
-            return true;
+            return true
           }
 
-          return false;
+          return false
         },
-    };
+    }
   },
   addKeyboardShortcuts() {
     return {
       Backspace: ({ editor }) => editor.commands.deleteCurrentNode(),
       Delete: ({ editor }) => editor.commands.deleteCurrentNode(),
-    };
+    }
   },
   addAttributes() {
     return {
       id: { default: null },
-      class: { default: "image-display" },
+      class: { default: 'image-display' },
       width: {
-        default: "100%",
+        default: '100%',
         renderHTML: (attributes) => {
           return {
             width: attributes.width,
-          };
+          }
         },
       },
-      Padding: "200px",
+      Padding: '200px',
       height: {
-        default: "0",
+        default: '0',
         renderHTML: (attributes) => {
           return {
             height: attributes.height,
-          };
+          }
         },
       },
       isDraggable: {
         default: true,
         renderHTML: () => {
-          return {};
+          return {}
         },
       },
       src: {
-        default: "",
+        default: '',
         renderHTML: (attributes) => {
           return {
             src: attributes.src,
-          };
+          }
         },
       },
-    };
+    }
   },
   parseHTML() {
     return [
       {
-        tag: "image-resizer",
+        tag: 'image-resizer',
       },
-    ];
+    ]
   },
 
   renderHTML({ HTMLAttributes }) {
     return [
-      "image-resizer",
+      'image-resizer',
       mergeAttributes(this.options.HTMLAttributes, HTMLAttributes),
-    ];
+    ]
   },
 
   addNodeView() {
-    return ReactNodeViewRenderer(ImageResizeComponent);
+    return ReactNodeViewRenderer(ImageResizeComponent)
   },
   addInputRules() {
     return [
@@ -150,10 +150,10 @@ export const ImageResize = Image.extend<ImageOptions>({
         find: inputRegex,
         type: this.type,
         getAttributes: (match) => {
-          const [, , alt, src, title, height, width, isDraggable] = match;
-          return { src, alt, title, height, width, isDraggable };
+          const [, , alt, src, title, height, width, isDraggable] = match
+          return { src, alt, title, height, width, isDraggable }
         },
       }),
-    ];
+    ]
   },
-});
+})
