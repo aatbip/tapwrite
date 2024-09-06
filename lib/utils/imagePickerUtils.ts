@@ -63,4 +63,3 @@ export class ImagePickerUtils implements IImagePickerUtils {
     return file
   }
 }
-
