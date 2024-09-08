@@ -34,7 +34,6 @@ export const Tapwrite = ({
   onBlur,
   editorClass,
   deleteEditorAttachments,
-  refreshUrl,
 }: NotionLikeProps) => {
   return (
     <AppContextProvider>
@@ -51,7 +50,6 @@ export const Tapwrite = ({
         onBlur={onBlur}
         editorClass={editorClass}
         deleteEditorAttachments={deleteEditorAttachments}
-        refreshUrl={refreshUrl}
       />
     </AppContextProvider>
   )
