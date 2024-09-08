@@ -58,7 +58,7 @@ export const Editor = ({
   refreshUrl,
 }: NotionLikeProps) => {
   const initialEditorContent = placeholder ?? 'Type "/" for commands'
-
+  const refreshRan = React.useRef(false)
   const isTextInputClassName =
     'p-1.5 px-2.5  focus-within:border-black border-gray-300 bg-white border focus:border-black rounded-100  text-sm resize-y overflow-auto'
   const editor = useEditor({
@@ -183,7 +183,8 @@ export const Editor = ({
       if (uploadFn) {
         appState?.setUploadFn(uploadFn)
       }
-      if (refreshUrl) {
+      if (refreshUrl && editor && !refreshRan.current) {
+        refreshRan.current = true
         const { state, view } = editor
         replaceUrl(state, view, refreshUrl)
       }
