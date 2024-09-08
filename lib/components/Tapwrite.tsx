@@ -38,7 +38,7 @@ import { IframeExtension } from './tiptap/iframe/ext_iframe'
 import './../globals.css'
 import { useAppState } from '../context/useAppState'
 import { NotionLikeProps } from '../main'
-// import { replaceUrl } from '../utils/replaceUrl'
+import { replaceUrl } from '../utils/replaceUrl'
 // import suggestion from "../components/tiptap/mention/suggestion.ts";
 // import { MentionStorage } from "./tiptap/mention/MentionStorage.extension.ts";
 // mention turned off for now
@@ -55,6 +55,7 @@ export const Editor = ({
   isTextInput,
   editorClass,
   deleteEditorAttachments,
+  refreshUrl,
 }: NotionLikeProps) => {
   const initialEditorContent = placeholder ?? 'Type "/" for commands'
 
@@ -182,6 +183,10 @@ export const Editor = ({
       if (uploadFn) {
         appState?.setUploadFn(uploadFn)
       }
+      if (refreshUrl) {
+        const { state, view } = editor
+        replaceUrl(state, view, refreshUrl)
+      }
       if (readonly) {
         editor.setEditable(false)
       }
@@ -196,8 +201,8 @@ export const Editor = ({
         document.removeEventListener('keydown', handleKeyDown)
       }
     }
-    console.log('infinite render check')
-  }, [editor, uploadFn, readonly])
+    console.log('check')
+  }, [editor, uploadFn, readonly, refreshUrl])
 
   if (!editor) return null
 
