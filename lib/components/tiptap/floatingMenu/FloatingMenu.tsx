@@ -85,9 +85,9 @@ export const FloatingMenu = forwardRef((props: any, ref: any) => {
       })
       const fn = appState?.uploadFn
       if (fn) {
-        const imgUtil = new ImagePickerUtils()
-        const url = await imgUtil.imageUrl(file)
-        tiptapEditorUtils.setImage(url || '', 'loading') //used to show image for loading state before actual url is uploaded through the asynchronous function appState?.uploadFn
+        // const imgUtil = new ImagePickerUtils()
+        // const url = await imgUtil.imageUrl(file)
+        // tiptapEditorUtils.setImage(url || '', 'loading') //used to show image for loading state before actual url is uploaded through the asynchronous function appState?.uploadFn
         fn(filetoUpload, tiptapEditorUtils)
       }
     }
