@@ -12,7 +12,7 @@ export async function replaceUrl(
       imageNodes.push({ pos, node })
     }
   })
-
+  let tr = state.tr
   for (const { pos, node } of imageNodes) {
     const currentUrl = node.attrs.src
 
@@ -20,17 +20,18 @@ export async function replaceUrl(
       try {
         const newUrl = await refreshUrl(currentUrl)
         if (newUrl !== currentUrl) {
-          view.dispatch(
-            state.tr.setNodeMarkup(pos, undefined, {
-              ...node.attrs,
-              src: newUrl,
-            })
-          )
+          tr = tr.setNodeMarkup(pos, undefined, {
+            ...node.attrs,
+            src: newUrl,
+          })
         }
       } catch (error) {
         console.error(`Loading new image Url failed`, error)
       }
     }
+  }
+  if (tr.docChanged) {
+    view.dispatch(tr)
   }
 }
 
