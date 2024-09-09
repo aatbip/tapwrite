@@ -234,11 +234,12 @@ function startImageUpload(view: any, file: File, schema: any) {
 
   tr.setMeta(placeholderPlugin, { add: { id, pos: tr.selection.from } })
   view.dispatch(tr)
-
+  console.log('running the upload function')
   uploadFn?.(file).then(
     (url: string) => {
+      console.log('got the url')
       const pos = findPlaceholder(view.state, id)
-      console.log(pos)
+
       // If the content around the placeholder has been deleted, drop the image
       if (pos == null) return
 

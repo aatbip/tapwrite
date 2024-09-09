@@ -104,7 +104,7 @@ export class TiptapEditorUtils {
     this.editor.chain().focus().extendMarkRange('link').unsetLink().run()
   }
 
-  setImage(imgUrl: string, title: string) {
+  setImage() {
     // this.editor.chain().focus().setImage({ src: imgUrl, title: title }).run()
     //@ts-expect-error addImage() is a method
     this.editor.chain().focus().addImage().run()

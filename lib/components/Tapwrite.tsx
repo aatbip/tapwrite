@@ -206,7 +206,6 @@ export const Editor = ({
         document.removeEventListener('keydown', handleKeyDown)
       }
     }
-    console.log('check')
   }, [editor, readonly, refreshUrl])
 
   if (!editor) return null

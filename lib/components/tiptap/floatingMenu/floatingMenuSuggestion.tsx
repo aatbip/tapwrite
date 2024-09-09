@@ -61,7 +61,7 @@ export const floatingMenuSuggestion = {
         command: async ({ editor, range }: { editor: Editor; range: any }) => {
           const tiptapEditorUtils = new TiptapEditorUtils(editor)
           tiptapEditorUtils.deleteRange(range)
-          tiptapEditorUtils.setImage('', '')
+          tiptapEditorUtils.setImage()
         },
       },
       // {

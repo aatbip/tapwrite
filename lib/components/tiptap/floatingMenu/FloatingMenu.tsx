@@ -11,10 +11,6 @@ import {
   CalloutIcon,
   TableIcon,
 } from './../../../icons'
-import { useAppState } from '../../../context/useAppState'
-import { ImagePickerUtils } from '../../../utils/imagePickerUtils'
-import { TiptapEditorUtils } from '../../../utils/tiptapEditorUtils'
-import { Editor } from '@tiptap/react'
 
 const FloatingContainerBtn = ({
   handleClick,
@@ -70,7 +66,7 @@ const FloatingContainerBtn = ({
 
 export const FloatingMenu = forwardRef((props: any, ref: any) => {
   const [selectedIndex, setSelectedIndex] = useState(0)
-  const appState = useAppState()
+  // const appState = useAppState()
 
   // async function handleFileUpload() {
   //   const tiptapEditorUtils = new TiptapEditorUtils(appState?.editor as Editor)
