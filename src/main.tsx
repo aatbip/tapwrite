@@ -7,10 +7,10 @@ ReactDOM.createRoot(document.getElementById('root')!).render(
   <React.StrictMode>
     <div style={{ padding: '1.5em' }}>
       <Tapwrite
-        uploadFn={async (file, tiptapEditorUtils) => {
+        uploadFn={async (file) => {
           const imgUtil = new ImagePickerUtils()
           const url = await imgUtil.imageUrl(file)
-          tiptapEditorUtils.setImage(url || '', 'randomId')
+          return url || ''
         }}
         content=''
         getContent={(content) => {

@@ -25,10 +25,10 @@ const FloatingContainerBtn = ({
   label: string
   focus: boolean
 }) => {
-  const appState = useAppState()
-  if (label === 'Upload' && !appState?.uploadFn) {
-    return null
-  }
+  // const appState = useAppState()
+  // if (label === 'Upload' && !appState?.uploadFn) {
+  //   return null
+  // }
   return (
     <button
       className={`flex flex-row gap-x-2.5 items-center py-1.5 px-3 cursor-pointer outline-none ${
@@ -72,35 +72,35 @@ export const FloatingMenu = forwardRef((props: any, ref: any) => {
   const [selectedIndex, setSelectedIndex] = useState(0)
   const appState = useAppState()
 
-  async function handleFileUpload() {
-    const tiptapEditorUtils = new TiptapEditorUtils(appState?.editor as Editor)
-    const imagePickerUtils = new ImagePickerUtils()
-    const file = await imagePickerUtils.selectImageFromLocalDrive()
-    const uniqueId = `image--${Math.random().toString(36).substring(2, 11)}`
+  // async function handleFileUpload() {
+  //   const tiptapEditorUtils = new TiptapEditorUtils(appState?.editor as Editor)
+  //   const imagePickerUtils = new ImagePickerUtils()
+  //   const file = await imagePickerUtils.selectImageFromLocalDrive()
+  //   const uniqueId = `image--${Math.random().toString(36).substring(2, 11)}`
 
-    if (file) {
-      const filetoUpload = new File([file], `${uniqueId}${file.name}`, {
-        type: file.type,
-        lastModified: file.lastModified,
-      })
-      const fn = appState?.uploadFn
-      if (fn) {
-        // const imgUtil = new ImagePickerUtils()
-        // const url = await imgUtil.imageUrl(file)
-        // tiptapEditorUtils.setImage(url || '', 'loading') //used to show image for loading state before actual url is uploaded through the asynchronous function appState?.uploadFn
-        fn(filetoUpload, tiptapEditorUtils)
-      }
-    }
-  }
+  //   if (file) {
+  //     const filetoUpload = new File([file], `${uniqueId}${file.name}`, {
+  //       type: file.type,
+  //       lastModified: file.lastModified,
+  //     })
+  //     const fn = appState?.uploadFn
+  //     if (fn) {
+  //       // const imgUtil = new ImagePickerUtils()
+  //       // const url = await imgUtil.imageUrl(file)
+  //       // tiptapEditorUtils.setImage(url || '', 'loading') //used to show image for loading state before actual url is uploaded through the asynchronous function appState?.uploadFn
+  //       fn(filetoUpload, tiptapEditorUtils)
+  //     }
+  //   }
+  // }
 
   const selectItem = (index: any) => {
     const item = props.items[index]
 
     if (item) {
       props.command({ id: item })
-      if (item.title === 'Upload') {
-        handleFileUpload()
-      }
+      // if (item.title === 'Upload') {
+      //   handleFileUpload()
+      // }
     }
   }
 
@@ -148,16 +148,18 @@ export const FloatingMenu = forwardRef((props: any, ref: any) => {
   return (
     <div className='flex flex-col gap-0.5 bg-white py-2 border border-new-card-border rounded shadow-vairant-1 w-48 overflow-hidden relative'>
       {items && items?.length ? (
-        items.map((item: any, index: any) => (
-          <FloatingContainerBtn
-            key={index}
-            handleClick={() => {
-              selectItem(index)
-            }}
-            label={item.title}
-            focus={index === selectedIndex}
-          />
-        ))
+        items.map((item: any, index: any) => {
+          return (
+            <FloatingContainerBtn
+              key={index}
+              handleClick={() => {
+                selectItem(index)
+              }}
+              label={item.title}
+              focus={index === selectedIndex}
+            />
+          )
+        })
       ) : (
         <FloatingContainerBtn
           label={'No Options'}

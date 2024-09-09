@@ -29,7 +29,6 @@ import Placeholder from '@tiptap/extension-placeholder'
 import FloatingCommandExtension from './tiptap/floatingMenu/floatingCommandExtension'
 import Hardbreak from '@tiptap/extension-hard-break'
 import { floatingMenuSuggestion } from './tiptap/floatingMenu/floatingMenuSuggestion'
-import { ImageResize } from './tiptap/image/image'
 import ControlledBubbleMenu from './tiptap/bubbleMenu/ControlledBubbleMenu'
 import BubbleMenuContainer from './tiptap/bubbleMenu/BubbleMenu'
 import { AutofillExtension } from './tiptap/autofieldSelector/ext_autofill'
@@ -39,6 +38,7 @@ import './../globals.css'
 import { useAppState } from '../context/useAppState'
 import { NotionLikeProps } from '../main'
 import { replaceUrl } from '../utils/replaceUrl'
+import { UploadImage } from './tiptap/image/imageUpload'
 // import suggestion from "../components/tiptap/mention/suggestion.ts";
 // import { MentionStorage } from "./tiptap/mention/MentionStorage.extension.ts";
 // mention turned off for now
@@ -124,7 +124,14 @@ export const Editor = ({
           class: 'list-disc',
         },
       }),
-      ImageResize.configure({
+      // ImageResize.configure({
+      //   deleteImage: deleteEditorAttachments && deleteEditorAttachments,
+      // }),
+      UploadImage.configure({
+        uploadFn: async (file: File) => {
+          const url = editor && uploadFn && (await uploadFn(file))
+          return url ?? ''
+        },
         deleteImage: deleteEditorAttachments && deleteEditorAttachments,
       }),
       Table.configure({
@@ -180,9 +187,6 @@ export const Editor = ({
   useEffect(() => {
     if (editor) {
       appState?.setEditor(editor)
-      if (uploadFn) {
-        appState?.setUploadFn(uploadFn)
-      }
       if (refreshUrl && editor && !refreshRan.current) {
         refreshRan.current = true
         const { state, view } = editor
@@ -203,7 +207,7 @@ export const Editor = ({
       }
     }
     console.log('check')
-  }, [editor, uploadFn, readonly, refreshUrl])
+  }, [editor, readonly, refreshUrl])
 
   if (!editor) return null
 

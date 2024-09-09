@@ -105,7 +105,9 @@ export class TiptapEditorUtils {
   }
 
   setImage(imgUrl: string, title: string) {
-    this.editor.chain().focus().setImage({ src: imgUrl, title: title }).run()
+    // this.editor.chain().focus().setImage({ src: imgUrl, title: title }).run()
+    //@ts-expect-error addImage() is a method
+    this.editor.chain().focus().addImage().run()
   }
 
   insertTable({ rows, cols }: { rows: number; cols: number }) {

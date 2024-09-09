@@ -46,20 +46,18 @@ export const ImageResizeComponent = (props: any) => {
 
   return (
     <NodeViewWrapper className='image-resizer'>
-      <>
-        <img {...props.node.attrs} className='postimage' />
-        <div
-          className='resize-trigger left'
-          onMouseDown={(e: React.MouseEvent<HTMLImageElement>) =>
-            handler(e, 'left')
-          }
-        >
-          <Resize />
-        </div>
-        <div className='resize-trigger right' onMouseDown={handler}>
-          <Resize />
-        </div>
-      </>
+      <div
+        className='resize-trigger left'
+        onMouseDown={(e: React.MouseEvent<HTMLImageElement>) =>
+          handler(e, 'left')
+        }
+      >
+        <Resize />
+      </div>
+      <div className='resize-trigger right' onMouseDown={handler}>
+        <Resize />
+      </div>
+      <img {...props.node.attrs} className='postimage' />
     </NodeViewWrapper>
   )
 }
