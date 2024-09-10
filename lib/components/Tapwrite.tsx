@@ -37,7 +37,6 @@ import { IframeExtension } from './tiptap/iframe/ext_iframe'
 import './../globals.css'
 import { useAppState } from '../context/useAppState'
 import { NotionLikeProps } from '../main'
-import { replaceUrl } from '../utils/replaceUrl'
 import { UploadImage } from './tiptap/image/imageUpload'
 import { ImageResize } from './tiptap/image/image'
 // import suggestion from "../components/tiptap/mention/suggestion.ts";
@@ -56,10 +55,9 @@ export const Editor = ({
   isTextInput,
   editorClass,
   deleteEditorAttachments,
-  refreshUrl,
 }: NotionLikeProps) => {
   const initialEditorContent = placeholder ?? 'Type "/" for commands'
-  const refreshRan = React.useRef(false)
+
   const isTextInputClassName =
     'p-1.5 px-2.5  focus-within:border-black border-gray-300 bg-white border focus:border-black rounded-100  text-sm resize-y overflow-auto'
   const editor = useEditor({
@@ -188,11 +186,7 @@ export const Editor = ({
   useEffect(() => {
     if (editor) {
       appState?.setEditor(editor)
-      if (refreshUrl && editor && !refreshRan.current) {
-        refreshRan.current = true
-        const { state, view } = editor
-        replaceUrl(state, view, refreshUrl)
-      }
+
       if (readonly) {
         editor.setEditable(false)
       }
@@ -207,7 +201,7 @@ export const Editor = ({
         document.removeEventListener('keydown', handleKeyDown)
       }
     }
-  }, [editor, readonly, refreshUrl])
+  }, [editor, readonly])
 
   if (!editor) return null
 

@@ -18,7 +18,6 @@ export interface NotionLikeProps {
   editorClass: string
   handleEditorAttachments?: (file: File) => Promise<void>
   deleteEditorAttachments?: (id: string) => Promise<void>
-  refreshUrl?: (url: string) => Promise<string>
 }
 
 export const Tapwrite = ({
@@ -34,7 +33,6 @@ export const Tapwrite = ({
   onBlur,
   editorClass,
   deleteEditorAttachments,
-  refreshUrl,
 }: NotionLikeProps) => {
   return (
     <AppContextProvider>
@@ -51,7 +49,6 @@ export const Tapwrite = ({
         onBlur={onBlur}
         editorClass={editorClass}
         deleteEditorAttachments={deleteEditorAttachments}
-        refreshUrl={refreshUrl}
       />
     </AppContextProvider>
   )
