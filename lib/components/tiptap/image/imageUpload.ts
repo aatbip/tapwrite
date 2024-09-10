@@ -234,12 +234,13 @@ function startImageUpload(view: any, file: File, schema: any) {
   view.dispatch(tr)
 
   uploadFn?.(file).then(
-    (url: string) => {
-      console.log('got the url', url)
+    async (url: string) => {
       const pos = findPlaceholder(view.state, id)
 
       // If the content around the placeholder has been deleted, drop the image
       if (pos == null) return
+
+      await loadImageInBackground(url)
 
       // Insert the uploaded image at the placeholder's position
       view.dispatch(
@@ -253,4 +254,13 @@ function startImageUpload(view: any, file: File, schema: any) {
       view.dispatch(tr.setMeta(placeholderPlugin, { remove: { id } }))
     }
   )
+}
+
+function loadImageInBackground(url: string): Promise<HTMLImageElement> {
+  return new Promise((resolve, reject) => {
+    const img = new Image()
+    img.src = url
+    img.onload = () => resolve(img)
+    img.onerror = reject
+  })
 }
