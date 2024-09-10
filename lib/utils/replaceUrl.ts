@@ -8,7 +8,7 @@ export async function replaceUrl(
 ) {
   const imageNodes: { pos: number; node: any }[] = []
   state.doc.descendants((node, pos) => {
-    if (node.type.name === 'img') {
+    if (node.type.name === 'uploadImage') {
       imageNodes.push({ pos, node })
     }
   })

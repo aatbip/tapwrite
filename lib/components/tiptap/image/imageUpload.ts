@@ -131,9 +131,7 @@ export const UploadImage = Node.create<UploadImageOptions>({
         () =>
         ({ state, dispatch }) => {
           const { selection } = state
-
           const node = state.doc.nodeAt(selection.from)
-
           if (node && node.type.name === this.name) {
             const imageId = node.attrs.id
             dispatch &&

@@ -39,6 +39,7 @@ import { useAppState } from '../context/useAppState'
 import { NotionLikeProps } from '../main'
 import { replaceUrl } from '../utils/replaceUrl'
 import { UploadImage } from './tiptap/image/imageUpload'
+import { ImageResize } from './tiptap/image/image'
 // import suggestion from "../components/tiptap/mention/suggestion.ts";
 // import { MentionStorage } from "./tiptap/mention/MentionStorage.extension.ts";
 // mention turned off for now
@@ -124,9 +125,9 @@ export const Editor = ({
           class: 'list-disc',
         },
       }),
-      // ImageResize.configure({
-      //   deleteImage: deleteEditorAttachments && deleteEditorAttachments,
-      // }),
+      ImageResize.configure({
+        deleteImage: deleteEditorAttachments && deleteEditorAttachments,
+      }),
       UploadImage.configure({
         uploadFn: async (file: File) => {
           const url = uploadFn && (await uploadFn(file))
