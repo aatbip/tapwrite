@@ -316,12 +316,10 @@ table {
 
 .image-placeholder {
   position: relative;
-  display: block;
   display: flex;
   align-items: center;
   justify-content: center;
-  min-height: 200px;
-  min-width: 600px;
+
   object-fit: cover;
 }
 .blur {
