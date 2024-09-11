@@ -133,7 +133,7 @@ export const UploadImage = Node.create<UploadImageOptions>({
           const { selection } = state
           const node = state.doc.nodeAt(selection.from)
           if (node && node.type.name === this.name) {
-            const imageId = node.attrs.id
+            const imageUrl = node.attrs.src
             dispatch &&
               dispatch(
                 state.tr.replaceWith(
@@ -144,7 +144,7 @@ export const UploadImage = Node.create<UploadImageOptions>({
               )
 
             if (deleteImage) {
-              deleteImage(imageId)
+              deleteImage(imageUrl)
             }
 
             return true
