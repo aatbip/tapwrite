@@ -12,7 +12,7 @@ ReactDOM.createRoot(document.getElementById('root')!).render(
           const url = await imgUtil.imageUrl(file)
           return url || ''
         }}
-        content=''
+        content='<p> ashdkasd </p> <img src = "https://picsum.photos/200/300" /> <p> hello </p>'
         getContent={(content) => {
           console.log(content)
         }}

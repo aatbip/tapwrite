@@ -317,6 +317,8 @@ table {
 .image-placeholder {
   position: relative;
   display: block;
-
+  width: 100%;
+  min-height: 200px;
+  min-width: 600px;
   object-fit: cover;
 }
