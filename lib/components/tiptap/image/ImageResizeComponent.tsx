@@ -49,7 +49,7 @@ export const ImageResizeComponent = (props: any) => {
     document.body.addEventListener('mousemove', onMouseMove)
     document.body.addEventListener('mouseup', onMouseUp, { once: true })
   }
-
+  console.log(loading)
   return (
     <NodeViewWrapper className='image-resizer'>
       <div
@@ -64,8 +64,8 @@ export const ImageResizeComponent = (props: any) => {
         <Resize />
       </div>
       {loading && (
-        <div className='image-uploading'>
-          <div className='image-placeholder'>
+        <div className='image-placeholder'>
+          <div className='blur'>
             <img src={placeholderImage}></img>
           </div>
         </div>
