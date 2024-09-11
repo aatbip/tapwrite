@@ -1,9 +1,15 @@
 /* eslint-disable jsx-a11y/anchor-is-valid */
-import React from 'react'
+import React, { useState } from 'react'
 import { NodeViewWrapper } from '@tiptap/react'
 import { Resize } from './resizeIcon'
+import placeholderImage from '../../../assets/placeholder.svg'
 
 export const ImageResizeComponent = (props: any) => {
+  const [loading, setLoading] = useState(true)
+
+  const handleImageLoad = () => {
+    setLoading(false)
+  }
   const handler = (
     mouseDownEvent: React.MouseEvent<HTMLImageElement>,
     side: 'left' | 'right' = 'right'
@@ -57,7 +63,19 @@ export const ImageResizeComponent = (props: any) => {
       <div className='resize-trigger right' onMouseDown={handler}>
         <Resize />
       </div>
-      <img {...props.node.attrs} className='postimage' />
+      {loading && (
+        <div className='image-uploading'>
+          <div className='image-placeholder'>
+            <img src={placeholderImage}></img>
+          </div>
+        </div>
+      )}
+
+      <img
+        {...props.node.attrs}
+        className='postimage'
+        onLoad={handleImageLoad}
+      />
     </NodeViewWrapper>
   )
 }
