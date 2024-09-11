@@ -318,5 +318,7 @@ table {
   position: relative;
   display: block;
 
+  min-height: 200px;
+  min-width: 600px;
   object-fit: cover;
 }
