@@ -52,33 +52,30 @@ export const ImageResizeComponent = (props: any) => {
 
   return (
     <NodeViewWrapper className='image-resizer'>
-      {loading ? (
+      <div
+        className='resize-trigger left'
+        onMouseDown={(e: React.MouseEvent<HTMLImageElement>) =>
+          handler(e, 'left')
+        }
+      >
+        <Resize />
+      </div>
+      <div className='resize-trigger right' onMouseDown={handler}>
+        <Resize />
+      </div>
+      {loading && (
         <div className='image-uploading'>
           <div className='image-placeholder'>
             <img src={placeholderImage}></img>
           </div>
         </div>
-      ) : (
-        <>
-          {' '}
-          <div
-            className='resize-trigger left'
-            onMouseDown={(e: React.MouseEvent<HTMLImageElement>) =>
-              handler(e, 'left')
-            }
-          >
-            <Resize />
-          </div>
-          <div className='resize-trigger right' onMouseDown={handler}>
-            <Resize />
-          </div>
-          <img
-            {...props.node.attrs}
-            className='postimage'
-            onLoad={handleImageLoad}
-          />
-        </>
       )}
+
+      <img
+        {...props.node.attrs}
+        className='postimage'
+        onLoad={handleImageLoad}
+      />
     </NodeViewWrapper>
   )
 }
