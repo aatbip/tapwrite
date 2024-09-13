@@ -1,6 +1,6 @@
 /* eslint-disable */
 
-import { Plugin, Transaction } from '@tiptap/pm/state'
+import { Plugin, TextSelection, Transaction } from '@tiptap/pm/state'
 import { Decoration, DecorationSet } from '@tiptap/pm/view'
 import { mergeAttributes, Node, nodeInputRule } from '@tiptap/core'
 import { ReactNodeViewRenderer } from '@tiptap/react'
@@ -120,9 +120,7 @@ export const UploadImage = Node.create<UploadImageOptions>({
               console.log('uploadFn should be a function')
               return
             }
-
             startImageUpload(view, target.files[0], schema)
-
             view.focus()
           }
         })
@@ -195,7 +193,6 @@ const placeholderPlugin = new Plugin({
 
         const deco = Decoration.widget(action.add.pos, widget, {
           id: action.add.id,
-          side: -1,
         })
 
         set = set.add(tr.doc, [deco])
@@ -233,19 +230,20 @@ function startImageUpload(view: any, file: File, schema: any) {
   let tr = view.state.tr
   if (!tr.selection.empty) tr.deleteSelection()
 
-  tr.setMeta(placeholderPlugin, { add: { id, pos: tr.selection.from } }).insert(
-    tr.selection.from + 1,
-    schema.nodes.paragraph.create()
-  )
+  tr.setMeta(placeholderPlugin, { add: { id, pos: tr.selection.from } })
+
+  const paragraph = schema.nodes.paragraph.create()
+  tr.insert(tr.selection.from + 1, paragraph)
   view.dispatch(tr)
 
-  setTimeout(() => {
-    uploadFn?.(file).then(
-      async (url: string) => {
+  uploadFn?.(file).then(
+    async (url: string) => {
+      const placeholderPos = findPlaceholder(view.state, id)
+      if (placeholderPos == null) return
+      setTimeout(async () => {
         const pos = findPlaceholder(view.state, id)
 
         // If the content around the placeholder has been deleted, drop the image
-        if (pos == null) return
 
         await loadImageInBackground(url)
 
@@ -259,13 +257,17 @@ function startImageUpload(view: any, file: File, schema: any) {
             )
             .setMeta(placeholderPlugin, { remove: { id } })
         )
-      },
-      () => {
-        // On failure, clean up the placeholder
-        view.dispatch(tr.setMeta(placeholderPlugin, { remove: { id } }))
-      }
-    )
-  }, 10000)
+      }, 10000)
+      const newPos = placeholderPos + 1
+      view.dispatch(
+        view.state.tr.setSelection(TextSelection.create(view.state.doc, newPos))
+      )
+    },
+    () => {
+      // On failure, clean up the placeholder
+      view.dispatch(tr.setMeta(placeholderPlugin, { remove: { id } }))
+    }
+  )
 }
 
 function loadImageInBackground(url: string): Promise<HTMLImageElement> {
