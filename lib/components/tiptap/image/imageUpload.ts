@@ -219,10 +219,6 @@ function findPlaceholder(state: any, id: any): number | null {
   return found && found.length ? found[0].from : null
 }
 
-function forceLayoutRecalculation(view: any) {
-  view.updateState(view.state)
-}
-
 function startImageUpload(view: any, file: File, schema: any) {
   imagePreview = URL.createObjectURL(file)
 
@@ -242,12 +238,12 @@ function startImageUpload(view: any, file: File, schema: any) {
 
   uploadFn?.(file).then(
     async (url: string) => {
+      await loadImageInBackground(url)
+
       const pos = findPlaceholder(view.state, id)
 
       // If the content around the placeholder has been deleted, drop the image
       if (pos == null) return
-
-      await loadImageInBackground(url)
 
       // Insert the uploaded image at the placeholder's position
       view.dispatch(
@@ -255,10 +251,6 @@ function startImageUpload(view: any, file: File, schema: any) {
           .replaceWith(pos, pos, schema.nodes.uploadImage.create({ src: url }))
           .setMeta(placeholderPlugin, { remove: { id } })
       )
-
-      setTimeout(() => {
-        forceLayoutRecalculation(view)
-      }, 2000)
     },
     () => {
       // On failure, clean up the placeholder
