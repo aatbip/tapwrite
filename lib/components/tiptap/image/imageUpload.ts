@@ -240,24 +240,20 @@ function startImageUpload(view: any, file: File, schema: any) {
     async (url: string) => {
       const placeholderPos = findPlaceholder(view.state, id)
       if (placeholderPos == null) return
-      setTimeout(async () => {
-        const pos = findPlaceholder(view.state, id)
 
-        // If the content around the placeholder has been deleted, drop the image
+      const pos = findPlaceholder(view.state, id)
 
-        await loadImageInBackground(url)
+      // If the content around the placeholder has been deleted, drop the image
 
-        // Insert the uploaded image at the placeholder's position
-        view.dispatch(
-          view.state.tr
-            .replaceWith(
-              pos,
-              pos,
-              schema.nodes.uploadImage.create({ src: url })
-            )
-            .setMeta(placeholderPlugin, { remove: { id } })
-        )
-      }, 10000)
+      await loadImageInBackground(url)
+
+      // Insert the uploaded image at the placeholder's position
+      view.dispatch(
+        view.state.tr
+          .replaceWith(pos, pos, schema.nodes.uploadImage.create({ src: url }))
+          .setMeta(placeholderPlugin, { remove: { id } })
+      )
+
       const newPos = placeholderPos + 1
       view.dispatch(
         view.state.tr.setSelection(TextSelection.create(view.state.doc, newPos))
