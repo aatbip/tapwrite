@@ -120,7 +120,9 @@ export const UploadImage = Node.create<UploadImageOptions>({
               console.log('uploadFn should be a function')
               return
             }
+
             startImageUpload(view, target.files[0], schema)
+
             view.focus()
           }
         })
@@ -193,6 +195,7 @@ const placeholderPlugin = new Plugin({
 
         const deco = Decoration.widget(action.add.pos, widget, {
           id: action.add.id,
+          side: -1,
         })
 
         set = set.add(tr.doc, [deco])
@@ -230,30 +233,39 @@ function startImageUpload(view: any, file: File, schema: any) {
   let tr = view.state.tr
   if (!tr.selection.empty) tr.deleteSelection()
 
-  tr.setMeta(placeholderPlugin, { add: { id, pos: tr.selection.from } })
+  tr.setMeta(placeholderPlugin, { add: { id, pos: tr.selection.from } }).insert(
+    tr.selection.from + 1,
+    schema.nodes.paragraph.create()
+  )
   view.dispatch(tr)
 
-  uploadFn?.(file).then(
-    async (url: string) => {
-      const pos = findPlaceholder(view.state, id)
+  setTimeout(() => {
+    uploadFn?.(file).then(
+      async (url: string) => {
+        const pos = findPlaceholder(view.state, id)
 
-      // If the content around the placeholder has been deleted, drop the image
-      if (pos == null) return
+        // If the content around the placeholder has been deleted, drop the image
+        if (pos == null) return
 
-      await loadImageInBackground(url)
+        await loadImageInBackground(url)
 
-      // Insert the uploaded image at the placeholder's position
-      view.dispatch(
-        view.state.tr
-          .replaceWith(pos, pos, schema.nodes.uploadImage.create({ src: url }))
-          .setMeta(placeholderPlugin, { remove: { id } })
-      )
-    },
-    () => {
-      // On failure, clean up the placeholder
-      view.dispatch(tr.setMeta(placeholderPlugin, { remove: { id } }))
-    }
-  )
+        // Insert the uploaded image at the placeholder's position
+        view.dispatch(
+          view.state.tr
+            .replaceWith(
+              pos,
+              pos,
+              schema.nodes.uploadImage.create({ src: url })
+            )
+            .setMeta(placeholderPlugin, { remove: { id } })
+        )
+      },
+      () => {
+        // On failure, clean up the placeholder
+        view.dispatch(tr.setMeta(placeholderPlugin, { remove: { id } }))
+      }
+    )
+  }, 10000)
 }
 
 function loadImageInBackground(url: string): Promise<HTMLImageElement> {
