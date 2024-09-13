@@ -282,7 +282,7 @@ table {
   filter: blur(5px);
   opacity: 0.3;
   padding: 10px 0px 10px 0px;
-  display: flex;
+  display: block;
   align-items: center;
   justify-content: center;
 }
@@ -316,7 +316,7 @@ table {
 
 .image-placeholder {
   position: relative;
-  display: flex;
+  display: block;
   align-items: center;
   justify-content: center;
 

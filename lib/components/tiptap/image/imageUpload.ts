@@ -1,6 +1,6 @@
 /* eslint-disable */
 
-import { Plugin, TextSelection, Transaction } from '@tiptap/pm/state'
+import { Plugin, Transaction } from '@tiptap/pm/state'
 import { Decoration, DecorationSet } from '@tiptap/pm/view'
 import { mergeAttributes, Node, nodeInputRule } from '@tiptap/core'
 import { ReactNodeViewRenderer } from '@tiptap/react'
@@ -211,13 +211,16 @@ const placeholderPlugin = new Plugin({
     },
   },
 })
-
 // Find the placeholder in the editor
 function findPlaceholder(state: any, id: any): number | null {
   const decos = placeholderPlugin.getState(state)
   const found =
     decos && decos.find(undefined, undefined, (spec) => spec.id === id)
   return found && found.length ? found[0].from : null
+}
+
+function forceLayoutRecalculation(view: any) {
+  view.updateState(view.state)
 }
 
 function startImageUpload(view: any, file: File, schema: any) {
@@ -231,19 +234,18 @@ function startImageUpload(view: any, file: File, schema: any) {
   if (!tr.selection.empty) tr.deleteSelection()
 
   tr.setMeta(placeholderPlugin, { add: { id, pos: tr.selection.from } })
-
-  const paragraph = schema.nodes.paragraph.create()
-  tr.insert(tr.selection.from + 1, paragraph)
+  const positionAfterImage = tr.selection.from + 1
+  if (!view.state.doc.nodeAt(positionAfterImage)) {
+    tr.insert(positionAfterImage, schema.nodes.paragraph.create())
+  }
   view.dispatch(tr)
 
   uploadFn?.(file).then(
     async (url: string) => {
-      const placeholderPos = findPlaceholder(view.state, id)
-      if (placeholderPos == null) return
-
       const pos = findPlaceholder(view.state, id)
 
       // If the content around the placeholder has been deleted, drop the image
+      if (pos == null) return
 
       await loadImageInBackground(url)
 
@@ -254,10 +256,9 @@ function startImageUpload(view: any, file: File, schema: any) {
           .setMeta(placeholderPlugin, { remove: { id } })
       )
 
-      const newPos = placeholderPos + 1
-      view.dispatch(
-        view.state.tr.setSelection(TextSelection.create(view.state.doc, newPos))
-      )
+      setTimeout(() => {
+        forceLayoutRecalculation(view)
+      }, 2000)
     },
     () => {
       // On failure, clean up the placeholder
