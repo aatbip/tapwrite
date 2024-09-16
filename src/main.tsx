@@ -8,18 +8,20 @@ ReactDOM.createRoot(document.getElementById('root')!).render(
     <div style={{ padding: '1.5em' }}>
       <Tapwrite
         uploadFn={async (file) => {
-          const simulateDelay = (ms: number) =>
-            new Promise<string>((resolve) => setTimeout(resolve, ms))
+          // Simulate an async operation with a 5-second delay
+          const simulateDelay = () =>
+            new Promise<string>((resolve) => {
+              setTimeout(() => {
+                resolve('https://picsum.photos/600/400')
+              }, 2000)
+            })
 
-          await simulateDelay(2000) // 2 second delay
-
-          const url =
-            'https://images.unsplash.com/photo-1624555130581-1d9cca783bc0?q=80&w=2071&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D'
-          return url
+          const url = await simulateDelay()
+          return url || ''
         }}
-        content='<p> ashdkasd </p> <p> hello </p>'
+        content='<p> ashdkasd </p> <img src = "https://picsum.photos/200/300" /> <p> hello </p>'
         getContent={(content) => {
-          // console.log(content)
+          console.log(content)
         }}
         editorClass=''
       />
