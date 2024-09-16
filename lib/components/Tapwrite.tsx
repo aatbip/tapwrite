@@ -186,6 +186,9 @@ export const Editor = ({
   useEffect(() => {
     if (editor) {
       appState?.setEditor(editor)
+      if (uploadFn) {
+        appState?.setUploadFn(uploadFn)
+      }
 
       if (readonly) {
         editor.setEditable(false)

@@ -11,6 +11,7 @@ import {
   CalloutIcon,
   TableIcon,
 } from './../../../icons'
+import { useAppState } from '../../../context/useAppState'
 
 const FloatingContainerBtn = ({
   handleClick,
@@ -21,10 +22,10 @@ const FloatingContainerBtn = ({
   label: string
   focus: boolean
 }) => {
-  // const appState = useAppState()
-  // if (label === 'Upload' && !appState?.uploadFn) {
-  //   return null
-  // }
+  const appState = useAppState()
+  if (label === 'Upload' && !appState?.uploadFn) {
+    return null
+  }
   return (
     <button
       className={`flex flex-row gap-x-2.5 items-center py-1.5 px-3 cursor-pointer outline-none ${
