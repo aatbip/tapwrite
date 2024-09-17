@@ -1,7 +1,7 @@
 import React, { useState } from 'react'
 import { NodeViewWrapper } from '@tiptap/react'
 import { Resize } from './resizeIcon'
-import placeholderImage from '../../../assets/placeholder.svg'
+import { LoadingPlaceholder } from './loadingPlaceholder'
 
 export const ImageResizeComponent = (props: any) => {
   const [loading, setLoading] = useState(true)
@@ -93,13 +93,7 @@ export const ImageResizeComponent = (props: any) => {
 
   return (
     <NodeViewWrapper className='image-resizer'>
-      {loading && (
-        <div className='image-placeholder'>
-          <div className='blur'>
-            <img src={placeholderImage} alt='Loading placeholder' />
-          </div>
-        </div>
-      )}
+      {loading && <LoadingPlaceholder />}
       <div style={{ display: loading ? 'none' : 'block' }}>
         <div
           className='resize-trigger left'
