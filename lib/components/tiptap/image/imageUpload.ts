@@ -229,11 +229,6 @@ function startImageUpload(view: any, file: File, schema: any) {
   let tr = view.state.tr
   if (!tr.selection.empty) tr.deleteSelection()
 
-  tr.setMeta(placeholderPlugin, { add: { id, pos: tr.selection.from } })
-  const positionAfterImage = tr.selection.from + 1
-  if (!view.state.doc.nodeAt(positionAfterImage)) {
-    tr.insert(positionAfterImage, schema.nodes.paragraph.create())
-  }
   view.dispatch(tr)
 
   uploadFn?.(file).then(

@@ -32,7 +32,6 @@
   flex-grow: 0;
   max-width: calc(100% - 12px);
   border-radius: 7px;
-  padding: 10px 0px 10px 0px;
 }
 
 .resize-trigger {

@@ -90,9 +90,15 @@ export const ImageResizeComponent = (props: any) => {
     // Prevent default scroll behavior while resizing
     touchStartEvent.preventDefault()
   }
-
   return (
-    <NodeViewWrapper className='image-resizer'>
+    <NodeViewWrapper
+      className='image-resizer'
+      style={{
+        outline: props.selected ? '3px solid #0C41BB' : 'none',
+        borderColor: props.selected ? '#625df580' : 'none',
+        borderRadius: '5px',
+      }}
+    >
       {loading && <LoadingPlaceholder />}
       <div style={{ display: loading ? 'none' : 'block' }}>
         <div
@@ -117,15 +123,7 @@ export const ImageResizeComponent = (props: any) => {
         >
           <Resize />
         </div>
-        <div
-          style={{
-            outline: props.selected ? '3px solid #0C41BB' : 'none',
-            borderColor: props.selected ? '#625df580' : 'none',
-            borderRadius: '5px',
-            marginTop: '10px',
-            marginBottom: '10px',
-          }}
-        >
+        <div>
           <img
             {...props.node.attrs}
             className='postimage'
