@@ -274,7 +274,7 @@ table {
 
 .image-uploading {
   position: relative;
-  display: inline-block;
+  display: flex;
   padding: 10px 0px 10px 0px;
   display: flex;
   align-items: center;
@@ -285,7 +285,7 @@ table {
   filter: blur(5px);
   opacity: 0.3;
   padding: 10px 0px 10px 0px;
-  display: block;
+  display: flex;
   align-items: center;
   justify-content: center;
 }
@@ -319,7 +319,8 @@ table {
 
 .image-placeholder {
   position: relative;
-  display: block;
+  display: flex;
+  flex-grow: 1;
   align-items: center;
   justify-content: center;
 

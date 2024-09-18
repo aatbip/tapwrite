@@ -1,31 +1,24 @@
 /* eslint-disable */
-
 import { Plugin, Transaction } from '@tiptap/pm/state'
 import { Decoration, DecorationSet } from '@tiptap/pm/view'
 import { mergeAttributes, Node, nodeInputRule } from '@tiptap/core'
 import { ReactNodeViewRenderer } from '@tiptap/react'
 import { ImageResizeComponent } from './ImageResizeComponent'
-
 export const inputRegex =
   /(?:^|\s)(!\[(.+|:?)]\((\S+)(?:(?:\s+)["'](\S+)["'])?\))$/
-
 let imagePreview: string | null = null
 let uploadFn: ((file: File) => Promise<string>) | null = null
-
 interface UploadImageOptions {
   inline: boolean
   HTMLAttributes: Record<string, any>
   uploadFn: ((file: File) => Promise<string>) | null
   deleteImage?: (id: string) => Promise<void>
 }
-
 export const UploadImage = Node.create<UploadImageOptions>({
   name: 'uploadImage',
-
   onCreate() {
     uploadFn = this.options.uploadFn
   },
-
   addOptions() {
     return {
       inline: false,
@@ -34,17 +27,13 @@ export const UploadImage = Node.create<UploadImageOptions>({
       deleteImage: undefined,
     }
   },
-
   inline() {
     return this.options.inline
   },
-
   group() {
     return this.options.inline ? 'inline' : 'block'
   },
-
   draggable: true,
-
   addAttributes() {
     return {
       src: {
@@ -80,7 +69,6 @@ export const UploadImage = Node.create<UploadImageOptions>({
       },
     }
   },
-
   parseHTML() {
     return [
       {
@@ -88,15 +76,12 @@ export const UploadImage = Node.create<UploadImageOptions>({
       },
     ]
   },
-
   renderHTML({ HTMLAttributes }) {
     return ['img', mergeAttributes(this.options.HTMLAttributes, HTMLAttributes)]
   },
-
   addNodeView() {
     return ReactNodeViewRenderer(ImageResizeComponent)
   },
-
   addCommands() {
     const { deleteImage } = this.options
     return {
@@ -106,10 +91,8 @@ export const UploadImage = Node.create<UploadImageOptions>({
         fileHolder.setAttribute('accept', 'image/*')
         fileHolder.setAttribute('style', 'visibility:hidden')
         document.body.appendChild(fileHolder)
-
         const view = this.editor.view
         const schema = this.editor.schema
-
         fileHolder.addEventListener('change', (e: Event) => {
           const target = e.target as HTMLInputElement
           if (
@@ -124,7 +107,6 @@ export const UploadImage = Node.create<UploadImageOptions>({
             view.focus()
           }
         })
-
         fileHolder.click()
       },
       deleteCurrentNode:
@@ -149,12 +131,10 @@ export const UploadImage = Node.create<UploadImageOptions>({
 
             return true
           }
-
           return false
         },
     }
   },
-
   addInputRules() {
     return [
       nodeInputRule({
@@ -167,12 +147,10 @@ export const UploadImage = Node.create<UploadImageOptions>({
       }),
     ]
   },
-
   addProseMirrorPlugins() {
     return [placeholderPlugin]
   },
 })
-
 // Plugin for placeholder
 const placeholderPlugin = new Plugin({
   state: {
@@ -182,7 +160,6 @@ const placeholderPlugin = new Plugin({
     apply(tr: Transaction, set: DecorationSet) {
       // Adjust decoration positions to changes made by the transaction
       set = set.map(tr.mapping, tr.doc)
-
       const action = tr.getMeta(placeholderPlugin)
       if (action?.add) {
         const widget = document.createElement('div')
@@ -190,11 +167,9 @@ const placeholderPlugin = new Plugin({
         widget.classList.add('image-uploading')
         img.src = imagePreview ?? ''
         widget.appendChild(img)
-
         const deco = Decoration.widget(action.add.pos, widget, {
           id: action.add.id,
         })
-
         set = set.add(tr.doc, [deco])
       } else if (action?.remove) {
         set = set.remove(
@@ -204,7 +179,6 @@ const placeholderPlugin = new Plugin({
       return set
     },
   },
-
   props: {
     decorations(state) {
       return this.getState(state)
@@ -218,16 +192,16 @@ function findPlaceholder(state: any, id: any): number | null {
     decos && decos.find(undefined, undefined, (spec) => spec.id === id)
   return found && found.length ? found[0].from : null
 }
-
 function startImageUpload(view: any, file: File, schema: any) {
   imagePreview = URL.createObjectURL(file)
-
   // A fresh object to act as the ID for this upload
   const id = {}
-
   // Replace the selection with a placeholder
   let tr = view.state.tr
+
   if (!tr.selection.empty) tr.deleteSelection()
+
+  tr.setMeta(placeholderPlugin, { add: { id, pos: tr.selection.from } })
 
   view.dispatch(tr)
 
@@ -236,10 +210,8 @@ function startImageUpload(view: any, file: File, schema: any) {
       await loadImageInBackground(url)
 
       const pos = findPlaceholder(view.state, id)
-
       // If the content around the placeholder has been deleted, drop the image
       if (pos == null) return
-
       // Insert the uploaded image at the placeholder's position
       view.dispatch(
         view.state.tr
@@ -253,7 +225,6 @@ function startImageUpload(view: any, file: File, schema: any) {
     }
   )
 }
-
 function loadImageInBackground(url: string): Promise<HTMLImageElement> {
   return new Promise((resolve, reject) => {
     const img = new Image()
