@@ -22,7 +22,6 @@ import Link from '@tiptap/extension-link'
 import Bold from '@tiptap/extension-bold'
 import Italic from '@tiptap/extension-italic'
 import Strike from '@tiptap/extension-strike'
-import Gapcursor from '@tiptap/extension-gapcursor'
 import History from '@tiptap/extension-history'
 // import Mentions from "@tiptap/extension-mention";
 import Placeholder from '@tiptap/extension-placeholder'
@@ -65,7 +64,23 @@ export const Editor = ({
       attributes: {
         class: editorClass,
       },
+      handlePaste(view, event) {
+        if (view) {
+        }
+        const clipboardItems = event?.clipboardData?.items
+        if (clipboardItems) {
+          for (let i = 0; i < clipboardItems.length; i++) {
+            if (clipboardItems[i].type.indexOf('image') !== -1) {
+              event.preventDefault() // Stop image from being pasted
+              return true // Prevent the paste event for images
+            }
+          }
+        }
+
+        return false
+      },
     },
+
     extensions: [
       AutofillExtension,
       IframeExtension.configure({
@@ -82,7 +97,6 @@ export const Editor = ({
       // MentionStorage,    mention turned off for now
       CalloutExtension,
       LinkpdfExtension,
-      Gapcursor,
       History,
       Hardbreak,
       FloatingCommandExtension.configure({

@@ -117,11 +117,21 @@ export const ImageResizeComponent = (props: any) => {
         >
           <Resize />
         </div>
-        <img
-          {...props.node.attrs}
-          className='postimage'
-          onLoad={handleImageLoad}
-        />
+        <div
+          style={{
+            outline: props.selected ? '3px solid #0C41BB' : 'none',
+            borderColor: props.selected ? '#625df580' : 'none',
+            borderRadius: '5px',
+            marginTop: '10px',
+            marginBottom: '10px',
+          }}
+        >
+          <img
+            {...props.node.attrs}
+            className='postimage'
+            onLoad={handleImageLoad}
+          />
+        </div>
       </div>
     </NodeViewWrapper>
   )
