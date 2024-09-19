@@ -65,6 +65,7 @@ export const ImageResizeComponent = (props: any) => {
     mouseDownEvent: React.MouseEvent<HTMLImageElement>,
     side: 'left' | 'right'
   ) => {
+    mouseDownEvent.preventDefault()
     const parent = (mouseDownEvent.target as HTMLElement).closest(
       '.image-resizer'
     )
@@ -75,9 +76,10 @@ export const ImageResizeComponent = (props: any) => {
   }
 
   const handleTouchStart = (
-    touchStartEvent: React.TouchEvent<HTMLImageElement>,
+    touchStartEvent: React.TouchEvent<HTMLDivElement>,
     side: 'left' | 'right'
   ) => {
+    touchStartEvent.preventDefault()
     const parent = (touchStartEvent.target as HTMLElement).closest(
       '.image-resizer'
     )
@@ -86,9 +88,6 @@ export const ImageResizeComponent = (props: any) => {
 
     const touch = touchStartEvent.touches[0]
     startResize(touch.pageX, touch.pageY, image, side)
-
-    // Prevent default scroll behavior while resizing
-    touchStartEvent.preventDefault()
   }
   return (
     <NodeViewWrapper

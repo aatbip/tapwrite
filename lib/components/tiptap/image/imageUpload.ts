@@ -212,8 +212,10 @@ function startImageUpload(view: any, file: File, schema: any) {
       await loadImageInBackground(url)
 
       const pos = findPlaceholder(view.state, id)
+
+      if (pos == null || pos >= view.state.doc.content.size) return
       // If the content around the placeholder has been deleted, drop the image
-      if (pos == null) return
+
       // Insert the uploaded image at the placeholder's position
       view.dispatch(
         view.state.tr
