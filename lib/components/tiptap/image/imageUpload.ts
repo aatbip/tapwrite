@@ -202,7 +202,9 @@ function startImageUpload(view: any, file: File, schema: any) {
   if (!tr.selection.empty) tr.deleteSelection()
 
   tr.setMeta(placeholderPlugin, { add: { id, pos: tr.selection.from } })
+  const paragraph = schema.nodes.paragraph.create()
 
+  tr.insert(tr.selection.from + 1, paragraph)
   view.dispatch(tr)
 
   uploadFn?.(file).then(
