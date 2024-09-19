@@ -22,6 +22,8 @@ export const UploadImage = Node.create<UploadImageOptions>({
   addOptions() {
     return {
       inline: false,
+      group: 'block',
+      draggable: 'true',
       HTMLAttributes: {},
       uploadFn: null,
       deleteImage: undefined,
