@@ -4,7 +4,7 @@ import { Decoration, DecorationSet } from '@tiptap/pm/view'
 import { mergeAttributes, Node, nodeInputRule } from '@tiptap/core'
 import { ReactNodeViewRenderer } from '@tiptap/react'
 import { ImageResizeComponent } from './ImageResizeComponent'
-import { Fragment } from '@tiptap/pm/model'
+
 export const inputRegex =
   /(?:^|\s)(!\[(.+|:?)]\((\S+)(?:(?:\s+)["'](\S+)["'])?\))$/
 let imagePreview: string | null = null
@@ -217,12 +217,18 @@ function startImageUpload(view: any, file: File, schema: any) {
       const pos = findPlaceholder(view.state, id)
 
       if (pos == null) return
+      const paragraphNode = schema.nodes.paragraph.create()
       // If the content around the placeholder has been deleted, drop the image
 
       // Insert the uploaded image at the placeholder's position
       view.dispatch(
         view.state.tr
-          .replaceWith(pos, pos, schema.nodes.uploadImage.create({ src: url }))
+          .replaceWith(
+            pos,
+            pos + 1,
+            schema.nodes.uploadImage.create({ src: url }),
+            paragraphNode
+          )
           .setMeta(placeholderPlugin, { remove: { id } })
       )
     },
