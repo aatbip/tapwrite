@@ -4,7 +4,6 @@ import { Decoration, DecorationSet } from '@tiptap/pm/view'
 import { mergeAttributes, Node, nodeInputRule } from '@tiptap/core'
 import { ReactNodeViewRenderer } from '@tiptap/react'
 import { ImageResizeComponent } from './ImageResizeComponent'
-
 export const inputRegex =
   /(?:^|\s)(!\[(.+|:?)]\((\S+)(?:(?:\s+)["'](\S+)["'])?\))$/
 let imagePreview: string | null = null
@@ -205,15 +204,6 @@ function startImageUpload(view: any, file: File, schema: any) {
   if (!tr.selection.empty) tr.deleteSelection()
 
   tr.setMeta(placeholderPlugin, { add: { id, pos: tr.selection.from } })
-  const nextPosition = tr.selection.from + 1
-  const { doc } = view.state
-  if (
-    nextPosition >= doc.content.size ||
-    doc.nodeAt(nextPosition)?.type.name !== 'paragraph'
-  ) {
-    // Insert a paragraph after the placeholder to allow typing
-    tr.insert(nextPosition, schema.nodes.paragraph.create())
-  }
   view.dispatch(tr)
 
   uploadFn?.(file).then(
@@ -223,7 +213,6 @@ function startImageUpload(view: any, file: File, schema: any) {
       const pos = findPlaceholder(view.state, id)
 
       if (pos == null) return
-
       // If the content around the placeholder has been deleted, drop the image
 
       // Insert the uploaded image at the placeholder's position
