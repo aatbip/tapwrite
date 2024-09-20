@@ -203,11 +203,17 @@ function startImageUpload(view: any, file: File, schema: any) {
   let tr = view.state.tr
 
   if (!tr.selection.empty) tr.deleteSelection()
-  const paragraphNode = schema.nodes.paragraph.create()
-  tr = tr.insert(tr.selection.from, paragraphNode)
 
   tr.setMeta(placeholderPlugin, { add: { id, pos: tr.selection.from } })
-
+  const nextPosition = tr.selection.from + 1
+  const { doc } = view.state
+  if (
+    nextPosition >= doc.content.size ||
+    doc.nodeAt(nextPosition)?.type.name !== 'paragraph'
+  ) {
+    // Insert a paragraph after the placeholder to allow typing
+    tr.insert(nextPosition, schema.nodes.paragraph.create())
+  }
   view.dispatch(tr)
 
   uploadFn?.(file).then(
@@ -217,18 +223,13 @@ function startImageUpload(view: any, file: File, schema: any) {
       const pos = findPlaceholder(view.state, id)
 
       if (pos == null) return
-      const paragraphNode = schema.nodes.paragraph.create()
+
       // If the content around the placeholder has been deleted, drop the image
 
       // Insert the uploaded image at the placeholder's position
       view.dispatch(
         view.state.tr
-          .replaceWith(
-            pos,
-            pos + 1,
-            schema.nodes.uploadImage.create({ src: url }),
-            paragraphNode
-          )
+          .replaceWith(pos, pos, schema.nodes.uploadImage.create({ src: url }))
           .setMeta(placeholderPlugin, { remove: { id } })
       )
     },
