@@ -1,105 +1,104 @@
-import React, { useState, useCallback } from 'react'
+import React, { useState, useCallback, useEffect, useRef } from 'react'
 import { NodeViewWrapper } from '@tiptap/react'
 import { Resize } from './resizeIcon'
 import { LoadingPlaceholder } from './loadingPlaceholder'
 
 export const ImageResizeComponent = (props: any) => {
   const [loading, setLoading] = useState(true)
+  const [aspectRatio, setAspectRatio] = useState(1)
+  const [proseMirrorContainerWidth, setProseMirrorContainerWidth] = useState(0)
+  const imageRef = useRef<HTMLImageElement | null>(null)
+
+  useEffect(() => {
+    // Setup container width on component mount
+    const proseMirrorContainerDiv = document.querySelector('.ProseMirror')
+    if (proseMirrorContainerDiv) {
+      setProseMirrorContainerWidth(proseMirrorContainerDiv.clientWidth)
+    }
+  }, [])
 
   const handleImageLoad = useCallback(() => {
     setLoading(false)
+    if (imageRef.current) {
+      const naturalWidth = imageRef.current.naturalWidth
+      const naturalHeight = imageRef.current.naturalHeight
+      setAspectRatio(naturalWidth / naturalHeight)
+    }
   }, [])
 
+  const limitMinSize = (width: number, height: number) => {
+    const minSize = 200
+    return {
+      width: Math.max(width, minSize),
+      height: Math.max(height, minSize),
+    }
+  }
+
   const startResize = useCallback(
-    (
-      startX: number,
-      startY: number,
-      image: HTMLImageElement,
-      side: 'left' | 'right'
-    ) => {
-      const startSize = { x: image.clientWidth, y: image.clientHeight }
+    (startX: number, image: HTMLImageElement, direction: 'left' | 'right') => {
+      const startWidth = image.clientWidth
 
-      const onMove = (moveX: number, moveY: number) => {
-        let newWidth = startSize.x
-        let newHeight = startSize.y
+      const updateSize = (newWidth: number) => {
+        const newHeight = newWidth / aspectRatio
+        const { width, height } = limitMinSize(newWidth, newHeight)
 
-        if (side === 'left') {
-          newWidth = startSize.x + (startX - moveX)
-        } else {
-          newWidth = startSize.x - startX + moveX
-        }
+        requestAnimationFrame(() => {
+          props.updateAttributes({ width, height })
+        })
+      }
 
-        newHeight = startSize.y - startY + moveY
+      const onPointerMove = (moveX: number) => {
+        let diffX = startX - moveX
+        if (direction === 'right') diffX = moveX - startX
 
-        // Ensure minimum size
-        newWidth = Math.max(newWidth, 200)
-        newHeight = Math.max(newHeight, 200)
-
-        // Use a timeout to debounce rapid updates
-        setTimeout(() => {
-          props.updateAttributes({
-            width: newWidth,
-            height: newHeight,
-          })
-        }, 0)
+        const newWidth = startWidth + diffX
+        updateSize(Math.min(newWidth, proseMirrorContainerWidth))
       }
 
       const stopResize = () => {
-        document.body.removeEventListener('mousemove', onMouseMove)
-        document.body.removeEventListener('mouseup', stopResize)
-        document.body.removeEventListener('touchmove', onTouchMove)
-        document.body.removeEventListener('touchend', stopResize)
+        document.removeEventListener('mousemove', onMouseMoveWrapper)
+        document.removeEventListener('mouseup', stopResize)
+        document.removeEventListener('touchmove', onTouchMoveWrapper)
+        document.removeEventListener('touchend', stopResize)
       }
 
-      const onMouseMove = (mouseMoveEvent: MouseEvent) => {
-        mouseMoveEvent.preventDefault()
-        onMove(mouseMoveEvent.pageX, mouseMoveEvent.pageY)
+      const onMouseMoveWrapper = (event: MouseEvent) => {
+        event.preventDefault()
+        onPointerMove(event.pageX)
       }
 
-      const onTouchMove = (touchMoveEvent: TouchEvent) => {
-        touchMoveEvent.preventDefault()
-        onMove(touchMoveEvent.touches[0].pageX, touchMoveEvent.touches[0].pageY)
+      const onTouchMoveWrapper = (event: TouchEvent) => {
+        event.preventDefault()
+        if (event.touches && event.touches[0]) {
+          onPointerMove(event.touches[0].pageX)
+        }
       }
 
-      document.body.addEventListener('mousemove', onMouseMove)
-      document.body.addEventListener('mouseup', stopResize)
-      document.body.addEventListener('touchmove', onTouchMove)
-      document.body.addEventListener('touchend', stopResize)
+      document.addEventListener('mousemove', onMouseMoveWrapper)
+      document.addEventListener('mouseup', stopResize)
+      document.addEventListener('touchmove', onTouchMoveWrapper)
+      document.addEventListener('touchend', stopResize)
     },
-    [props]
+    [aspectRatio, proseMirrorContainerWidth, props]
   )
 
-  const handleMouseDown = useCallback(
+  const handlePointerDown = useCallback(
     (
-      mouseDownEvent: React.MouseEvent<HTMLDivElement>,
-      side: 'left' | 'right'
+      event:
+        | React.MouseEvent<HTMLDivElement>
+        | React.TouchEvent<HTMLDivElement>,
+      direction: 'left' | 'right'
     ) => {
-      mouseDownEvent.preventDefault()
-      const parent = (mouseDownEvent.target as HTMLElement).closest(
-        '.image-resizer'
-      )
-      const image = parent?.querySelector('img.postimage') as HTMLImageElement
-      if (!image) return
+      event.preventDefault()
+      const image = imageRef.current
 
-      startResize(mouseDownEvent.pageX, mouseDownEvent.pageY, image, side)
-    },
-    [startResize]
-  )
+      // Get initial pointer X position
+      const startX =
+        event.type === 'mousedown'
+          ? (event as React.MouseEvent).pageX
+          : (event as React.TouchEvent).touches[0].pageX
 
-  const handleTouchStart = useCallback(
-    (
-      touchStartEvent: React.TouchEvent<HTMLDivElement>,
-      side: 'left' | 'right'
-    ) => {
-      touchStartEvent.preventDefault()
-      const parent = (touchStartEvent.target as HTMLElement).closest(
-        '.image-resizer'
-      )
-      const image = parent?.querySelector('img.postimage') as HTMLImageElement
-      if (!image) return
-
-      const touch = touchStartEvent.touches[0]
-      startResize(touch.pageX, touch.pageY, image, side)
+      if (image) startResize(startX, image, direction)
     },
     [startResize]
   )
@@ -117,25 +116,24 @@ export const ImageResizeComponent = (props: any) => {
       <div style={{ display: loading ? 'none' : 'block' }}>
         <div
           className='resize-trigger left'
-          onMouseDown={(e) => handleMouseDown(e, 'left')}
-          onTouchStart={(e) => handleTouchStart(e, 'left')}
+          onMouseDown={(e) => handlePointerDown(e, 'left')}
+          onTouchStart={(e) => handlePointerDown(e, 'left')}
         >
           <Resize />
         </div>
         <div
           className='resize-trigger right'
-          onMouseDown={(e) => handleMouseDown(e, 'right')}
-          onTouchStart={(e) => handleTouchStart(e, 'right')}
+          onMouseDown={(e) => handlePointerDown(e, 'right')}
+          onTouchStart={(e) => handlePointerDown(e, 'right')}
         >
           <Resize />
         </div>
-        <div>
-          <img
-            {...props.node.attrs}
-            className='postimage'
-            onLoad={handleImageLoad}
-          />
-        </div>
+        <img
+          {...props.node.attrs}
+          ref={imageRef}
+          className='postimage'
+          onLoad={handleImageLoad}
+        />
       </div>
     </NodeViewWrapper>
   )
