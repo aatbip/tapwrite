@@ -4,7 +4,7 @@ export const LoadingPlaceholder = () => {
   return (
     <div className='image-placeholder'>
       <div className='blur'>
-        <div className='w-[600px] h-[400px] bg-gray-200' />
+        <div className='w-[500px] h-[400px] bg-gray-200' />
       </div>
     </div>
   )
