@@ -58,7 +58,9 @@ export const ImageResizeComponent = (props: any) => {
       const stopResize = () => {
         document.removeEventListener('mousemove', onMouseMoveWrapper)
         document.removeEventListener('mouseup', stopResize)
-        document.removeEventListener('touchmove', onTouchMoveWrapper)
+        document.removeEventListener('touchmove', onTouchMoveWrapper, {
+          passive: false,
+        } as unknown as EventListenerOptions)
         document.removeEventListener('touchend', stopResize)
       }
 
@@ -76,7 +78,9 @@ export const ImageResizeComponent = (props: any) => {
 
       document.addEventListener('mousemove', onMouseMoveWrapper)
       document.addEventListener('mouseup', stopResize)
-      document.addEventListener('touchmove', onTouchMoveWrapper)
+      document.addEventListener('touchmove', onTouchMoveWrapper, {
+        passive: false,
+      } as unknown as EventListenerOptions)
       document.addEventListener('touchend', stopResize)
     },
     [aspectRatio, proseMirrorContainerWidth, props]
