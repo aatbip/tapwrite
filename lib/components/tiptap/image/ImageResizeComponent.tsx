@@ -10,7 +10,6 @@ export const ImageResizeComponent = (props: any) => {
   const imageRef = useRef<HTMLImageElement | null>(null)
 
   useEffect(() => {
-    // Setup container width on component mount
     const proseMirrorContainerDiv = document.querySelector('.ProseMirror')
     if (proseMirrorContainerDiv) {
       setProseMirrorContainerWidth(proseMirrorContainerDiv.clientWidth)
@@ -63,12 +62,10 @@ export const ImageResizeComponent = (props: any) => {
       }
 
       const onMouseMoveWrapper = (event: MouseEvent) => {
-        event.preventDefault()
         onPointerMove(event.pageX)
       }
 
       const onTouchMoveWrapper = (event: TouchEvent) => {
-        event.preventDefault()
         if (event.touches && event.touches[0]) {
           onPointerMove(event.touches[0].pageX)
         }
@@ -76,10 +73,8 @@ export const ImageResizeComponent = (props: any) => {
 
       document.addEventListener('mousemove', onMouseMoveWrapper)
       document.addEventListener('mouseup', stopResize)
-      document.addEventListener('touchmove', onTouchMoveWrapper, {
-        passive: false,
-      })
-      document.addEventListener('touchend', stopResize, { passive: false })
+      document.addEventListener('touchmove', onTouchMoveWrapper)
+      document.addEventListener('touchend', stopResize)
     },
     [aspectRatio, proseMirrorContainerWidth, props]
   )
