@@ -48,6 +48,7 @@
   cursor: col-resize;
   height: 20%;
   width: 8px;
+  touch-action: none;
 }
 
 .resize-trigger.left {
