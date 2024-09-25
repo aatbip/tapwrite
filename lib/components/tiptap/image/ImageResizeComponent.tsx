@@ -10,6 +10,7 @@ export const ImageResizeComponent = (props: any) => {
   const imageRef = useRef<HTMLImageElement | null>(null)
 
   useEffect(() => {
+    // Setup container width on component mount
     const proseMirrorContainerDiv = document.querySelector('.ProseMirror')
     if (proseMirrorContainerDiv) {
       setProseMirrorContainerWidth(proseMirrorContainerDiv.clientWidth)
@@ -62,6 +63,7 @@ export const ImageResizeComponent = (props: any) => {
       }
 
       const onMouseMoveWrapper = (event: MouseEvent) => {
+        event.preventDefault()
         onPointerMove(event.pageX)
       }
 
@@ -86,6 +88,8 @@ export const ImageResizeComponent = (props: any) => {
         | React.TouchEvent<HTMLDivElement>,
       direction: 'left' | 'right'
     ) => {
+      // event.preventDefault()
+
       const image = imageRef.current
 
       // Get initial pointer X position
@@ -96,6 +100,7 @@ export const ImageResizeComponent = (props: any) => {
 
       if (image) startResize(startX, image, direction)
     },
+
     [startResize]
   )
 
