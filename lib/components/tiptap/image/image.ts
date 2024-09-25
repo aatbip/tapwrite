@@ -1,6 +1,4 @@
 import { mergeAttributes, nodeInputRule } from '@tiptap/core'
-import { ReactNodeViewRenderer } from '@tiptap/react'
-import { ImageResizeComponent } from './ImageResizeComponent'
 import Image from '@tiptap/extension-image'
 
 export interface ImageOptions {
@@ -141,9 +139,6 @@ export const ImageResize = Image.extend<ImageOptions>({
     ]
   },
 
-  addNodeView() {
-    return ReactNodeViewRenderer(ImageResizeComponent)
-  },
   addInputRules() {
     return [
       nodeInputRule({

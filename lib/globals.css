@@ -31,7 +31,9 @@
   position: relative;
   flex-grow: 0;
   max-width: calc(100% - 12px);
-  border-radius: 7px;
+  justify-content: center;
+  align-items: center;
+  display: flex;
 }
 
 .resize-trigger {
@@ -349,4 +351,10 @@ table {
   display: flex;
   align-items: center;
   justify-content: center;
+}
+
+.postimage {
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
