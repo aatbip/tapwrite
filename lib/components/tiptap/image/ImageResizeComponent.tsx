@@ -1,4 +1,4 @@
-import React, { useState, useCallback, useEffect, useRef } from 'react'
+import React, { useState, useCallback, useRef } from 'react'
 import { NodeViewWrapper } from '@tiptap/react'
 import { Resizable } from 're-resizable'
 import { LoadingPlaceholder } from './loadingPlaceholder'
@@ -11,71 +11,68 @@ export const ImageResizeComponent = (props: any) => {
     height: props.node.attrs.height,
   })
   const [aspectRatio, setAspectRatio] = useState(1)
-  const [maxSize, setMaxSize] = useState({
-    maxWidth: 0,
-    maxHeight: 0,
-  })
   const imageRef = useRef<HTMLImageElement | null>(null)
 
-  useEffect(() => {
-    const proseMirrorContainerDiv = document.querySelector('.ProseMirror')
-    if (proseMirrorContainerDiv) {
-      setSize((prevSize) => ({
-        ...prevSize,
-        maxWidth: proseMirrorContainerDiv.clientWidth,
-      }))
-    }
-  }, [])
+  const [maxWidth, setMaxWidth] = useState<number>(0) // Dynamically calculate max width
+  const [maxHeight, setMaxHeight] = useState<number>(0) // Dynamically calculate max width
+
+  // Dynamically update the max width based on the container size
 
   const handleImageLoad = useCallback(() => {
     setLoading(false)
     if (imageRef.current) {
       const naturalWidth = imageRef.current.naturalWidth
       const naturalHeight = imageRef.current.naturalHeight
-      setMaxSize({
-        maxWidth: naturalWidth,
-        maxHeight: naturalHeight,
-      })
+
+      const proseMirrorContainerDiv = document.querySelector('.ProseMirror')
+      if (proseMirrorContainerDiv) {
+        setMaxWidth(proseMirrorContainerDiv.clientWidth - 20)
+        setMaxHeight(
+          (proseMirrorContainerDiv.clientWidth - 20) /
+            (naturalWidth / naturalHeight)
+        )
+      }
       setAspectRatio(naturalWidth / naturalHeight)
+
+      setSize({
+        width: naturalWidth,
+        height: naturalHeight,
+      })
     }
   }, [])
 
   const onResize = (_e: any, _direction: any, ref: any, _d: any) => {
-    const newWidth = ref.style.width
-    const newHeight = ref.style.height
+    const newWidth = parseFloat(ref.style.width)
+    const newHeight = newWidth / aspectRatio // Maintain aspect ratio
     setSize({
-      width: parseFloat(newWidth),
-      height: parseFloat(newHeight),
+      width: newWidth,
+      height: newHeight,
     })
   }
 
   const onResizeStop = (_e: any, _direction: any, ref: any, _d: any) => {
-    const newWidth = ref.style.width
-    const newHeight = ref.style.height
-    console.log(newWidth, newHeight)
+    const newWidth = parseFloat(ref.style.width)
+    const newHeight = newWidth / aspectRatio
     props.updateAttributes({
-      width: parseFloat(newWidth),
-      height: parseFloat(newHeight),
+      width: newWidth,
+      height: newHeight,
     })
   }
-
   return (
-    <NodeViewWrapper
-      className='image-resizer'
-      style={{
-        outline: props.selected ? '3px solid #0C41BB' : 'none',
-        borderRadius: '5px',
-      }}
-    >
+    <NodeViewWrapper className='image-resizer'>
       {loading && <LoadingPlaceholder />}
       <div style={{ display: loading ? 'none' : 'block' }}>
         <Resizable
           size={size}
           onResize={onResize}
+          style={{
+            outline: props.selected ? '3px solid #0C41BB' : 'none',
+            borderRadius: '5px',
+          }}
           onResizeStop={onResizeStop}
           lockAspectRatio={aspectRatio}
-          maxWidth={maxSize.maxWidth}
-          maxHeight={maxSize.maxHeight}
+          maxWidth={maxWidth}
+          maxHeight={maxHeight}
           enable={{
             top: false,
             right: true,
