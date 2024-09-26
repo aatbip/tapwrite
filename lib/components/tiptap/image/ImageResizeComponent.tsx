@@ -68,6 +68,8 @@ export const ImageResizeComponent = (props: any) => {
           style={{
             outline: props.selected ? '3px solid #0C41BB' : 'none',
             borderRadius: '5px',
+            width: props.node.attrs.width,
+            height: props.node.attrs.height,
           }}
           onResizeStop={onResizeStop}
           lockAspectRatio={aspectRatio}
@@ -109,7 +111,7 @@ export const ImageResizeComponent = (props: any) => {
             onLoad={handleImageLoad}
             style={{
               width: '100%',
-              height: '100%',
+              height: 'auto',
               objectFit: 'contain',
               borderRadius: '5px',
             }}
