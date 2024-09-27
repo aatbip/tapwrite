@@ -5,6 +5,8 @@ import { LoadingPlaceholder } from './loadingPlaceholder'
 import { Resize } from './resizeIcon'
 
 export const ImageResizeComponent = (props: any) => {
+  const { editor } = props
+  const editable = editor.isEditable
   const [loading, setLoading] = useState(true)
   const [size, setSize] = useState({
     width: props.node.attrs.width,
@@ -75,18 +77,22 @@ export const ImageResizeComponent = (props: any) => {
           lockAspectRatio={aspectRatio}
           maxWidth={maxWidth}
           maxHeight={maxHeight}
-          enable={{
-            top: false,
-            right: true,
-            bottom: false,
-            left: true,
-            topRight: false,
-            bottomRight: false,
-            bottomLeft: false,
-            topLeft: false,
-          }}
+          enable={
+            editable
+              ? {
+                  top: false,
+                  right: true,
+                  bottom: false,
+                  left: true,
+                  topRight: false,
+                  bottomRight: false,
+                  bottomLeft: false,
+                  topLeft: false,
+                }
+              : false
+          }
           handleComponent={{
-            left: (
+            left: editable && (
               <div
                 className='resize-trigger left'
                 style={{ cursor: 'ew-resize', width: '10px', height: '25%' }}
@@ -94,7 +100,7 @@ export const ImageResizeComponent = (props: any) => {
                 <Resize />
               </div>
             ),
-            right: (
+            right: editable && (
               <div
                 className='resize-trigger right'
                 style={{ cursor: 'ew-resize', width: '10px', height: '25%' }}
