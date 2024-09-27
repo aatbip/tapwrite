@@ -67,6 +67,7 @@ export const ImageResizeComponent = (props: any) => {
       {loading && <LoadingPlaceholder />}
       <div style={{ display: loading ? 'none' : 'block' }}>
         <Resizable
+          size={size}
           onResize={onResize}
           style={{
             outline: props.selected ? '3px solid #0C41BB' : 'none',
@@ -117,8 +118,8 @@ export const ImageResizeComponent = (props: any) => {
             className='postimage'
             onLoad={handleImageLoad}
             style={{
-              width: size.width,
-              height: size.height,
+              width: '100%',
+              height: '100%',
               objectFit: 'contain',
               borderRadius: '5px',
             }}
