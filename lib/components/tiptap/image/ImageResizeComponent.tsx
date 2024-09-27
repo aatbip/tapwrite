@@ -1,4 +1,4 @@
-import React, { useState, useCallback, useRef } from 'react'
+import React, { useState, useCallback, useRef, useEffect } from 'react'
 import { NodeViewWrapper } from '@tiptap/react'
 import { Resizable } from 're-resizable'
 import { LoadingPlaceholder } from './loadingPlaceholder'
@@ -35,13 +35,15 @@ export const ImageResizeComponent = (props: any) => {
         )
       }
       setAspectRatio(naturalWidth / naturalHeight)
-
-      setSize({
-        width: naturalWidth,
-        height: naturalHeight,
-      })
     }
   }, [])
+
+  useEffect(() => {
+    setSize({
+      width: props.node.attrs.width,
+      height: props.node.attrs.height,
+    })
+  }, [props.node.attrs.width, props.node.attrs.height])
 
   const onResize = (_e: any, _direction: any, ref: any, _d: any) => {
     const newWidth = parseFloat(ref.style.width)
@@ -65,7 +67,6 @@ export const ImageResizeComponent = (props: any) => {
       {loading && <LoadingPlaceholder />}
       <div style={{ display: loading ? 'none' : 'block' }}>
         <Resizable
-          size={size}
           onResize={onResize}
           style={{
             outline: props.selected ? '3px solid #0C41BB' : 'none',
@@ -116,8 +117,8 @@ export const ImageResizeComponent = (props: any) => {
             className='postimage'
             onLoad={handleImageLoad}
             style={{
-              width: '100%',
-              height: 'auto',
+              width: size.width,
+              height: size.height,
               objectFit: 'contain',
               borderRadius: '5px',
             }}

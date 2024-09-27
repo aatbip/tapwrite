@@ -1,14 +1,18 @@
-import React from 'react'
+import React, { useState } from 'react'
 import ReactDOM from 'react-dom/client'
 import { Tapwrite } from '../lib/main.tsx'
 import { ImagePickerUtils } from '../lib/utils/imagePickerUtils.ts'
 
-ReactDOM.createRoot(document.getElementById('root')!).render(
-  <React.StrictMode>
+const App = () => {
+  const [content, setContent] = useState<string>(
+    '<p> ashdkasd </p> <img src = "https://picsum.photos/200/300" width="75" height="112" /> <p> hello </p>'
+  )
+
+  return (
     <div style={{ padding: '1.5em' }}>
       <Tapwrite
         uploadFn={async (file) => {
-          // Simulate an async operation with a 5-second delay
+          // Simulate an async operation with a 2-second delay
           const simulateDelay = () =>
             new Promise<string>((resolve) => {
               setTimeout(() => {
@@ -19,12 +23,19 @@ ReactDOM.createRoot(document.getElementById('root')!).render(
           const url = await simulateDelay()
           return url || ''
         }}
-        content='<p> ashdkasd </p> <img src = "https://picsum.photos/200/300" /> <p> hello </p>'
-        getContent={(content) => {
-          console.log(content)
+        content={content}
+        getContent={(newContent) => {
+          setContent(newContent) // Update the state with the new content
+          console.log(newContent) // Log the updated content
         }}
         editorClass=''
       />
     </div>
+  )
+}
+
+ReactDOM.createRoot(document.getElementById('root')!).render(
+  <React.StrictMode>
+    <App />
   </React.StrictMode>
 )
