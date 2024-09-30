@@ -27,9 +27,13 @@ export const ImageResizeComponent = (props: any) => {
       const naturalHeight = imageRef.current.naturalHeight
       const proseMirrorContainerDiv = document.querySelector('.ProseMirror')
       if (proseMirrorContainerDiv) {
-        setMaxWidth(proseMirrorContainerDiv.clientWidth - 20)
+        setMaxWidth(
+          proseMirrorContainerDiv.clientWidth -
+            0.012 * proseMirrorContainerDiv.clientWidth
+        )
         setMaxHeight(
-          (proseMirrorContainerDiv.clientWidth - 20) /
+          (proseMirrorContainerDiv.clientWidth -
+            0.012 * proseMirrorContainerDiv.clientWidth) /
             (naturalWidth / naturalHeight)
         )
       }
