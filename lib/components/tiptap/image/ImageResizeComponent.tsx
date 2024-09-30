@@ -136,14 +136,7 @@ export const ImageResizeComponent = (props: any) => {
             {...props.node.attrs}
             ref={imageRef}
             className='postimage'
-            onLoad={() => {
-              handleImageLoad()
-              imageRef.current &&
-                setSize({
-                  width: imageRef.current.naturalWidth,
-                  height: imageRef.current.naturalHeight,
-                })
-            }}
+            onLoad={handleImageLoad}
             style={{
               width: '100%',
               height: '100%',
