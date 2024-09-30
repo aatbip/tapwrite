@@ -62,9 +62,15 @@ export const ImageResizeComponent = (props: any) => {
       height: newHeight,
     })
   }
+
   return (
     <NodeViewWrapper className='image-resizer'>
-      {loading && <LoadingPlaceholder />}
+      {loading && (
+        <LoadingPlaceholder
+          width={props.node.attrs.width as number}
+          height={props.node.attrs.height as number}
+        />
+      )}
       <div style={{ display: loading ? 'none' : 'block' }}>
         <Resizable
           size={size}
