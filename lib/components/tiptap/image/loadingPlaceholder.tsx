@@ -12,7 +12,10 @@ export const LoadingPlaceholder = ({
       <div className='blur'>
         <div
           className='bg-gray-200'
-          style={{ width: `${width}px`, height: `${height}px` }}
+          style={{
+            width: typeof width === 'number' ? `${width}px` : '300px',
+            height: typeof height === 'number' ? `${height}px` : '200px',
+          }}
         />
       </div>
     </div>

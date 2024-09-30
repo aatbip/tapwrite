@@ -25,7 +25,6 @@ export const ImageResizeComponent = (props: any) => {
     if (imageRef.current) {
       const naturalWidth = imageRef.current.naturalWidth
       const naturalHeight = imageRef.current.naturalHeight
-
       const proseMirrorContainerDiv = document.querySelector('.ProseMirror')
       if (proseMirrorContainerDiv) {
         setMaxWidth(proseMirrorContainerDiv.clientWidth - 20)
@@ -37,6 +36,17 @@ export const ImageResizeComponent = (props: any) => {
       setAspectRatio(naturalWidth / naturalHeight)
     }
   }, [])
+
+  const handleResize = useCallback(() => {
+    handleImageLoad()
+  }, [handleImageLoad])
+
+  useEffect(() => {
+    window.addEventListener('resize', handleResize)
+    return () => {
+      window.removeEventListener('resize', handleResize)
+    }
+  }, [handleResize])
 
   useEffect(() => {
     setSize({
@@ -122,7 +132,14 @@ export const ImageResizeComponent = (props: any) => {
             {...props.node.attrs}
             ref={imageRef}
             className='postimage'
-            onLoad={handleImageLoad}
+            onLoad={() => {
+              handleImageLoad()
+              imageRef.current &&
+                setSize({
+                  width: imageRef.current.naturalWidth,
+                  height: imageRef.current.naturalHeight,
+                })
+            }}
             style={{
               width: '100%',
               height: '100%',

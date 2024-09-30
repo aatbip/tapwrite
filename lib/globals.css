@@ -27,10 +27,9 @@
 }
 
 .image-resizer {
-  display: inline-flex;
   position: relative;
   flex-grow: 0;
-  max-width: calc(100% - 12px);
+  max-width: calc(100%);
   justify-content: center;
   align-items: center;
   display: flex;
@@ -269,10 +268,9 @@ table {
 }
 
 .react-renderer.node-uploadImage {
-  padding: 10px 0px 10px 0px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
+  padding: 10px 0px;
+  display: block;
+  margin-left: 0;
 }
 
 .image-uploading {
