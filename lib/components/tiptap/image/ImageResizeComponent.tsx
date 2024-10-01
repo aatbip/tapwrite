@@ -26,6 +26,8 @@ export const ImageResizeComponent = (props: any) => {
       const naturalWidth = imageRef.current.naturalWidth
       const naturalHeight = imageRef.current.naturalHeight
       const proseMirrorContainerDiv = document.querySelector('.ProseMirror')
+
+      console.log('maxwidth here', proseMirrorContainerDiv?.clientWidth)
       if (proseMirrorContainerDiv) {
         setMaxWidth(
           proseMirrorContainerDiv.clientWidth -
@@ -36,6 +38,17 @@ export const ImageResizeComponent = (props: any) => {
             0.012 * proseMirrorContainerDiv.clientWidth) /
             (naturalWidth / naturalHeight)
         )
+
+        if (typeof (props.node.attrs.width as number) !== 'number') {
+          props.updateAttributes({
+            width: naturalWidth,
+          })
+        }
+        if (typeof (props.node.attrs.height as number) !== 'number') {
+          props.updateAttributes({
+            height: naturalHeight,
+          })
+        }
       }
       setAspectRatio(naturalWidth / naturalHeight)
     }

@@ -5,7 +5,7 @@ import { ImagePickerUtils } from '../lib/utils/imagePickerUtils.ts'
 
 const App = () => {
   const [content, setContent] = useState<string>(
-    '<p> ashdkasd </p> <img src = "https://picsum.photos/200/300" width="75" height="112" /> <p> hello </p>'
+    '<p> ashdkasd </p> <img src = "https://picsum.photos/200/300" width="100%" height="auto" /> <p> hello </p>'
   )
 
   return (
@@ -25,8 +25,8 @@ const App = () => {
         }}
         content={content}
         getContent={(newContent) => {
-          setContent(newContent) // Update the state with the new content
-          console.log(newContent) // Log the updated content
+          setContent(newContent)
+          console.log(newContent)
         }}
         editorClass=''
       />
