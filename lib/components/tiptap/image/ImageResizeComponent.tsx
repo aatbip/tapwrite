@@ -29,21 +29,21 @@ export const ImageResizeComponent = (props: any) => {
       if (proseMirrorContainerDiv) {
         setMaxWidth(
           proseMirrorContainerDiv.clientWidth -
-            0.012 * proseMirrorContainerDiv.clientWidth
+            0.015 * proseMirrorContainerDiv.clientWidth
         )
 
         setMaxHeight(
           (proseMirrorContainerDiv.clientWidth -
-            0.012 * proseMirrorContainerDiv.clientWidth) /
+            0.015 * proseMirrorContainerDiv.clientWidth) /
             (naturalWidth / naturalHeight)
         )
 
-        if (typeof (props.node.attrs.width as number) !== 'number') {
+        if (typeof props.node.attrs.width !== 'number') {
           props.updateAttributes({
             width: naturalWidth,
           })
         }
-        if (typeof (props.node.attrs.height as number) !== 'number') {
+        if (typeof props.node.attrs.height !== 'number') {
           props.updateAttributes({
             height: naturalHeight,
           })
@@ -73,7 +73,7 @@ export const ImageResizeComponent = (props: any) => {
 
   const onResize = (_e: any, _direction: any, ref: any, _d: any) => {
     const newWidth = parseFloat(ref.style.width)
-    const newHeight = newWidth / aspectRatio // Maintain aspect ratio
+    const newHeight = newWidth / aspectRatio
     setSize({
       width: newWidth,
       height: newHeight,
@@ -83,9 +83,13 @@ export const ImageResizeComponent = (props: any) => {
   const onResizeStop = (_e: any, _direction: any, ref: any, _d: any) => {
     const newWidth = parseFloat(ref.style.width)
     const newHeight = newWidth / aspectRatio
+
+    const widthDiff = newWidth > maxWidth ? newWidth - maxWidth : 0
+    const heightDiff = newHeight > maxHeight ? newHeight - maxHeight : 0
+
     props.updateAttributes({
-      width: newWidth,
-      height: newHeight,
+      width: widthDiff > 0 ? 650 : newWidth,
+      height: heightDiff > 0 ? 650 / aspectRatio : newHeight,
     })
   }
 
