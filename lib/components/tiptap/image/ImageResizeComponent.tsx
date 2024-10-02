@@ -92,9 +92,9 @@ export const ImageResizeComponent = (props: any) => {
     const newWidth = parseFloat(ref.style.width)
     const newHeight = newWidth / aspectRatio
 
-    const widthDiff = newWidth >= maxWidth - 5 ? newWidth - maxWidth : 0
-    const heightDiff = newHeight >= maxHeight - 5 ? newHeight - maxHeight : 0
-    console.log('here', widthDiff, heightDiff)
+    const widthDiff = newWidth >= maxWidth - 5 ? newWidth - (maxWidth - 5) : 0
+    const heightDiff =
+      newHeight >= maxHeight - 5 ? newHeight - (maxHeight - 5) : 0
     props.updateAttributes({
       width: widthDiff > 0 ? 650 : newWidth,
       height: heightDiff > 0 ? 650 / aspectRatio : newHeight,
