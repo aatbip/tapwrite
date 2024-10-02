@@ -1,5 +1,5 @@
 /* eslint-disable */
-import { Plugin, Transaction } from '@tiptap/pm/state'
+import { Plugin, TextSelection, Transaction } from '@tiptap/pm/state'
 import { Decoration, DecorationSet } from '@tiptap/pm/view'
 import { mergeAttributes, Node, nodeInputRule } from '@tiptap/core'
 import { ReactNodeViewRenderer } from '@tiptap/react'
@@ -206,6 +206,10 @@ function startImageUpload(view: any, file: File, schema: any) {
   tr = tr.insert(tr.selection.from, paragraphNode)
 
   tr.setMeta(placeholderPlugin, { add: { id, pos: tr.selection.from } })
+  tr = tr.setSelection(
+    TextSelection.near(tr.doc.resolve(tr.selection.from + 1))
+  )
+
   view.dispatch(tr)
 
   uploadFn?.(file).then(
