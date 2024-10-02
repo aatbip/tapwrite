@@ -7,11 +7,11 @@ import { ImageResizeComponent } from './ImageResizeComponent'
 export const inputRegex =
   /(?:^|\s)(!\[(.+|:?)]\((\S+)(?:(?:\s+)["'](\S+)["'])?\))$/
 let imagePreview: string | null = null
-let uploadFn: ((file: File) => Promise<string>) | null = null
+let uploadFn: ((file: File) => Promise<string | undefined>) | null = null
 interface UploadImageOptions {
   inline: boolean
   HTMLAttributes: Record<string, any>
-  uploadFn: ((file: File) => Promise<string>) | null
+  uploadFn: ((file: File) => Promise<string | undefined>) | null
   deleteImage?: (id: string) => Promise<void>
 }
 export const UploadImage = Node.create<UploadImageOptions>({
@@ -224,38 +224,40 @@ function startImageUpload(view: any, file: File, schema: any) {
     }
   }, 0)
   uploadFn?.(file).then(
-    async (url: string) => {
-      await loadImageInBackground(url)
+    async (url: string | undefined) => {
+      if (url) {
+        await loadImageInBackground(url)
 
-      const pos = findPlaceholder(view.state, id)
+        const pos = findPlaceholder(view.state, id)
 
-      if (pos == null) return
-      const paragraphNode = schema.nodes.paragraph.create()
-      // If the content around the placeholder has been deleted, drop the image
+        if (pos == null) return
+        const paragraphNode = schema.nodes.paragraph.create()
+        // If the content around the placeholder has been deleted, drop the image
 
-      // Insert the uploaded image at the placeholder's position
-      view.dispatch(
-        view.state.tr
-          .replaceWith(
-            pos,
-            pos + 1,
-            schema.nodes.uploadImage.create({ src: url }),
-            paragraphNode
-          )
-          .setMeta(placeholderPlugin, { remove: { id } })
-      )
+        // Insert the uploaded image at the placeholder's position
+        view.dispatch(
+          view.state.tr
+            .replaceWith(
+              pos,
+              pos + 1,
+              schema.nodes.uploadImage.create({ src: url }),
+              paragraphNode
+            )
+            .setMeta(placeholderPlugin, { remove: { id } })
+        )
 
-      //logic to scroll back to the latest node below the images
-      setTimeout(() => {
-        const { node } = view.domAtPos(view.state.selection.anchor)
-        if (node) {
-          ;(node as HTMLElement).scrollIntoView({
-            behavior: 'smooth',
-            block: 'nearest',
-            inline: 'start',
-          })
-        }
-      }, 0)
+        //logic to scroll back to the latest node below the images
+        setTimeout(() => {
+          const { node } = view.domAtPos(view.state.selection.anchor)
+          if (node) {
+            ;(node as HTMLElement).scrollIntoView({
+              behavior: 'smooth',
+              block: 'nearest',
+              inline: 'start',
+            })
+          }
+        }, 0)
+      }
     },
     () => {
       // On failure, clean up the placeholder

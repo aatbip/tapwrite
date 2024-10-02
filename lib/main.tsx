@@ -5,7 +5,7 @@ import { AppContextProvider } from './context'
 import { TiptapEditorUtils } from './utils/tiptapEditorUtils'
 
 export interface NotionLikeProps {
-  uploadFn?: (file: File) => Promise<string>
+  uploadFn?: (file: File) => Promise<string | undefined>
   getContent: (content: string) => void
   content: string
   readonly?: boolean

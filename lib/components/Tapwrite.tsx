@@ -143,7 +143,7 @@ export const Editor = ({
       UploadImage.configure({
         uploadFn: async (file: File) => {
           const url = uploadFn && (await uploadFn(file))
-          return url ?? ''
+          return url
         },
         deleteImage: deleteEditorAttachments && deleteEditorAttachments,
       }),
