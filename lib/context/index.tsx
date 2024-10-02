@@ -1,18 +1,24 @@
 import * as React from 'react'
 import { Editor } from '@tiptap/react'
 import { FC, ReactNode, useState, createContext } from 'react'
-import { TiptapEditorUtils } from '../utils/tiptapEditorUtils';
+import { TiptapEditorUtils } from '../utils/tiptapEditorUtils'
 
 export interface IAppState {
   editor: Editor | null
-  uploadFn: ((file: File, tiptapEditorUtils: TiptapEditorUtils) => void) | undefined;
+  uploadFn:
+    | ((file: File, tiptapEditorUtils: TiptapEditorUtils) => void)
+    | undefined
 }
 
 export interface IAppContext {
   editor: Editor | null
-  uploadFn: ((file: File, tiptapEditorUtils: TiptapEditorUtils) => void) | undefined;
+  uploadFn:
+    | ((file: File, tiptapEditorUtils: TiptapEditorUtils) => void)
+    | undefined
   setEditor: (editor: Editor | null) => void
-  setUploadFn: (uploadFn: (file: File, tiptapEditorUtils: TiptapEditorUtils) => void) => void
+  setUploadFn: (
+    uploadFn: (file: File, tiptapEditorUtils: TiptapEditorUtils) => void
+  ) => void
 }
 
 interface IAppCoreProvider {
@@ -24,14 +30,16 @@ export const AppContext = createContext<IAppContext | null>(null)
 export const AppContextProvider: FC<IAppCoreProvider> = ({ children }) => {
   const [state, setState] = useState<IAppState>({
     editor: null,
-    uploadFn: undefined
+    uploadFn: undefined,
   })
 
   const setEditor = (editor: Editor | null) => {
     setState((prev) => ({ ...prev, editor: editor }))
   }
 
-  const setUploadFn = (uploadFn: (file: File, tiptapEditorUtils: TiptapEditorUtils) => void) => {
+  const setUploadFn = (
+    uploadFn: (file: File, tiptapEditorUtils: TiptapEditorUtils) => void
+  ) => {
     setState((prev) => ({ ...prev, uploadFn }))
   }
 
@@ -41,11 +49,10 @@ export const AppContextProvider: FC<IAppCoreProvider> = ({ children }) => {
         editor: state.editor,
         uploadFn: state.uploadFn,
         setEditor,
-        setUploadFn
+        setUploadFn,
       }}
     >
       {children}
     </AppContext.Provider>
   )
 }
-

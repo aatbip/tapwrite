@@ -2,7 +2,6 @@
 @tailwind components;
 @tailwind utilities;
 
-
 .editable .pill-extension {
   display: inline-flex;
   flex-wrap: wrap;
@@ -17,13 +16,6 @@
   padding: 0.125rem 0.5rem;
 }
 
-.image-resizer {
-  display: inline-flex;
-  position: relative;
-  flex-grow: 0;
-  max-width: calc(100% - 12px);
-}
-
 .embed {
   display: inline-flex;
   position: relative;
@@ -34,15 +26,38 @@
   opacity: 1;
 }
 
+.image-resizer {
+  position: relative;
+  flex-grow: 0;
+  max-width: calc(100%);
+  justify-content: center;
+  align-items: center;
+  display: flex;
+}
+
 .resize-trigger {
   position: absolute;
-  right: -10px;
+  top: 50%;
+  transform: translateY(-50%);
   opacity: 0;
+  z-index: 999999;
   transition: opacity 0.3s ease;
-  color: #3259a5;
+  border-radius: 20px;
+  box-sizing: border-box;
   cursor: col-resize;
-  height: 100%;
+  height: 20%;
+  width: 8px;
+  touch-action: none;
 }
+
+.resize-trigger.left {
+  left: 6px;
+}
+
+.resize-trigger.right {
+  right: 6px;
+}
+
 .image-resizer:hover .resize-trigger {
   opacity: 1;
 }
@@ -55,35 +70,35 @@
 }
 
 .tiptap h1 {
-font-size: 16px !important;
-font-style: normal !important;
-font-weight: 500 !important;
-line-height: 24px !important;
+  font-size: 16px !important;
+  font-style: normal !important;
+  font-weight: 500 !important;
+  line-height: 24px !important;
   color: #212b36 !important;
 }
 
 .tiptap h2 {
   font-size: 14px !important;
-font-style: normal !important;
-font-weight: 500 !important;
-line-height: 22px !important;
+  font-style: normal !important;
+  font-weight: 500 !important;
+  line-height: 22px !important;
   color: #212b36 !important;
 }
 
 .tiptap h3 {
   font-size: 13px !important;
-font-style: normal !important;
-font-weight: 500 !important;
-line-height: 21px !important;
+  font-style: normal !important;
+  font-weight: 500 !important;
+  line-height: 21px !important;
   color: #212b36 !important;
 }
 
 .tiptap p {
   font-size: 14px !important;
-font-style: normal !important;
-font-weight: 400 !important;
-line-height: 22px !important; 
-  color: #6B6F76 !important;
+  font-style: normal !important;
+  font-weight: 400 !important;
+  line-height: 22px !important;
+  color: #6b6f76 !important;
 }
 
 .tiptap a {
@@ -94,11 +109,11 @@ line-height: 22px !important;
 .tiptap ul,
 .tiptap ol {
   padding: 0 2.5rem;
-  color: #6B6F76;
+  color: #6b6f76;
   font-size: 14px;
-font-style: normal;
-font-weight: 400;
-line-height: 22px;
+  font-style: normal;
+  font-weight: 400;
+  line-height: 22px;
 }
 
 td,
@@ -147,7 +162,7 @@ table {
   outline: none;
 }
 
-[contenteditable="false"]:focus {
+[contenteditable='false']:focus {
   outline: none;
 }
 
@@ -250,4 +265,95 @@ table {
     padding: 0.1rem 0.3rem;
     font-weight: 500;
   }
+}
+
+.react-renderer.node-uploadImage {
+  padding: 10px 0px;
+  display: block;
+  margin-left: 0;
+}
+
+.image-uploading {
+  position: relative;
+  display: flex;
+  padding: 10px 0px 10px 0px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.image-uploading img {
+  filter: blur(5px);
+  opacity: 0.3;
+  padding: 10px 0px 10px 0px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.image-uploading::before {
+  content: '';
+  box-sizing: border-box;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 30px;
+  height: 30px;
+  margin-top: -15px;
+  margin-left: -15px;
+  border-radius: 50%;
+  border: 3px solid #ccc;
+  border-top-color: #1e986c;
+  z-index: 1;
+  animation: spinner 0.6s linear infinite;
+  padding: 10px 0px 10px 0px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+@keyframes spinner {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.image-placeholder {
+  position: relative;
+  display: flex;
+  flex-grow: 1;
+  align-items: center;
+  justify-content: center;
+
+  object-fit: cover;
+}
+.blur {
+  filter: blur(5px);
+}
+
+.image-placeholder::before {
+  content: '';
+  box-sizing: border-box;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 30px;
+  height: 30px;
+  margin-top: -15px;
+  margin-left: -15px;
+  border-radius: 50%;
+  border: 3px solid #ccc;
+  border-top-color: #1e986c;
+  z-index: 1;
+  animation: spinner 0.6s linear infinite;
+  padding: 10px 0px 10px 0px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.postimage {
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
