@@ -12,15 +12,16 @@ const App = () => {
     <div style={{ padding: '1.5em' }}>
       <Tapwrite
         uploadFn={async (file) => {
-          // Simulate an async operation with a 2-second delay
+          const imgUtil = new ImagePickerUtils()
+          const url = await imgUtil.imageUrl(file)
+
           const simulateDelay = () =>
             new Promise<string>((resolve) => {
               setTimeout(() => {
                 resolve('https://picsum.photos/600/400')
               }, 2000)
             })
-
-          const url = await simulateDelay()
+          await simulateDelay()
           return url || ''
         }}
         content={content}

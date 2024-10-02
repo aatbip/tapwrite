@@ -48,6 +48,15 @@ export const ImageResizeComponent = (props: any) => {
             height: naturalHeight,
           })
         }
+        console.log(props.node.attrs.width, props.node.height)
+        if (naturalWidth < 40) {
+          props.updateAttributes({
+            width: 40,
+          })
+          props.updateAttributes({
+            height: 40 / aspectRatio,
+          })
+        }
       }
       setAspectRatio(naturalWidth / naturalHeight)
     }
@@ -115,6 +124,8 @@ export const ImageResizeComponent = (props: any) => {
           lockAspectRatio={aspectRatio}
           maxWidth={maxWidth}
           maxHeight={maxHeight}
+          minHeight={40}
+          minWidth={40}
           enable={
             editable
               ? {
