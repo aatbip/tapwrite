@@ -48,7 +48,6 @@ export const ImageResizeComponent = (props: any) => {
             height: naturalHeight,
           })
         }
-        console.log(props.node.attrs.width, props.node.height)
         if (naturalWidth < 40) {
           props.updateAttributes({
             width: 40,
@@ -93,9 +92,9 @@ export const ImageResizeComponent = (props: any) => {
     const newWidth = parseFloat(ref.style.width)
     const newHeight = newWidth / aspectRatio
 
-    const widthDiff = newWidth > maxWidth ? newWidth - maxWidth : 0
-    const heightDiff = newHeight > maxHeight ? newHeight - maxHeight : 0
-
+    const widthDiff = newWidth >= maxWidth - 5 ? newWidth - maxWidth : 0
+    const heightDiff = newHeight >= maxHeight - 5 ? newHeight - maxHeight : 0
+    console.log('here', widthDiff, heightDiff)
     props.updateAttributes({
       width: widthDiff > 0 ? 650 : newWidth,
       height: heightDiff > 0 ? 650 / aspectRatio : newHeight,
