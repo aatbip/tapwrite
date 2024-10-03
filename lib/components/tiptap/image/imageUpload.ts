@@ -212,17 +212,6 @@ function startImageUpload(view: any, file: File, schema: any) {
 
   view.dispatch(tr)
 
-  //logic to scroll back to the latest node below the images' placeholder
-  setTimeout(() => {
-    const { node } = view.domAtPos(view.state.selection.anchor)
-    if (node) {
-      ;(node as HTMLElement).scrollIntoView({
-        behavior: 'smooth', // Smooth scrolling for better UX
-        block: 'nearest', // Scroll to the nearest position
-        inline: 'start',
-      })
-    }
-  }, 0)
   uploadFn?.(file).then(
     async (url: string | undefined) => {
       if (url) {
@@ -245,18 +234,6 @@ function startImageUpload(view: any, file: File, schema: any) {
             )
             .setMeta(placeholderPlugin, { remove: { id } })
         )
-
-        //logic to scroll back to the latest node below the images
-        setTimeout(() => {
-          const { node } = view.domAtPos(view.state.selection.anchor)
-          if (node) {
-            ;(node as HTMLElement).scrollIntoView({
-              behavior: 'smooth',
-              block: 'nearest',
-              inline: 'start',
-            })
-          }
-        }, 0)
       }
     },
     () => {
