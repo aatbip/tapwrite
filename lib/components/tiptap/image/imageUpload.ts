@@ -179,19 +179,12 @@ export const UploadImage = Node.create<UploadImageOptions>({
 
               const file = images[0]
 
-              const coordinates = view.posAtCoords({
-                left: event.clientX,
-                top: event.clientY,
-              })
+              const tr = view.state.tr.setSelection(
+                TextSelection.create(view.state.doc, view.state.selection.from)
+              )
+              view.dispatch(tr)
 
-              if (coordinates) {
-                const tr = view.state.tr.setSelection(
-                  TextSelection.create(view.state.doc, coordinates.pos)
-                )
-                view.dispatch(tr)
-              }
-
-              startImageUpload(view, file, schema, true)
+              file && startImageUpload(view, file, schema, true)
 
               return true
             },
