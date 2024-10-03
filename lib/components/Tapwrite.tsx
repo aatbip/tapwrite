@@ -38,6 +38,7 @@ import { useAppState } from '../context/useAppState'
 import { NotionLikeProps } from '../main'
 import { UploadImage } from './tiptap/image/imageUpload'
 import { ImageResize } from './tiptap/image/image'
+import { EditorState } from '@tiptap/pm/state'
 // import suggestion from "../components/tiptap/mention/suggestion.ts";
 // import { MentionStorage } from "./tiptap/mention/MentionStorage.extension.ts";
 // mention turned off for now
@@ -191,9 +192,27 @@ export const Editor = ({
 
   useEffect(() => {
     if (editor && content !== editor.getHTML()) {
-      editor.commands.setContent(content)
+      editor.commands.setContent(content);
+
+      setTimeout(() => {
+        const { state, view } = editor;
+
+        // Create a new EditorState without undo/redo history
+        // This is necessary because a history is set after setContent command is run. So when cmd+z is operated, 
+        // it ends up in an empty state.
+        const newState = EditorState.create({
+          doc: state.doc,
+          plugins: state.plugins,  // Preserve the plugins
+        });
+
+        // Replace the editor state with the new state (without history)
+        view.updateState(newState);
+      }, 0);
+
     }
-  }, [content, editor])
+  }, [content, editor]);
+
+
 
   const appState = useAppState()
 
@@ -206,16 +225,6 @@ export const Editor = ({
 
       if (readonly) {
         editor.setEditable(false)
-      }
-      const handleKeyDown = (event: KeyboardEvent) => {
-        if (event.metaKey && event.key === 'z') {
-          event.preventDefault() // Prevent the default behavior of Cmd+Z (e.g., browser undo)
-          editor.chain().focus().undo().run() // Perform undo operation
-        }
-      }
-      document.addEventListener('keydown', handleKeyDown)
-      return () => {
-        document.removeEventListener('keydown', handleKeyDown)
       }
     }
   }, [editor, readonly])
