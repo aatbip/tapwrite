@@ -198,6 +198,8 @@ export const Editor = ({
         const { state, view } = editor;
 
         // Create a new EditorState without undo/redo history
+        // This is necessary because a history is set after setContent command is run. So when cmd+z is operated, 
+        // it ends up in an empty state.
         const newState = EditorState.create({
           doc: state.doc,
           plugins: state.plugins,  // Preserve the plugins
@@ -224,16 +226,6 @@ export const Editor = ({
       if (readonly) {
         editor.setEditable(false)
       }
-      // const handleKeyDown = (event: KeyboardEvent) => {
-      //   if (event.metaKey && event.key === 'z') {
-      //     event.preventDefault() // Prevent the default behavior of Cmd+Z (e.g., browser undo)
-      //     editor.chain().focus().undo().run() // Perform undo operation
-      //   }
-      // }
-      // document.addEventListener('keydown', handleKeyDown)
-      // return () => {
-      //   document.removeEventListener('keydown', handleKeyDown)
-      // }
     }
   }, [editor, readonly])
 
