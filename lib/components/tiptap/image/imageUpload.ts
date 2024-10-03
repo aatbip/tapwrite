@@ -150,7 +150,85 @@ export const UploadImage = Node.create<UploadImageOptions>({
     ]
   },
   addProseMirrorPlugins() {
-    return [placeholderPlugin]
+    return [
+      placeholderPlugin,
+      new Plugin({
+        props: {
+          handleDOMEvents: {
+            drop: (view, event) => {
+              const hasFiles =
+                event.dataTransfer &&
+                event.dataTransfer.files &&
+                event.dataTransfer.files.length > 0
+
+              if (!hasFiles) {
+                return false
+              }
+
+              event.preventDefault()
+
+              const images = Array.from(event.dataTransfer.files).filter(
+                (file) => /image/i.test(file.type)
+              )
+
+              if (images.length === 0) {
+                return false
+              }
+
+              const { schema } = view.state
+
+              const file = images[0]
+
+              const coordinates = view.posAtCoords({
+                left: event.clientX,
+                top: event.clientY,
+              })
+
+              if (coordinates) {
+                const tr = view.state.tr.setSelection(
+                  TextSelection.create(view.state.doc, coordinates.pos)
+                )
+                view.dispatch(tr)
+              }
+
+              startImageUpload(view, file, schema, true)
+
+              return true
+            },
+            paste: (view, event) => {
+              const items = event?.clipboardData?.items
+              const images = []
+              if (items) {
+                for (let i = 0; i < items.length; i++) {
+                  const item = items[i]
+                  if (item.type.startsWith('image')) {
+                    images.push(item.getAsFile())
+                  }
+                }
+              }
+
+              if (images.length === 0) {
+                return false
+              }
+
+              event.preventDefault()
+
+              const file = images[0]
+              const { schema } = view.state
+
+              const tr = view.state.tr.setSelection(
+                TextSelection.create(view.state.doc, view.state.selection.from)
+              )
+              view.dispatch(tr)
+
+              file && startImageUpload(view, file, schema, true)
+
+              return true
+            },
+          },
+        },
+      }),
+    ]
   },
 })
 // Plugin for placeholder
@@ -194,7 +272,12 @@ function findPlaceholder(state: any, id: any): number | null {
     decos && decos.find(undefined, undefined, (spec) => spec.id === id)
   return found && found.length ? found[0].from : null
 }
-function startImageUpload(view: any, file: File, schema: any) {
+function startImageUpload(
+  view: any,
+  file: File,
+  schema: any,
+  isPaste: boolean = false
+) {
   imagePreview = URL.createObjectURL(file)
   // A fresh object to act as the ID for this upload
   const id = {}
@@ -224,16 +307,22 @@ function startImageUpload(view: any, file: File, schema: any) {
         // If the content around the placeholder has been deleted, drop the image
 
         // Insert the uploaded image at the placeholder's position
-        view.dispatch(
-          view.state.tr
-            .replaceWith(
-              pos,
-              pos + 1,
-              schema.nodes.uploadImage.create({ src: url }),
-              paragraphNode
+        !isPaste
+          ? view.dispatch(
+              view.state.tr
+                .replaceWith(
+                  pos,
+                  pos + 1,
+                  schema.nodes.uploadImage.create({ src: url }),
+                  paragraphNode
+                )
+                .setMeta(placeholderPlugin, { remove: { id } })
             )
-            .setMeta(placeholderPlugin, { remove: { id } })
-        )
+          : view.dispatch(
+              view.state.tr
+                .insert(pos, schema.nodes.uploadImage.create({ src: url }))
+                .setMeta(placeholderPlugin, { remove: { id } })
+            )
       }
     },
     () => {
@@ -242,6 +331,7 @@ function startImageUpload(view: any, file: File, schema: any) {
     }
   )
 }
+
 function loadImageInBackground(url: string): Promise<HTMLImageElement> {
   return new Promise((resolve, reject) => {
     const img = new Image()
