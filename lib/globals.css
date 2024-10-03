@@ -67,6 +67,7 @@
   max-width: 1000px;
   overflow-x: hidden;
   min-width: 100%;
+  min-height: 100%;
 }
 
 .tiptap h1 {
