@@ -25,7 +25,8 @@ export const ImageResizeComponent = (props: any) => {
     if (imageRef.current) {
       const naturalWidth = imageRef.current.naturalWidth
       const naturalHeight = imageRef.current.naturalHeight
-      const proseMirrorContainerDiv = document.querySelector('.tiptap')
+      const proseMirrorContainerDiv =
+        document.querySelector('.node-uploadImage')
       if (proseMirrorContainerDiv) {
         setMaxWidth(proseMirrorContainerDiv.clientWidth)
 
