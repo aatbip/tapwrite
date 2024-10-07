@@ -25,17 +25,13 @@ export const ImageResizeComponent = (props: any) => {
     if (imageRef.current) {
       const naturalWidth = imageRef.current.naturalWidth
       const naturalHeight = imageRef.current.naturalHeight
-      const proseMirrorContainerDiv = document.querySelector('.tiptap')
+      const proseMirrorContainerDiv =
+        document.querySelector('.node-uploadImage')
       if (proseMirrorContainerDiv) {
-        setMaxWidth(
-          proseMirrorContainerDiv.clientWidth -
-            0.015 * proseMirrorContainerDiv.clientWidth
-        )
+        setMaxWidth(proseMirrorContainerDiv.clientWidth)
 
         setMaxHeight(
-          (proseMirrorContainerDiv.clientWidth -
-            0.015 * proseMirrorContainerDiv.clientWidth) /
-            (naturalWidth / naturalHeight)
+          proseMirrorContainerDiv.clientWidth / (naturalWidth / naturalHeight)
         )
 
         if (typeof props.node.attrs.width !== 'number') {
@@ -114,7 +110,6 @@ export const ImageResizeComponent = (props: any) => {
           size={size}
           onResize={onResize}
           style={{
-            outline: props.selected ? '3px solid #0C41BB' : 'none',
             borderRadius: '5px',
             width: props.node.attrs.width,
             height: props.node.attrs.height,
@@ -168,6 +163,8 @@ export const ImageResizeComponent = (props: any) => {
               height: '100%',
               objectFit: 'contain',
               borderRadius: '5px',
+              outline: props.selected ? '3px solid #0C41BB' : 'none',
+              outlineOffset: '-3px',
             }}
           />
         </Resizable>

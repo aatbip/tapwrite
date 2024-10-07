@@ -7,11 +7,11 @@ import { ImageResizeComponent } from './ImageResizeComponent'
 export const inputRegex =
   /(?:^|\s)(!\[(.+|:?)]\((\S+)(?:(?:\s+)["'](\S+)["'])?\))$/
 let imagePreview: string | null = null
-let uploadFn: ((file: File) => Promise<string>) | null = null
+let uploadFn: ((file: File) => Promise<string | undefined>) | null = null
 interface UploadImageOptions {
   inline: boolean
   HTMLAttributes: Record<string, any>
-  uploadFn: ((file: File) => Promise<string>) | null
+  uploadFn: ((file: File) => Promise<string | undefined>) | null
   deleteImage?: (id: string) => Promise<void>
 }
 export const UploadImage = Node.create<UploadImageOptions>({
@@ -150,7 +150,78 @@ export const UploadImage = Node.create<UploadImageOptions>({
     ]
   },
   addProseMirrorPlugins() {
-    return [placeholderPlugin]
+    return [
+      placeholderPlugin,
+      new Plugin({
+        props: {
+          handleDOMEvents: {
+            drop: (view, event) => {
+              const hasFiles =
+                event.dataTransfer &&
+                event.dataTransfer.files &&
+                event.dataTransfer.files.length > 0
+
+              if (!hasFiles) {
+                return false
+              }
+
+              event.preventDefault()
+
+              const images = Array.from(event.dataTransfer.files).filter(
+                (file) => /image/i.test(file.type)
+              )
+
+              if (images.length === 0) {
+                return false
+              }
+
+              const { schema } = view.state
+
+              const file = images[0]
+
+              const tr = view.state.tr.setSelection(
+                TextSelection.create(view.state.doc, view.state.selection.from)
+              )
+              view.dispatch(tr)
+
+              file && startImageUpload(view, file, schema, true)
+
+              return true
+            },
+            paste: (view, event) => {
+              const items = event?.clipboardData?.items
+              const images = []
+              if (items) {
+                for (let i = 0; i < items.length; i++) {
+                  const item = items[i]
+                  if (item.type.startsWith('image')) {
+                    images.push(item.getAsFile())
+                  }
+                }
+              }
+
+              if (images.length === 0) {
+                return false
+              }
+
+              event.preventDefault()
+
+              const file = images[0]
+              const { schema } = view.state
+
+              const tr = view.state.tr.setSelection(
+                TextSelection.create(view.state.doc, view.state.selection.from)
+              )
+              view.dispatch(tr)
+
+              file && startImageUpload(view, file, schema, true)
+
+              return true
+            },
+          },
+        },
+      }),
+    ]
   },
 })
 // Plugin for placeholder
@@ -194,7 +265,12 @@ function findPlaceholder(state: any, id: any): number | null {
     decos && decos.find(undefined, undefined, (spec) => spec.id === id)
   return found && found.length ? found[0].from : null
 }
-function startImageUpload(view: any, file: File, schema: any) {
+function startImageUpload(
+  view: any,
+  file: File,
+  schema: any,
+  isPaste: boolean = false
+) {
   imagePreview = URL.createObjectURL(file)
   // A fresh object to act as the ID for this upload
   const id = {}
@@ -212,50 +288,35 @@ function startImageUpload(view: any, file: File, schema: any) {
 
   view.dispatch(tr)
 
-  //logic to scroll back to the latest node below the images' placeholder
-  setTimeout(() => {
-    const { node } = view.domAtPos(view.state.selection.anchor)
-    if (node) {
-      ;(node as HTMLElement).scrollIntoView({
-        behavior: 'smooth', // Smooth scrolling for better UX
-        block: 'nearest', // Scroll to the nearest position
-        inline: 'start',
-      })
-    }
-  }, 0)
   uploadFn?.(file).then(
-    async (url: string) => {
-      await loadImageInBackground(url)
+    async (url: string | undefined) => {
+      if (url) {
+        await loadImageInBackground(url)
 
-      const pos = findPlaceholder(view.state, id)
+        const pos = findPlaceholder(view.state, id)
 
-      if (pos == null) return
-      const paragraphNode = schema.nodes.paragraph.create()
-      // If the content around the placeholder has been deleted, drop the image
+        if (pos == null) return
+        const paragraphNode = schema.nodes.paragraph.create()
+        // If the content around the placeholder has been deleted, drop the image
 
-      // Insert the uploaded image at the placeholder's position
-      view.dispatch(
-        view.state.tr
-          .replaceWith(
-            pos,
-            pos + 1,
-            schema.nodes.uploadImage.create({ src: url }),
-            paragraphNode
-          )
-          .setMeta(placeholderPlugin, { remove: { id } })
-      )
-
-      //logic to scroll back to the latest node below the images
-      setTimeout(() => {
-        const { node } = view.domAtPos(view.state.selection.anchor)
-        if (node) {
-          ;(node as HTMLElement).scrollIntoView({
-            behavior: 'smooth',
-            block: 'nearest',
-            inline: 'start',
-          })
-        }
-      }, 0)
+        // Insert the uploaded image at the placeholder's position
+        !isPaste
+          ? view.dispatch(
+              view.state.tr
+                .replaceWith(
+                  pos,
+                  pos + 1,
+                  schema.nodes.uploadImage.create({ src: url }),
+                  paragraphNode
+                )
+                .setMeta(placeholderPlugin, { remove: { id } })
+            )
+          : view.dispatch(
+              view.state.tr
+                .insert(pos, schema.nodes.uploadImage.create({ src: url }))
+                .setMeta(placeholderPlugin, { remove: { id } })
+            )
+      }
     },
     () => {
       // On failure, clean up the placeholder
@@ -263,6 +324,7 @@ function startImageUpload(view: any, file: File, schema: any) {
     }
   )
 }
+
 function loadImageInBackground(url: string): Promise<HTMLImageElement> {
   return new Promise((resolve, reject) => {
     const img = new Image()

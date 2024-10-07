@@ -144,7 +144,7 @@ export const Editor = ({
       UploadImage.configure({
         uploadFn: async (file: File) => {
           const url = uploadFn && (await uploadFn(file))
-          return url ?? ''
+          return url
         },
         deleteImage: deleteEditorAttachments && deleteEditorAttachments,
       }),
@@ -192,27 +192,24 @@ export const Editor = ({
 
   useEffect(() => {
     if (editor && content !== editor.getHTML()) {
-      editor.commands.setContent(content);
+      editor.commands.setContent(content)
 
       setTimeout(() => {
-        const { state, view } = editor;
+        const { state, view } = editor
 
         // Create a new EditorState without undo/redo history
-        // This is necessary because a history is set after setContent command is run. So when cmd+z is operated, 
+        // This is necessary because a history is set after setContent command is run. So when cmd+z is operated,
         // it ends up in an empty state.
         const newState = EditorState.create({
           doc: state.doc,
-          plugins: state.plugins,  // Preserve the plugins
-        });
+          plugins: state.plugins, // Preserve the plugins
+        })
 
         // Replace the editor state with the new state (without history)
-        view.updateState(newState);
-      }, 0);
-
+        view.updateState(newState)
+      }, 0)
     }
-  }, [content, editor]);
-
-
+  }, [content, editor])
 
   const appState = useAppState()
 
@@ -237,6 +234,7 @@ export const Editor = ({
         style={{
           width: '100%',
           height: '100%',
+          maxWidth: '600px',
         }}
       >
         {!readonly && (
