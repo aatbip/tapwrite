@@ -14,6 +14,7 @@ export const ImageResizeComponent = (props: any) => {
   })
   const [aspectRatio, setAspectRatio] = useState(1)
   const imageRef = useRef<HTMLImageElement | null>(null)
+  const containerRef = useRef<HTMLImageElement | null>(null)
 
   const [maxWidth, setMaxWidth] = useState<number>(0) // Dynamically calculate max width
   const [maxHeight, setMaxHeight] = useState<number>(0) // Dynamically calculate max width
@@ -25,14 +26,10 @@ export const ImageResizeComponent = (props: any) => {
     if (imageRef.current) {
       const naturalWidth = imageRef.current.naturalWidth
       const naturalHeight = imageRef.current.naturalHeight
-      const proseMirrorContainerDiv = document.querySelector('.tiptap')
+      const proseMirrorContainerDiv =
+        document.querySelector('.node-uploadImage')
       if (proseMirrorContainerDiv) {
-        const computedStyle = getComputedStyle(proseMirrorContainerDiv)
-        const paddingLeft = parseFloat(computedStyle.paddingLeft)
-        const paddingRight = parseFloat(computedStyle.paddingRight)
-        setMaxWidth(
-          proseMirrorContainerDiv.clientWidth - paddingLeft - paddingRight
-        )
+        setMaxWidth(proseMirrorContainerDiv.clientWidth)
 
         setMaxHeight(
           proseMirrorContainerDiv.clientWidth / (naturalWidth / naturalHeight)
@@ -63,6 +60,20 @@ export const ImageResizeComponent = (props: any) => {
 
   const handleResize = useCallback(() => {
     handleImageLoad()
+  }, [handleImageLoad])
+
+  useEffect(() => {
+    const resizeObserver = new ResizeObserver(() => {
+      handleImageLoad()
+    })
+
+    if (containerRef.current) {
+      resizeObserver.observe(containerRef.current)
+    }
+
+    return () => {
+      resizeObserver.disconnect()
+    }
   }, [handleImageLoad])
 
   useEffect(() => {
@@ -102,7 +113,7 @@ export const ImageResizeComponent = (props: any) => {
   }
 
   return (
-    <NodeViewWrapper className='image-resizer'>
+    <NodeViewWrapper className='image-resizer' ref={containerRef}>
       {loading && (
         <LoadingPlaceholder
           width={props.node.attrs.width as number}
