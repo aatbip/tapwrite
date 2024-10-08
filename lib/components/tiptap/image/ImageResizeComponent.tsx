@@ -16,72 +16,62 @@ export const ImageResizeComponent = (props: any) => {
   const imageRef = useRef<HTMLImageElement | null>(null)
   const containerRef = useRef<HTMLImageElement | null>(null)
 
+  const observerRef = useRef<MutationObserver | null>(null)
+
   const [maxWidth, setMaxWidth] = useState<number>(0) // Dynamically calculate max width
   const [maxHeight, setMaxHeight] = useState<number>(0) // Dynamically calculate max width
 
   // Dynamically update the max width based on the container size
 
-  const handleImageLoad = useCallback(() => {
-    setLoading(false)
-    if (imageRef.current) {
+  const updateDimensions = useCallback(() => {
+    if (imageRef.current && containerRef.current) {
       const naturalWidth = imageRef.current.naturalWidth
       const naturalHeight = imageRef.current.naturalHeight
-      const proseMirrorContainerDiv =
-        document.querySelector('.node-uploadImage')
-      if (proseMirrorContainerDiv) {
-        setMaxWidth(proseMirrorContainerDiv.clientWidth)
+      const containerWidth = containerRef.current.clientWidth
 
-        setMaxHeight(
-          proseMirrorContainerDiv.clientWidth / (naturalWidth / naturalHeight)
-        )
-
-        if (typeof props.node.attrs.width !== 'number') {
-          props.updateAttributes({
-            width: naturalWidth,
-          })
-        }
-        if (typeof props.node.attrs.height !== 'number') {
-          props.updateAttributes({
-            height: naturalHeight,
-          })
-        }
-        if (naturalWidth < 40) {
-          props.updateAttributes({
-            width: 40,
-          })
-          props.updateAttributes({
-            height: 40 / aspectRatio,
-          })
-        }
-      }
+      setMaxWidth(containerWidth)
+      setMaxHeight(containerWidth / (naturalWidth / naturalHeight))
       setAspectRatio(naturalWidth / naturalHeight)
-    }
-  }, [])
 
-  const handleResize = useCallback(() => {
-    handleImageLoad()
-  }, [handleImageLoad])
+      if (typeof props.node.attrs.width !== 'number') {
+        props.updateAttributes({ width: naturalWidth })
+      }
+      if (typeof props.node.attrs.height !== 'number') {
+        props.updateAttributes({ height: naturalHeight })
+      }
+      if (naturalWidth < 40) {
+        props.updateAttributes({
+          width: 40,
+          height: 40 / (naturalWidth / naturalHeight),
+        })
+      }
+    }
+  }, [props])
+
+  const handleImageLoad = useCallback(() => {
+    setLoading(false)
+    updateDimensions()
+  }, [updateDimensions])
 
   useEffect(() => {
-    const resizeObserver = new ResizeObserver(() => {
-      handleImageLoad()
-    })
-
     if (containerRef.current) {
-      resizeObserver.observe(containerRef.current)
+      observerRef.current = new MutationObserver(updateDimensions)
+      observerRef.current.observe(containerRef.current, {
+        attributes: true,
+        childList: true,
+        subtree: true,
+      })
     }
 
-    return () => {
-      resizeObserver.disconnect()
-    }
-  }, [handleImageLoad])
+    window.addEventListener('resize', updateDimensions)
 
-  useEffect(() => {
-    window.addEventListener('resize', handleResize)
     return () => {
-      window.removeEventListener('resize', handleResize)
+      if (observerRef.current) {
+        observerRef.current.disconnect()
+      }
+      window.removeEventListener('resize', updateDimensions)
     }
-  }, [handleResize])
+  }, [updateDimensions])
 
   useEffect(() => {
     setSize({
