@@ -190,26 +190,26 @@ export const Editor = ({
   // }, [suggestions, editor]);
   // mention turned off for now
 
-  useEffect(() => {
-    if (editor && content !== editor.getHTML()) {
-      editor.commands.setContent(content)
+  // useEffect(() => {
+  //   if (editor && content !== editor.getHTML()) {
+  //     editor.commands.setContent(content)
 
-      setTimeout(() => {
-        const { state, view } = editor
+  //     setTimeout(() => {
+  //       const { state, view } = editor
 
-        // Create a new EditorState without undo/redo history
-        // This is necessary because a history is set after setContent command is run. So when cmd+z is operated,
-        // it ends up in an empty state.
-        const newState = EditorState.create({
-          doc: state.doc,
-          plugins: state.plugins, // Preserve the plugins
-        })
+  //       // Create a new EditorState without undo/redo history
+  //       // This is necessary because a history is set after setContent command is run. So when cmd+z is operated,
+  //       // it ends up in an empty state.
+  //       const newState = EditorState.create({
+  //         doc: state.doc,
+  //         plugins: state.plugins, // Preserve the plugins
+  //       })
 
-        // Replace the editor state with the new state (without history)
-        view.updateState(newState)
-      }, 0)
-    }
-  }, [content, editor])
+  //       // Replace the editor state with the new state (without history)
+  //       view.updateState(newState)
+  //     }, 0)
+  //   }
+  // }, [content, editor])
 
   const appState = useAppState()
 
