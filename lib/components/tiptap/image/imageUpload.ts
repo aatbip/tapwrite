@@ -7,7 +7,7 @@ import { ImageResizeComponent } from './ImageResizeComponent'
 export const inputRegex =
   /(?:^|\s)(!\[(.+|:?)]\((\S+)(?:(?:\s+)["'](\S+)["'])?\))$/
 let imagePreview: string | null = null
-let uploadFn: ((file: File) => Promise<string | undefined>) | null = null
+
 interface UploadImageOptions {
   inline: boolean
   HTMLAttributes: Record<string, any>
@@ -17,7 +17,7 @@ interface UploadImageOptions {
 export const UploadImage = Node.create<UploadImageOptions>({
   name: 'uploadImage',
   onCreate() {
-    uploadFn = this.options.uploadFn
+    //leaving this empty because to prevent props being globally overridden.
   },
   addOptions() {
     return {
@@ -95,17 +95,14 @@ export const UploadImage = Node.create<UploadImageOptions>({
         document.body.appendChild(fileHolder)
         const view = this.editor.view
         const schema = this.editor.schema
+        const uploadFn = this.options.uploadFn
         fileHolder.addEventListener('change', (e: Event) => {
           const target = e.target as HTMLInputElement
           if (
             view.state.selection.$from.parent.inlineContent &&
             target.files?.length
           ) {
-            if (typeof uploadFn !== 'function') {
-              console.log('uploadFn should be a function')
-              return
-            }
-            startImageUpload(view, target.files[0], schema)
+            startImageUpload(view, target.files[0], schema, uploadFn)
             view.focus()
           }
         })
@@ -156,14 +153,15 @@ export const UploadImage = Node.create<UploadImageOptions>({
         props: {
           handleDOMEvents: {
             drop: (view, event) => {
+              const uploadFn = this.options.uploadFn
               const hasFiles =
                 event.dataTransfer &&
                 event.dataTransfer.files &&
                 event.dataTransfer.files.length > 0
 
-              if (!hasFiles) {
+              if (!hasFiles || !uploadFn) {
                 return false
-              }
+              } // checking uploadFn exists or not for dnd of images.
 
               event.preventDefault()
 
@@ -184,19 +182,21 @@ export const UploadImage = Node.create<UploadImageOptions>({
               )
               view.dispatch(tr)
 
-              file && startImageUpload(view, file, schema, true)
+              file && startImageUpload(view, file, schema, uploadFn, true)
 
               return true
             },
             paste: (view, event) => {
               const items = event?.clipboardData?.items
+              const uploadFn = this.options.uploadFn
+
               const images = []
               if (items) {
                 for (let i = 0; i < items.length; i++) {
                   const item = items[i]
-                  if (item.type.startsWith('image')) {
+                  if (item.type.startsWith('image') && uploadFn) {
                     images.push(item.getAsFile())
-                  }
+                  } // checking uploadFn exists or not for copy pasting images.
                 }
               }
 
@@ -214,7 +214,7 @@ export const UploadImage = Node.create<UploadImageOptions>({
               )
               view.dispatch(tr)
 
-              file && startImageUpload(view, file, schema, true)
+              file && startImageUpload(view, file, schema, uploadFn, true)
 
               return true
             },
@@ -269,6 +269,7 @@ function startImageUpload(
   view: any,
   file: File,
   schema: any,
+  uploadFn: ((file: File) => Promise<string | undefined>) | null, // handing uploadFn separately on startImageUpload for preventing overriding of uploadFn props for multiple tapwrite instances.
   isPaste: boolean = false
 ) {
   imagePreview = URL.createObjectURL(file)

@@ -99,7 +99,18 @@ export const Editor = ({
       CalloutExtension,
       LinkpdfExtension,
       History,
-      Hardbreak,
+      Hardbreak.extend({
+        addKeyboardShortcuts() {
+          return {
+            // Override default Enter key behavior to prevent line break
+            Enter: () => {
+              return true // Stops the default line break behavior
+            },
+            // Allow Shift+Enter for line break
+            'Shift-Enter': () => this.editor.commands.setHardBreak(),
+          }
+        },
+      }),
       FloatingCommandExtension.configure({
         suggestion: floatingMenuSuggestion,
       }),
@@ -142,10 +153,7 @@ export const Editor = ({
         deleteImage: deleteEditorAttachments && deleteEditorAttachments,
       }),
       UploadImage.configure({
-        uploadFn: async (file: File) => {
-          const url = uploadFn && (await uploadFn(file))
-          return url
-        },
+        uploadFn: uploadFn,
         deleteImage: deleteEditorAttachments && deleteEditorAttachments,
       }),
       Table.configure({
