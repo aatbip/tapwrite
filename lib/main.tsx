@@ -18,6 +18,7 @@ export interface NotionLikeProps {
   editorClass: string
   handleEditorAttachments?: (file: File) => Promise<void>
   deleteEditorAttachments?: (id: string) => Promise<void>
+  hardbreak?: boolean
 }
 
 export const Tapwrite = ({
@@ -33,6 +34,7 @@ export const Tapwrite = ({
   onBlur,
   editorClass,
   deleteEditorAttachments,
+  hardbreak = false,
 }: NotionLikeProps) => {
   return (
     <AppContextProvider>
@@ -49,6 +51,7 @@ export const Tapwrite = ({
         onBlur={onBlur}
         editorClass={editorClass}
         deleteEditorAttachments={deleteEditorAttachments}
+        hardbreak={hardbreak}
       />
     </AppContextProvider>
   )

@@ -55,6 +55,7 @@ export const Editor = ({
   isTextInput,
   editorClass,
   deleteEditorAttachments,
+  hardbreak,
 }: NotionLikeProps) => {
   const initialEditorContent = placeholder ?? 'Type "/" for commands'
 
@@ -102,12 +103,21 @@ export const Editor = ({
       Hardbreak.extend({
         addKeyboardShortcuts() {
           return {
-            // Override default Enter key behavior to prevent line break
+            // Override default Enter key behavior to conditionally prevent line break
             Enter: () => {
-              return true // Stops the default line break behavior
+              if (hardbreak) {
+                return true
+              }
+
+              return false
             },
-            // Allow Shift+Enter for line break
-            'Shift-Enter': () => this.editor.commands.setHardBreak(),
+            // Allow Shift+Enter for line break if hardbreak is true
+            'Shift-Enter': () => {
+              if (hardbreak) {
+                return this.editor.commands.setHardBreak()
+              }
+              return false
+            },
           }
         },
       }),
