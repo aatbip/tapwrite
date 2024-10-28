@@ -112,7 +112,7 @@ export const Editor = ({
         },
       }),
       FloatingCommandExtension.configure({
-        suggestion: floatingMenuSuggestion,
+        suggestion: floatingMenuSuggestion(uploadFn),
       }),
       Placeholder.configure({
         placeholder: ({ node }) => {

@@ -4,10 +4,12 @@ import tippy from 'tippy.js'
 import { FloatingMenu } from './FloatingMenu'
 import { TiptapEditorUtils } from './../../../utils/tiptapEditorUtils'
 
-export const floatingMenuSuggestion = {
+export const floatingMenuSuggestion = (
+  uploadFn?: (file: File) => Promise<string | undefined> | undefined
+) => ({
   items: ({ query }: any) => {
     const normalizedQuery = query.toLowerCase().replace(' ', '')
-    return [
+    const items = [
       {
         title: 'Heading 1',
         command: ({ editor, range }: any) => {
@@ -56,14 +58,6 @@ export const floatingMenuSuggestion = {
           tiptapEditorUtils.toggleNumberedList()
         },
       },
-      {
-        title: 'Upload',
-        command: async ({ editor, range }: { editor: Editor; range: any }) => {
-          const tiptapEditorUtils = new TiptapEditorUtils(editor)
-          tiptapEditorUtils.deleteRange(range)
-          tiptapEditorUtils.setImage()
-        },
-      },
       // {
       //   title: 'Table',
       //   command: ({ editor, range }: { editor: Editor; range: any }) => {
@@ -81,6 +75,20 @@ export const floatingMenuSuggestion = {
       //   },
       // },
     ]
+
+    // Conditionally add the "Upload" option if uploadFn is provided
+    if (uploadFn) {
+      items.push({
+        title: 'Upload',
+        command: async ({ editor, range }: { editor: Editor; range: any }) => {
+          const tiptapEditorUtils = new TiptapEditorUtils(editor)
+          tiptapEditorUtils.deleteRange(range)
+          tiptapEditorUtils.setImage()
+        },
+      })
+    }
+
+    return items
       .filter((item) => {
         if (item.title.startsWith('Heading')) {
           const level = item.title.split(' ')[1]
@@ -167,4 +175,4 @@ export const floatingMenuSuggestion = {
       },
     }
   },
-}
+})
