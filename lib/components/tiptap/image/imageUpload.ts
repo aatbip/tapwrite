@@ -197,6 +197,14 @@ export const UploadImage = Node.create<UploadImageOptions>({
                   if (item.type.startsWith('image') && uploadFn) {
                     images.push(item.getAsFile())
                   } // checking uploadFn exists or not for copy pasting images.
+                  else if (item.type === 'text/html' && !uploadFn) {
+                    const html = event.clipboardData.getData('text/html')
+                    if (html.includes('<img')) {
+                      event.preventDefault()
+
+                      return true
+                    }
+                  }
                 }
               }
 
