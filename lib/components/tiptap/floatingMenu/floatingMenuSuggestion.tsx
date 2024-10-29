@@ -114,6 +114,11 @@ export const floatingMenuSuggestion = (
 
     return {
       onStart: (props: any) => {
+        props.editor.storage.floatingCommand = {
+          ...props.editor.storage.floatingCommand,
+          isActive: true,
+        }
+        props.editor.emit('floatingCommandUpdate')
         component = new ReactRenderer(FloatingMenu, {
           props,
           editor: props.editor,
@@ -163,13 +168,26 @@ export const floatingMenuSuggestion = (
         if (props.event.key === 'Escape') {
           popup[0].hide()
 
+          props.editor.storage.floatingCommand = {
+            ...props.editor.storage.floatingCommand,
+            isActive: false,
+          }
+          props.editor.emit('floatingCommandUpdate')
+
           return true
         }
 
         return component.ref?.onKeyDown(props)
       },
 
-      onExit() {
+      onExit(props: any) {
+        props.editor.storage.floatingCommand = {
+          ...props.editor.storage.floatingCommand,
+          isActive: false,
+        }
+
+        // Emit custom event for state change
+        props.editor.emit('floatingCommandUpdate')
         popup[0].destroy()
         component.destroy()
       },

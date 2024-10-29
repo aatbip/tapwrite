@@ -56,6 +56,7 @@ export const Editor = ({
   editorClass,
   deleteEditorAttachments,
   hardbreak,
+  onActiveStatusChange,
 }: NotionLikeProps) => {
   const initialEditorContent = placeholder ?? 'Type "/" for commands'
 
@@ -105,6 +106,12 @@ export const Editor = ({
           return {
             // Override default Enter key behavior to conditionally prevent line break
             Enter: () => {
+              if (
+                this.editor?.isActive('bulletList') ||
+                this.editor?.isActive('orderedList')
+              ) {
+                return false
+              }
               if (hardbreak) {
                 return true
               }
@@ -243,6 +250,28 @@ export const Editor = ({
       }
     }
   }, [editor, readonly])
+
+  useEffect(() => {
+    if (!editor) {
+      return
+    }
+    const updateActiveStatus = () => {
+      const isListActive =
+        editor.isActive('bulletList') || editor.isActive('orderedList')
+      const isFloatingMenuActive =
+        editor.storage.floatingCommand?.isActive || false
+
+      const activeStatus = { isListActive, isFloatingMenuActive }
+
+      onActiveStatusChange?.(activeStatus)
+    }
+
+    editor.on('transaction', updateActiveStatus)
+
+    updateActiveStatus()
+
+    editor.off('transaction', updateActiveStatus)
+  }, [editor, onActiveStatusChange])
 
   if (!editor) return null
 

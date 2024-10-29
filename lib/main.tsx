@@ -19,6 +19,13 @@ export interface NotionLikeProps {
   handleEditorAttachments?: (file: File) => Promise<void>
   deleteEditorAttachments?: (id: string) => Promise<void>
   hardbreak?: boolean
+  onActiveStatusChange?: ({
+    isListActive,
+    isFloatingMenuActive,
+  }: {
+    isListActive: boolean
+    isFloatingMenuActive: boolean
+  }) => void
 }
 
 export const Tapwrite = ({
@@ -35,6 +42,7 @@ export const Tapwrite = ({
   editorClass,
   deleteEditorAttachments,
   hardbreak = false,
+  onActiveStatusChange,
 }: NotionLikeProps) => {
   return (
     <AppContextProvider>
@@ -52,6 +60,7 @@ export const Tapwrite = ({
         editorClass={editorClass}
         deleteEditorAttachments={deleteEditorAttachments}
         hardbreak={hardbreak}
+        onActiveStatusChange={onActiveStatusChange}
       />
     </AppContextProvider>
   )
