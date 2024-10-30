@@ -1,7 +1,7 @@
 import { Node, mergeAttributes } from '@tiptap/core'
 import { ReactNodeViewRenderer } from '@tiptap/react'
 import { AttachmentComponent } from './attachmentComponent' // You’ll need to create this component
-import { TextSelection } from '@tiptap/pm/state'
+import { Plugin, TextSelection } from '@tiptap/pm/state'
 
 export const UploadAttachment = Node.create({
   name: 'uploadAttachment',
@@ -9,6 +9,7 @@ export const UploadAttachment = Node.create({
   onCreate() {
     //leaving this empty because to prevent props being globally overridden.
   },
+
   addOptions() {
     return {
       inline: false,
@@ -95,6 +96,48 @@ export const UploadAttachment = Node.create({
           return false
         },
     }
+  },
+
+  addProseMirrorPlugins() {
+    return [
+      new Plugin({
+        props: {
+          handleDOMEvents: {
+            drop: (view, event) => {
+              const { uploadFn } = this.options
+              if (
+                event.dataTransfer &&
+                event.dataTransfer.files.length > 0 &&
+                uploadFn
+              ) {
+                event.preventDefault()
+                const file = event.dataTransfer.files[0]
+                handleFileUpload(view, file, view.state.schema, uploadFn)
+                return true
+              }
+              return false
+            },
+            paste: (view, event) => {
+              const items = event?.clipboardData?.items
+              const uploadFn = this.options.uploadFn
+
+              if (items && uploadFn) {
+                const fileItem = Array.from(items).find(
+                  (item) => item.kind === 'file' && item.getAsFile() !== null
+                )
+                const file = fileItem ? fileItem.getAsFile() : null
+                if (file) {
+                  event.preventDefault()
+                  handleFileUpload(view, file, view.state.schema, uploadFn)
+                  return true
+                }
+              }
+              return false
+            },
+          },
+        },
+      }),
+    ]
   },
 })
 
