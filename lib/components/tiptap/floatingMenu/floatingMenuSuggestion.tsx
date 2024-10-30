@@ -83,7 +83,30 @@ export const floatingMenuSuggestion = (
         command: async ({ editor, range }: { editor: Editor; range: any }) => {
           const tiptapEditorUtils = new TiptapEditorUtils(editor)
           tiptapEditorUtils.deleteRange(range)
-          tiptapEditorUtils.setImage()
+
+          const fileHolder = document.createElement('input')
+          fileHolder.setAttribute('type', 'file')
+          fileHolder.setAttribute('accept', '*') // Allows all file types
+          fileHolder.setAttribute('style', 'visibility:hidden')
+          document.body.appendChild(fileHolder)
+          fileHolder.addEventListener('change', (e: Event) => {
+            const target = e.target as HTMLInputElement
+            if (target.files?.length) {
+              const file = target.files[0]
+
+              // Determine file type
+              if (file.type.startsWith('image/')) {
+                // Call addImage for image files
+                tiptapEditorUtils.setImage(file)
+              } else {
+                // Call addAttachment for other files
+                tiptapEditorUtils.setAttachment(file)
+              }
+              editor.view.focus()
+            }
+          })
+
+          fileHolder.click()
         },
       })
     }

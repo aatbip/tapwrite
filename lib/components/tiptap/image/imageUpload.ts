@@ -2,7 +2,7 @@
 import { Plugin, TextSelection, Transaction } from '@tiptap/pm/state'
 import { Decoration, DecorationSet } from '@tiptap/pm/view'
 import { mergeAttributes, Node, nodeInputRule } from '@tiptap/core'
-import { ReactNodeViewRenderer } from '@tiptap/react'
+import { Editor, ReactNodeViewRenderer } from '@tiptap/react'
 import { ImageResizeComponent } from './ImageResizeComponent'
 export const inputRegex =
   /(?:^|\s)(!\[(.+|:?)]\((\S+)(?:(?:\s+)["'](\S+)["'])?\))$/
@@ -87,27 +87,76 @@ export const UploadImage = Node.create<UploadImageOptions>({
   addCommands() {
     const { deleteImage } = this.options
     return {
-      addImage: () => () => {
-        const fileHolder = document.createElement('input')
-        fileHolder.setAttribute('type', 'file')
-        fileHolder.setAttribute('accept', 'image/*')
-        fileHolder.setAttribute('style', 'visibility:hidden')
-        document.body.appendChild(fileHolder)
-        const view = this.editor.view
-        const schema = this.editor.schema
-        const uploadFn = this.options.uploadFn
-        fileHolder.addEventListener('change', (e: Event) => {
-          const target = e.target as HTMLInputElement
-          if (
-            view.state.selection.$from.parent.inlineContent &&
-            target.files?.length
-          ) {
-            startImageUpload(view, target.files[0], schema, uploadFn)
-            view.focus()
+      addImage:
+        (file: File) =>
+        ({
+          tr,
+          dispatch,
+          state,
+          editor,
+        }: {
+          tr: any
+          dispatch: any
+          state: any
+          editor: Editor
+        }) => {
+          if (!dispatch || !file) return false
+
+          const schema = editor.schema
+          const uploadFn = this.options.uploadFn
+
+          if (!state.selection.$from.parent.inlineContent) return false
+
+          // Create a unique ID for this upload
+          const id = {}
+          imagePreview = URL.createObjectURL(file)
+
+          // Set up the initial transaction
+          let transaction = tr
+
+          if (!transaction.selection.empty) {
+            transaction = transaction.deleteSelection()
           }
-        })
-        fileHolder.click()
-      },
+
+          // Insert paragraph node and placeholder
+          const paragraphNode = schema.nodes.paragraph.create()
+          transaction = transaction
+            .insert(transaction.selection.from, paragraphNode)
+            .setMeta(placeholderPlugin, {
+              add: { id, pos: transaction.selection.from },
+            })
+            .setSelection(
+              TextSelection.near(
+                transaction.doc.resolve(transaction.selection.from + 1)
+              )
+            )
+
+          dispatch(transaction)
+
+          // Handle the upload
+          uploadFn?.(file).then(
+            async (url: string | undefined) => {
+              if (url) {
+                await loadImageInBackground(url)
+                const pos = findPlaceholder(editor.state, id)
+                if (pos == null) return
+                const imageNode = schema.nodes.uploadImage.create({ src: url })
+                const finalTr = editor.state.tr
+                  .replaceWith(pos, pos + 1, imageNode)
+                  .setMeta(placeholderPlugin, { remove: { id } })
+                editor.view.dispatch(finalTr)
+              }
+            },
+            () => {
+              const cleanupTr = editor.state.tr.setMeta(placeholderPlugin, {
+                remove: { id },
+              })
+              editor.view.dispatch(cleanupTr)
+            }
+          )
+          return true
+        }, //addCommand refactored because of the range error
+
       deleteCurrentNode:
         () =>
         ({ state, dispatch }) => {

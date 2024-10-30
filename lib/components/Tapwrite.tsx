@@ -39,6 +39,7 @@ import { NotionLikeProps } from '../main'
 import { UploadImage } from './tiptap/image/imageUpload'
 import { ImageResize } from './tiptap/image/image'
 import { EditorState } from '@tiptap/pm/state'
+import { UploadAttachment } from './tiptap/attachments/attachmentUpload'
 // import suggestion from "../components/tiptap/mention/suggestion.ts";
 // import { MentionStorage } from "./tiptap/mention/MentionStorage.extension.ts";
 // mention turned off for now
@@ -172,6 +173,10 @@ export const Editor = ({
       UploadImage.configure({
         uploadFn: uploadFn,
         deleteImage: deleteEditorAttachments && deleteEditorAttachments,
+      }),
+      UploadAttachment.configure({
+        uploadFn: uploadFn,
+        deleteAttachment: deleteEditorAttachments && deleteEditorAttachments,
       }),
       Table.configure({
         resizable: true,
