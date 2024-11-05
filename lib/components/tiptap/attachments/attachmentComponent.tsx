@@ -8,18 +8,29 @@ interface AttachmentProps {
       fileName: string
       fileType: string
       fileSize: string
-      attachmentLayout: any
     }
   }
   selected: boolean
+  extension: {
+    options: {
+      attachmentLayout?: (props: {
+        selected: boolean
+        src: string
+        fileName: string
+        fileSize: string
+        fileType: string
+      }) => React.ReactNode
+    }
+  }
 }
 
 export const AttachmentComponent: React.FC<AttachmentProps> = ({
   node,
   selected,
+  extension,
 }) => {
-  const { src, fileName, fileType, attachmentLayout, fileSize } = node.attrs
-
+  const { src, fileName, fileType, fileSize } = node.attrs
+  const { attachmentLayout } = extension.options
   const renderIcon = () => {
     // Render an icon based on file type (e.g., PDF icon for PDFs)
     if (fileType.includes('pdf')) return '📄'

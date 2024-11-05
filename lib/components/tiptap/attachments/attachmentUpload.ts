@@ -17,6 +17,7 @@ export const UploadAttachment = Node.create({
       HTMLAttributes: {},
       uploadFn: null,
       deleteAttachment: undefined,
+      attachmentLayout: undefined,
     }
   },
 
@@ -36,31 +37,61 @@ export const UploadAttachment = Node.create({
       fileName: { default: null },
       fileType: { default: null },
       fileSize: { default: null },
-      attachmentLayout: { default: undefined },
     }
   },
 
   parseHTML() {
-    return [{ tag: 'a[data-filetype]' }] // Parses <a> tags with a specific attribute as file nodes
+    return [
+      {
+        // Match div with our custom data attribute
+        tag: 'div[data-type="attachment"]',
+        getAttrs: (dom) => {
+          if (!(dom instanceof HTMLElement)) {
+            return false
+          }
+
+          return {
+            src: dom.getAttribute('data-src'),
+            fileName: dom.getAttribute('data-filename'),
+            fileType: dom.getAttribute('data-filetype'),
+            fileSize: dom.getAttribute('data-filesize'),
+          }
+        },
+      },
+    ]
   },
 
   renderHTML({ HTMLAttributes }) {
+    // Clean up attributes for HTML rendering
+    const { src, fileName, fileType, fileSize } = HTMLAttributes
+
     return [
-      'a',
-      mergeAttributes(this.options.HTMLAttributes, HTMLAttributes, {
-        target: '_blank',
-        rel: 'noopener noreferrer',
+      'div',
+      mergeAttributes(this.options.HTMLAttributes, {
+        'data-type': 'attachment',
+        'data-src': src,
+        'data-filename': fileName,
+        'data-filetype': fileType,
+        'data-filesize': fileSize,
       }),
-      HTMLAttributes.filename || 'Download File', // Fallback text if filename is missing
+      [
+        'attachment-view',
+        {
+          href: src,
+          target: '_blank',
+          rel: 'noopener noreferrer',
+        },
+        fileName || 'Download File',
+      ],
     ]
   },
 
   addNodeView() {
-    return ReactNodeViewRenderer(AttachmentComponent) // Renders the file attachment component
+    return ReactNodeViewRenderer(AttachmentComponent)
   },
 
   addCommands() {
-    const { deleteAttachment, attachmentLayout } = this.options
+    const { deleteAttachment } = this.options
 
     return {
       addAttachment: (file: File) => () => {
@@ -68,7 +99,7 @@ export const UploadAttachment = Node.create({
         const schema = this.editor.schema
         const uploadFn = this.options.uploadFn
         if (uploadFn && file) {
-          handleFileUpload(view, file, schema, uploadFn, attachmentLayout)
+          handleFileUpload(view, file, schema, uploadFn)
         }
         view.focus()
         return false
@@ -80,6 +111,7 @@ export const UploadAttachment = Node.create({
           const node = state.doc.nodeAt(selection.from)
           if (node && node.type.name === this.name) {
             const attachmentUrl = node.attrs.src
+
             dispatch &&
               dispatch(
                 state.tr.replaceWith(
@@ -106,7 +138,7 @@ export const UploadAttachment = Node.create({
         props: {
           handleDOMEvents: {
             drop: (view, event) => {
-              const { uploadFn, attachmentLayout } = this.options
+              const { uploadFn } = this.options
               if (
                 event.dataTransfer &&
                 event.dataTransfer.files.length > 0 &&
@@ -114,20 +146,14 @@ export const UploadAttachment = Node.create({
               ) {
                 event.preventDefault()
                 const file = event.dataTransfer.files[0]
-                handleFileUpload(
-                  view,
-                  file,
-                  view.state.schema,
-                  uploadFn,
-                  attachmentLayout
-                )
+                handleFileUpload(view, file, view.state.schema, uploadFn)
                 return true
               }
               return false
             },
             paste: (view, event) => {
               const items = event?.clipboardData?.items
-              const { uploadFn, attachmentLayout } = this.options
+              const { uploadFn } = this.options
 
               if (items && uploadFn) {
                 const fileItem = Array.from(items).find(
@@ -136,13 +162,7 @@ export const UploadAttachment = Node.create({
                 const file = fileItem ? fileItem.getAsFile() : null
                 if (file) {
                   event.preventDefault()
-                  handleFileUpload(
-                    view,
-                    file,
-                    view.state.schema,
-                    uploadFn,
-                    attachmentLayout
-                  )
+                  handleFileUpload(view, file, view.state.schema, uploadFn)
                   return true
                 }
               }
@@ -172,7 +192,7 @@ function handleFileUpload(
     async (url: string | undefined) => {
       if (url) {
         const transaction = view.state.tr
-        console.log(attachmentLayout)
+
         // Insert the attachment node
         transaction.replaceSelectionWith(
           schema.nodes.uploadAttachment.create({
