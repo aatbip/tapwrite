@@ -69,7 +69,7 @@ export const UploadAttachment = Node.create({
       'div',
       mergeAttributes(this.options.HTMLAttributes, {
         'data-type': 'attachment',
-        'data-src': src,
+        src: src,
         'data-filename': fileName,
         'data-filetype': fileType,
         'data-filesize': fileSize,
@@ -77,7 +77,10 @@ export const UploadAttachment = Node.create({
       [
         'attachment-view',
         {
-          href: src,
+          fileName: fileName,
+          fileType: fileType,
+          fileSize: fileSize,
+          src: src,
           target: '_blank',
           rel: 'noopener noreferrer',
         },
@@ -192,7 +195,6 @@ function handleFileUpload(
     async (url: string | undefined) => {
       if (url) {
         const transaction = view.state.tr
-
         // Insert the attachment node
         transaction.replaceSelectionWith(
           schema.nodes.uploadAttachment.create({
