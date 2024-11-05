@@ -58,6 +58,7 @@ export const Editor = ({
   deleteEditorAttachments,
   hardbreak,
   onActiveStatusChange,
+  attachmentLayout,
 }: NotionLikeProps) => {
   const initialEditorContent = placeholder ?? 'Type "/" for commands'
 
@@ -177,6 +178,7 @@ export const Editor = ({
       UploadAttachment.configure({
         uploadFn: uploadFn,
         deleteAttachment: deleteEditorAttachments && deleteEditorAttachments,
+        attachmentLayout: attachmentLayout && attachmentLayout,
       }),
       Table.configure({
         resizable: true,

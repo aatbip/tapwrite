@@ -5,33 +5,49 @@ interface AttachmentProps {
   node: {
     attrs: {
       src: string
-      filename: string
-      filetype: string
+      fileName: string
+      fileType: string
+      fileSize: string
+      attachmentLayout: any
     }
   }
+  selected: boolean
 }
 
-export const AttachmentComponent: React.FC<AttachmentProps> = ({ node }) => {
-  const { src, filename, filetype } = node.attrs
-  console.log(node.attrs)
+export const AttachmentComponent: React.FC<AttachmentProps> = ({
+  node,
+  selected,
+}) => {
+  const { src, fileName, fileType, attachmentLayout, fileSize } = node.attrs
 
-  console.log('trigger')
   const renderIcon = () => {
     // Render an icon based on file type (e.g., PDF icon for PDFs)
-    if (filetype.includes('pdf')) return '📄'
-    if (filetype.includes('word')) return '📝'
-    if (filetype.includes('excel')) return '📊'
+    if (fileType.includes('pdf')) return '📄'
+    if (fileType.includes('word')) return '📝'
+    if (fileType.includes('excel')) return '📊'
     return '📎' // Default icon for unknown file types
+  }
+
+  const attachmentProps = {
+    selected: selected,
+    src: src,
+    fileName: fileName,
+    fileSize: fileSize,
+    fileType: fileType,
   }
 
   return (
     <NodeViewWrapper>
-      <div className='attachment'>
-        <span>{renderIcon()}</span>
-        <a href={src} target='_blank' rel='noopener noreferrer'>
-          {filename || 'Download Attachment'}
-        </a>
-      </div>
+      {attachmentLayout ? (
+        attachmentLayout(attachmentProps)
+      ) : (
+        <div className='attachment'>
+          <span>{renderIcon()}</span>
+          <a href={src} target='_blank' rel='noopener noreferrer'>
+            {fileName || 'Download Attachment'}
+          </a>
+        </div>
+      )}
     </NodeViewWrapper>
   )
 }

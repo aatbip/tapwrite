@@ -26,6 +26,13 @@ export interface NotionLikeProps {
     isListActive: boolean
     isFloatingMenuActive: boolean
   }) => void
+  attachmentLayout?: (props: {
+    selected: boolean
+    src: string
+    fileName: string
+    fileSize: string
+    fileType: string
+  }) => React.ReactNode
 }
 
 export const Tapwrite = ({
@@ -43,6 +50,7 @@ export const Tapwrite = ({
   deleteEditorAttachments,
   hardbreak = false,
   onActiveStatusChange,
+  attachmentLayout,
 }: NotionLikeProps) => {
   return (
     <AppContextProvider>
@@ -61,6 +69,7 @@ export const Tapwrite = ({
         deleteEditorAttachments={deleteEditorAttachments}
         hardbreak={hardbreak}
         onActiveStatusChange={onActiveStatusChange}
+        attachmentLayout={attachmentLayout}
       />
     </AppContextProvider>
   )
