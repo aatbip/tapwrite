@@ -127,6 +127,8 @@ export const UploadAttachment = Node.create<UploadAttachmentOptions>({
   },
 
   addCommands() {
+    const { deleteAttachment } = this.options
+
     return {
       addAttachment:
         (file: File) =>
@@ -238,18 +240,23 @@ export const UploadAttachment = Node.create<UploadAttachmentOptions>({
 
           if (!node || node.type.name !== this.name) return false
 
-          const attachmentUrl = node.attrs.src as string | undefined
+          if (node && node.type.name === this.name) {
+            const attachmentUrl = node.attrs.src
+            dispatch &&
+              dispatch(
+                state.tr.replaceWith(
+                  selection.from,
+                  selection.to,
+                  state.schema.nodes.paragraph.create()
+                )
+              )
+            if (deleteAttachment) {
+              deleteAttachment(attachmentUrl)
+            }
 
-          if (dispatch) {
-            const tr = state.tr.delete(selection.from, selection.to + 1)
-            dispatch(tr)
+            return true
           }
-
-          if (attachmentUrl && this.options.deleteAttachment) {
-            this.options.deleteAttachment(attachmentUrl)
-          }
-
-          return true
+          return false
         },
     }
   },
