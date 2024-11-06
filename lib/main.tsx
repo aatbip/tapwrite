@@ -32,6 +32,7 @@ export interface NotionLikeProps {
     fileName: string
     fileSize: string
     fileType: string
+    isUploading: boolean
   }) => React.ReactNode
 }
 

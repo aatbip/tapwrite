@@ -8,6 +8,7 @@ interface AttachmentProps {
       fileName: string
       fileType: string
       fileSize: string
+      isUploading: boolean
     }
   }
   selected: boolean
@@ -19,6 +20,7 @@ interface AttachmentProps {
         fileName: string
         fileSize: string
         fileType: string
+        isUploading: boolean
       }) => React.ReactNode
     }
   }
@@ -29,8 +31,9 @@ export const AttachmentComponent: React.FC<AttachmentProps> = ({
   selected,
   extension,
 }) => {
-  const { src, fileName, fileType, fileSize } = node.attrs
+  const { src, fileName, fileType, fileSize, isUploading } = node.attrs
   const { attachmentLayout } = extension.options
+
   const renderIcon = () => {
     // Render an icon based on file type (e.g., PDF icon for PDFs)
     if (fileType.includes('pdf')) return '📄'
@@ -45,6 +48,22 @@ export const AttachmentComponent: React.FC<AttachmentProps> = ({
     fileName: fileName,
     fileSize: fileSize,
     fileType: fileType,
+    isUploading: isUploading,
+  }
+
+  if (isUploading) {
+    return (
+      <NodeViewWrapper>
+        {attachmentLayout ? (
+          attachmentLayout(attachmentProps)
+        ) : (
+          <div className='attachment'>
+            <span>{renderIcon()}</span>
+            Loading attachment....
+          </div>
+        )}
+      </NodeViewWrapper>
+    )
   }
 
   return (
