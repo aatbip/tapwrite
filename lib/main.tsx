@@ -34,6 +34,7 @@ export interface NotionLikeProps {
     fileType: string
     isUploading: boolean
   }) => React.ReactNode
+  addAttachmentButton?: boolean
 }
 
 export const Tapwrite = ({
@@ -52,6 +53,7 @@ export const Tapwrite = ({
   hardbreak = false,
   onActiveStatusChange,
   attachmentLayout,
+  addAttachmentButton,
 }: NotionLikeProps) => {
   return (
     <AppContextProvider>
@@ -71,6 +73,7 @@ export const Tapwrite = ({
         hardbreak={hardbreak}
         onActiveStatusChange={onActiveStatusChange}
         attachmentLayout={attachmentLayout}
+        addAttachmentButton={addAttachmentButton}
       />
     </AppContextProvider>
   )

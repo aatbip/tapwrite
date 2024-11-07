@@ -40,6 +40,9 @@ import { UploadImage } from './tiptap/image/imageUpload'
 import { ImageResize } from './tiptap/image/image'
 import { EditorState } from '@tiptap/pm/state'
 import { UploadAttachment } from './tiptap/attachments/attachmentUpload'
+import { IconButton } from '@mui/material'
+import { AttachmentIcon } from '../icons'
+import { uploadCommand } from '../utils/uploadCommand'
 // import suggestion from "../components/tiptap/mention/suggestion.ts";
 // import { MentionStorage } from "./tiptap/mention/MentionStorage.extension.ts";
 // mention turned off for now
@@ -59,6 +62,7 @@ export const Editor = ({
   hardbreak,
   onActiveStatusChange,
   attachmentLayout,
+  addAttachmentButton,
 }: NotionLikeProps) => {
   const initialEditorContent = placeholder ?? 'Type "/" for commands'
 
@@ -290,6 +294,9 @@ export const Editor = ({
           height: '100%',
           maxWidth: '600px',
         }}
+        className={
+          isTextInput ? `${className} ${isTextInputClassName}` : className
+        }
       >
         {!readonly && (
           <div>
@@ -317,6 +324,20 @@ export const Editor = ({
           onFocus={() => editor.commands.focus()}
           tabIndex={0}
         />
+        {uploadFn && addAttachmentButton && (
+          <IconButton
+            style={{
+              position: 'absolute',
+              bottom: 10,
+              right: 10,
+            }}
+            onClick={() =>
+              uploadCommand({ editor, range: editor.state.selection })
+            }
+          >
+            <AttachmentIcon />
+          </IconButton>
+        )}
       </div>
     </>
   )
