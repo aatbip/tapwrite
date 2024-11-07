@@ -293,10 +293,10 @@ export const Editor = ({
           width: '100%',
           height: '100%',
           maxWidth: '600px',
+          display: 'flex',
+          flexDirection: 'column',
+          gap: '12px',
         }}
-        className={
-          isTextInput ? `${className} ${isTextInputClassName}` : className
-        }
       >
         {!readonly && (
           <div>
@@ -327,9 +327,7 @@ export const Editor = ({
         {uploadFn && addAttachmentButton && (
           <IconButton
             style={{
-              position: 'absolute',
-              bottom: 10,
-              right: 10,
+              alignSelf: 'flex-end',
             }}
             onClick={() =>
               uploadCommand({ editor, range: editor.state.selection })
