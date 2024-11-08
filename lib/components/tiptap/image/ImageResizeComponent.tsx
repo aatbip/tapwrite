@@ -168,8 +168,9 @@ export const ImageResizeComponent = (props: any) => {
               height: '100%',
               objectFit: 'contain',
               borderRadius: '5px',
-              outline: props.selected ? '3px solid #0C41BB' : 'none',
-              outlineOffset: '-3px',
+              outline:
+                props.selected && editable ? '1.5px solid #212B36' : 'none',
+              outlineOffset: '-1.5px',
             }}
           />
         </Resizable>
