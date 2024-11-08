@@ -1,4 +1,4 @@
-import { NodeViewWrapper } from '@tiptap/react'
+import { Editor, NodeViewWrapper } from '@tiptap/react'
 import React from 'react'
 
 interface AttachmentProps {
@@ -24,15 +24,18 @@ interface AttachmentProps {
       }) => React.ReactNode
     }
   }
+  editor: Editor
 }
 
 export const AttachmentComponent: React.FC<AttachmentProps> = ({
   node,
   selected,
   extension,
+  editor,
 }) => {
   const { src, fileName, fileType, fileSize, isUploading } = node.attrs
   const { attachmentLayout } = extension.options
+  const editable = editor.isEditable
 
   const renderIcon = () => {
     // Render an icon based on file type (e.g., PDF icon for PDFs)
@@ -43,7 +46,7 @@ export const AttachmentComponent: React.FC<AttachmentProps> = ({
   }
 
   const attachmentProps = {
-    selected: selected,
+    selected: selected && editable,
     src: src,
     fileName: fileName,
     fileSize: fileSize,
