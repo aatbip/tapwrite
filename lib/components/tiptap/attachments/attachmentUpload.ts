@@ -271,8 +271,14 @@ export const UploadAttachment = Node.create<UploadAttachmentOptions>({
                 return false
               }
 
-              event.preventDefault()
               const file = event.dataTransfer.files[0]
+
+              // Skip if it's an image file
+              if (file.type.startsWith('image/')) {
+                return false
+              }
+
+              event.preventDefault()
               const { state } = view
               const { tr } = state
               const pos = view.posAtCoords({
@@ -294,7 +300,10 @@ export const UploadAttachment = Node.create<UploadAttachmentOptions>({
               if (!items || !this.options.uploadFn) return false
 
               const fileItem = Array.from(items).find(
-                (item) => item.kind === 'file' && item.getAsFile()
+                (item) =>
+                  item.kind === 'file' &&
+                  item.getAsFile() &&
+                  !item.type.startsWith('image/') //skip showing the file as attachment if its an image
               )
               const file = fileItem?.getAsFile()
 

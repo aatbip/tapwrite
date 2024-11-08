@@ -73,21 +73,6 @@ export const Editor = ({
       attributes: {
         class: editorClass,
       },
-      handlePaste(view, event) {
-        if (view) {
-        }
-        const clipboardItems = event?.clipboardData?.items
-        if (clipboardItems) {
-          for (let i = 0; i < clipboardItems.length; i++) {
-            if (clipboardItems[i].type.indexOf('image') !== -1) {
-              event.preventDefault() // Stop image from being pasted
-              return true // Prevent the paste event for images
-            }
-          }
-        }
-
-        return false
-      },
     },
 
     extensions: [
