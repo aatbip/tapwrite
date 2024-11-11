@@ -7,7 +7,6 @@ export const uploadCommand = async ({
 }: {
   editor: Editor
   range: Range
-  uploadFn?: (file: File) => Promise<string | undefined>
 }) => {
   const tiptapEditorUtils = new TiptapEditorUtils(editor)
   tiptapEditorUtils.deleteRange(range)
