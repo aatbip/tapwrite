@@ -18,6 +18,23 @@ export interface NotionLikeProps {
   editorClass: string
   handleEditorAttachments?: (file: File) => Promise<void>
   deleteEditorAttachments?: (id: string) => Promise<void>
+  hardbreak?: boolean
+  onActiveStatusChange?: ({
+    isListActive,
+    isFloatingMenuActive,
+  }: {
+    isListActive: boolean
+    isFloatingMenuActive: boolean
+  }) => void
+  attachmentLayout?: (props: {
+    selected: boolean
+    src: string
+    fileName: string
+    fileSize: string
+    fileType: string
+    isUploading: boolean
+  }) => React.ReactNode
+  addAttachmentButton?: boolean
 }
 
 export const Tapwrite = ({
@@ -33,6 +50,10 @@ export const Tapwrite = ({
   onBlur,
   editorClass,
   deleteEditorAttachments,
+  hardbreak = false,
+  onActiveStatusChange,
+  attachmentLayout,
+  addAttachmentButton,
 }: NotionLikeProps) => {
   return (
     <AppContextProvider>
@@ -49,6 +70,10 @@ export const Tapwrite = ({
         onBlur={onBlur}
         editorClass={editorClass}
         deleteEditorAttachments={deleteEditorAttachments}
+        hardbreak={hardbreak}
+        onActiveStatusChange={onActiveStatusChange}
+        attachmentLayout={attachmentLayout}
+        addAttachmentButton={addAttachmentButton}
       />
     </AppContextProvider>
   )
