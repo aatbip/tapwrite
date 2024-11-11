@@ -71,7 +71,7 @@ export const Editor = ({
   const editor = useEditor({
     editorProps: {
       attributes: {
-        class: editorClass,
+        class: editorClass ?? '',
       },
     },
 
