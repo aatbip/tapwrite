@@ -14,55 +14,64 @@ export const ImageResizeComponent = (props: any) => {
   })
   const [aspectRatio, setAspectRatio] = useState(1)
   const imageRef = useRef<HTMLImageElement | null>(null)
+  const containerRef = useRef<HTMLImageElement | null>(null)
+
+  const observerRef = useRef<MutationObserver | null>(null)
 
   const [maxWidth, setMaxWidth] = useState<number>(0) // Dynamically calculate max width
   const [maxHeight, setMaxHeight] = useState<number>(0) // Dynamically calculate max width
 
   // Dynamically update the max width based on the container size
 
-  const handleImageLoad = useCallback(() => {
-    setLoading(false)
-    if (imageRef.current) {
+  const updateDimensions = useCallback(() => {
+    if (imageRef.current && containerRef.current) {
       const naturalWidth = imageRef.current.naturalWidth
       const naturalHeight = imageRef.current.naturalHeight
-      const proseMirrorContainerDiv = document.querySelector('.tiptap')
-      if (proseMirrorContainerDiv) {
-        setMaxWidth(
-          proseMirrorContainerDiv.clientWidth -
-            0.015 * proseMirrorContainerDiv.clientWidth
-        )
+      const containerWidth = containerRef.current.clientWidth
 
-        setMaxHeight(
-          (proseMirrorContainerDiv.clientWidth -
-            0.015 * proseMirrorContainerDiv.clientWidth) /
-            (naturalWidth / naturalHeight)
-        )
-
-        if (typeof props.node.attrs.width !== 'number') {
-          props.updateAttributes({
-            width: naturalWidth,
-          })
-        }
-        if (typeof props.node.attrs.height !== 'number') {
-          props.updateAttributes({
-            height: naturalHeight,
-          })
-        }
-      }
+      setMaxWidth(containerWidth)
+      setMaxHeight(containerWidth / (naturalWidth / naturalHeight))
       setAspectRatio(naturalWidth / naturalHeight)
-    }
-  }, [])
 
-  const handleResize = useCallback(() => {
-    handleImageLoad()
-  }, [handleImageLoad])
+      if (typeof props.node.attrs.width !== 'number') {
+        props.updateAttributes({ width: naturalWidth })
+      }
+      if (typeof props.node.attrs.height !== 'number') {
+        props.updateAttributes({ height: naturalHeight })
+      }
+      if (naturalWidth < 40) {
+        props.updateAttributes({
+          width: 40,
+          height: 40 / (naturalWidth / naturalHeight),
+        })
+      }
+    }
+  }, [props])
+
+  const handleImageLoad = useCallback(() => {
+    setLoading(false)
+    updateDimensions()
+  }, [updateDimensions])
 
   useEffect(() => {
-    window.addEventListener('resize', handleResize)
-    return () => {
-      window.removeEventListener('resize', handleResize)
+    if (containerRef.current) {
+      observerRef.current = new MutationObserver(updateDimensions)
+      observerRef.current.observe(containerRef.current, {
+        attributes: true,
+        childList: true,
+        subtree: true,
+      })
     }
-  }, [handleResize])
+
+    window.addEventListener('resize', updateDimensions)
+
+    return () => {
+      if (observerRef.current) {
+        observerRef.current.disconnect()
+      }
+      window.removeEventListener('resize', updateDimensions)
+    }
+  }, [updateDimensions])
 
   useEffect(() => {
     setSize({
@@ -84,9 +93,9 @@ export const ImageResizeComponent = (props: any) => {
     const newWidth = parseFloat(ref.style.width)
     const newHeight = newWidth / aspectRatio
 
-    const widthDiff = newWidth > maxWidth ? newWidth - maxWidth : 0
-    const heightDiff = newHeight > maxHeight ? newHeight - maxHeight : 0
-
+    const widthDiff = newWidth >= maxWidth - 5 ? newWidth - (maxWidth - 5) : 0
+    const heightDiff =
+      newHeight >= maxHeight - 5 ? newHeight - (maxHeight - 5) : 0
     props.updateAttributes({
       width: widthDiff > 0 ? 650 : newWidth,
       height: heightDiff > 0 ? 650 / aspectRatio : newHeight,
@@ -94,7 +103,7 @@ export const ImageResizeComponent = (props: any) => {
   }
 
   return (
-    <NodeViewWrapper className='image-resizer'>
+    <NodeViewWrapper className='image-resizer' ref={containerRef}>
       {loading && (
         <LoadingPlaceholder
           width={props.node.attrs.width as number}
@@ -106,7 +115,6 @@ export const ImageResizeComponent = (props: any) => {
           size={size}
           onResize={onResize}
           style={{
-            outline: props.selected ? '3px solid #0C41BB' : 'none',
             borderRadius: '5px',
             width: props.node.attrs.width,
             height: props.node.attrs.height,
@@ -115,6 +123,8 @@ export const ImageResizeComponent = (props: any) => {
           lockAspectRatio={aspectRatio}
           maxWidth={maxWidth}
           maxHeight={maxHeight}
+          minHeight={40}
+          minWidth={40}
           enable={
             editable
               ? {
@@ -158,6 +168,9 @@ export const ImageResizeComponent = (props: any) => {
               height: '100%',
               objectFit: 'contain',
               borderRadius: '5px',
+              outline:
+                props.selected && editable ? '1.5px solid #212B36' : 'none',
+              outlineOffset: '-1.5px',
             }}
           />
         </Resizable>

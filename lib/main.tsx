@@ -5,7 +5,7 @@ import { AppContextProvider } from './context'
 import { TiptapEditorUtils } from './utils/tiptapEditorUtils'
 
 export interface NotionLikeProps {
-  uploadFn?: (file: File) => Promise<string>
+  uploadFn?: (file: File) => Promise<string | undefined>
   getContent: (content: string) => void
   content: string
   readonly?: boolean
@@ -15,9 +15,27 @@ export interface NotionLikeProps {
   suggestions?: any
   isTextInput?: boolean
   onBlur?: () => void
-  editorClass: string
+  editorClass?: string
   handleEditorAttachments?: (file: File) => Promise<void>
   deleteEditorAttachments?: (id: string) => Promise<void>
+  hardbreak?: boolean
+  onActiveStatusChange?: ({
+    isListActive,
+    isFloatingMenuActive,
+  }: {
+    isListActive: boolean
+    isFloatingMenuActive: boolean
+  }) => void
+  attachmentLayout?: (props: {
+    selected: boolean
+    src: string
+    fileName: string
+    fileSize: string
+    fileType: string
+    isUploading: boolean
+  }) => React.ReactNode
+  addAttachmentButton?: boolean
+  maxUploadLimit?: number
 }
 
 export const Tapwrite = ({
@@ -33,6 +51,11 @@ export const Tapwrite = ({
   onBlur,
   editorClass,
   deleteEditorAttachments,
+  hardbreak = false,
+  onActiveStatusChange,
+  attachmentLayout,
+  addAttachmentButton,
+  maxUploadLimit,
 }: NotionLikeProps) => {
   return (
     <AppContextProvider>
@@ -49,6 +72,11 @@ export const Tapwrite = ({
         onBlur={onBlur}
         editorClass={editorClass}
         deleteEditorAttachments={deleteEditorAttachments}
+        hardbreak={hardbreak}
+        onActiveStatusChange={onActiveStatusChange}
+        attachmentLayout={attachmentLayout}
+        addAttachmentButton={addAttachmentButton}
+        maxUploadLimit={maxUploadLimit}
       />
     </AppContextProvider>
   )

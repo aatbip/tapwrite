@@ -38,6 +38,11 @@ import { useAppState } from '../context/useAppState'
 import { NotionLikeProps } from '../main'
 import { UploadImage } from './tiptap/image/imageUpload'
 import { ImageResize } from './tiptap/image/image'
+import { EditorState } from '@tiptap/pm/state'
+import { UploadAttachment } from './tiptap/attachments/attachmentUpload'
+import { IconButton } from '@mui/material'
+import { AttachmentIcon } from '../icons'
+import { uploadCommand } from '../utils/uploadCommand'
 // import suggestion from "../components/tiptap/mention/suggestion.ts";
 // import { MentionStorage } from "./tiptap/mention/MentionStorage.extension.ts";
 // mention turned off for now
@@ -54,6 +59,11 @@ export const Editor = ({
   isTextInput,
   editorClass,
   deleteEditorAttachments,
+  hardbreak,
+  onActiveStatusChange,
+  attachmentLayout,
+  addAttachmentButton,
+  maxUploadLimit,
 }: NotionLikeProps) => {
   const initialEditorContent = placeholder ?? 'Type "/" for commands'
 
@@ -62,22 +72,7 @@ export const Editor = ({
   const editor = useEditor({
     editorProps: {
       attributes: {
-        class: editorClass,
-      },
-      handlePaste(view, event) {
-        if (view) {
-        }
-        const clipboardItems = event?.clipboardData?.items
-        if (clipboardItems) {
-          for (let i = 0; i < clipboardItems.length; i++) {
-            if (clipboardItems[i].type.indexOf('image') !== -1) {
-              event.preventDefault() // Stop image from being pasted
-              return true // Prevent the paste event for images
-            }
-          }
-        }
-
-        return false
+        class: editorClass ?? '',
       },
     },
 
@@ -98,9 +93,35 @@ export const Editor = ({
       CalloutExtension,
       LinkpdfExtension,
       History,
-      Hardbreak,
+      Hardbreak.extend({
+        addKeyboardShortcuts() {
+          return {
+            // Override default Enter key behavior to conditionally prevent line break
+            Enter: () => {
+              if (
+                this.editor?.isActive('bulletList') ||
+                this.editor?.isActive('orderedList')
+              ) {
+                return false
+              }
+              if (hardbreak) {
+                return true
+              }
+
+              return false
+            },
+            // Allow Shift+Enter for line break if hardbreak is true
+            'Shift-Enter': () => {
+              if (hardbreak) {
+                return this.editor.commands.splitBlock() //using splitBlock() to create another node on enter instead of using setHardBreak() which applies <br> on the same node which causes anomaly on options like list and headings.
+              }
+              return false
+            },
+          }
+        },
+      }),
       FloatingCommandExtension.configure({
-        suggestion: floatingMenuSuggestion,
+        suggestion: floatingMenuSuggestion(uploadFn),
       }),
       Placeholder.configure({
         placeholder: ({ node }) => {
@@ -141,11 +162,14 @@ export const Editor = ({
         deleteImage: deleteEditorAttachments && deleteEditorAttachments,
       }),
       UploadImage.configure({
-        uploadFn: async (file: File) => {
-          const url = uploadFn && (await uploadFn(file))
-          return url ?? ''
-        },
+        uploadFn: uploadFn,
         deleteImage: deleteEditorAttachments && deleteEditorAttachments,
+      }),
+      UploadAttachment.configure({
+        uploadFn: uploadFn,
+        deleteAttachment: deleteEditorAttachments && deleteEditorAttachments,
+        attachmentLayout: attachmentLayout && attachmentLayout,
+        maxUploadLimit: maxUploadLimit && maxUploadLimit,
       }),
       Table.configure({
         resizable: true,
@@ -192,6 +216,21 @@ export const Editor = ({
   useEffect(() => {
     if (editor && content !== editor.getHTML()) {
       editor.commands.setContent(content)
+
+      setTimeout(() => {
+        const { state, view } = editor
+
+        // Create a new EditorState without undo/redo history
+        // This is necessary because a history is set after setContent command is run. So when cmd+z is operated,
+        // it ends up in an empty state.
+        const newState = EditorState.create({
+          doc: state.doc,
+          plugins: state.plugins, // Preserve the plugins
+        })
+
+        // Replace the editor state with the new state (without history)
+        view.updateState(newState)
+      }, 0)
     }
   }, [content, editor])
 
@@ -207,18 +246,30 @@ export const Editor = ({
       if (readonly) {
         editor.setEditable(false)
       }
-      const handleKeyDown = (event: KeyboardEvent) => {
-        if (event.metaKey && event.key === 'z') {
-          event.preventDefault() // Prevent the default behavior of Cmd+Z (e.g., browser undo)
-          editor.chain().focus().undo().run() // Perform undo operation
-        }
-      }
-      document.addEventListener('keydown', handleKeyDown)
-      return () => {
-        document.removeEventListener('keydown', handleKeyDown)
-      }
     }
   }, [editor, readonly])
+
+  useEffect(() => {
+    if (!editor) {
+      return
+    }
+    const updateActiveStatus = () => {
+      const isListActive =
+        editor.isActive('bulletList') || editor.isActive('orderedList')
+      const isFloatingMenuActive =
+        editor.storage.floatingCommand?.isActive || false
+
+      const activeStatus = { isListActive, isFloatingMenuActive }
+
+      onActiveStatusChange?.(activeStatus)
+    }
+
+    editor.on('transaction', updateActiveStatus)
+
+    updateActiveStatus()
+
+    editor.off('transaction', updateActiveStatus)
+  }, [editor, onActiveStatusChange])
 
   if (!editor) return null
 
@@ -228,6 +279,10 @@ export const Editor = ({
         style={{
           width: '100%',
           height: '100%',
+          maxWidth: '600px',
+          display: 'flex',
+          flexDirection: 'column',
+          gap: '12px',
         }}
       >
         {!readonly && (
@@ -256,6 +311,18 @@ export const Editor = ({
           onFocus={() => editor.commands.focus()}
           tabIndex={0}
         />
+        {uploadFn && addAttachmentButton && (
+          <IconButton
+            style={{
+              alignSelf: 'flex-end',
+            }}
+            onClick={() =>
+              uploadCommand({ editor, range: editor.state.selection })
+            }
+          >
+            <AttachmentIcon />
+          </IconButton>
+        )}
       </div>
     </>
   )
