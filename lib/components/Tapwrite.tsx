@@ -63,6 +63,7 @@ export const Editor = ({
   onActiveStatusChange,
   attachmentLayout,
   addAttachmentButton,
+  maxUploadLimit,
 }: NotionLikeProps) => {
   const initialEditorContent = placeholder ?? 'Type "/" for commands'
 
@@ -71,7 +72,7 @@ export const Editor = ({
   const editor = useEditor({
     editorProps: {
       attributes: {
-        class: editorClass,
+        class: editorClass ?? '',
       },
     },
 
@@ -168,6 +169,7 @@ export const Editor = ({
         uploadFn: uploadFn,
         deleteAttachment: deleteEditorAttachments && deleteEditorAttachments,
         attachmentLayout: attachmentLayout && attachmentLayout,
+        maxUploadLimit: maxUploadLimit && maxUploadLimit,
       }),
       Table.configure({
         resizable: true,

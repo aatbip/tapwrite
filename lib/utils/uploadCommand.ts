@@ -7,7 +7,6 @@ export const uploadCommand = async ({
 }: {
   editor: Editor
   range: Range
-  uploadFn?: (file: File) => Promise<string | undefined>
 }) => {
   const tiptapEditorUtils = new TiptapEditorUtils(editor)
   tiptapEditorUtils.deleteRange(range)
@@ -22,11 +21,9 @@ export const uploadCommand = async ({
     const target = e.target as HTMLInputElement
     if (target.files?.length) {
       const file = target.files[0]
-      if (file.type.startsWith('image/')) {
-        tiptapEditorUtils.setImage(file)
-      } else {
-        tiptapEditorUtils.setAttachment(file)
-      }
+
+      tiptapEditorUtils.setAttachment(file)
+
       editor.view.focus()
     }
     // Clean up the file input

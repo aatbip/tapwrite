@@ -93,15 +93,7 @@ export const floatingMenuSuggestion = (
             const target = e.target as HTMLInputElement
             if (target.files?.length) {
               const file = target.files[0]
-
-              // Determine file type
-              if (file.type.startsWith('image/')) {
-                // Call addImage for image files
-                tiptapEditorUtils.setImage(file)
-              } else {
-                // Call addAttachment for other files
-                tiptapEditorUtils.setAttachment(file)
-              }
+              tiptapEditorUtils.setAttachment(file) // show everything as attachments from upload menu suggestion
               editor.view.focus()
             }
           })

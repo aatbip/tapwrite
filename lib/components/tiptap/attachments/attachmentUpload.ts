@@ -18,6 +18,7 @@ interface UploadAttachmentOptions {
     fileType: string
     isUploading: boolean
   }) => React.ReactNode
+  maxUploadLimit: number | undefined
 }
 
 interface AttachmentAttributes {
@@ -44,6 +45,7 @@ export const UploadAttachment = Node.create<UploadAttachmentOptions>({
       uploadFn: null,
       deleteAttachment: undefined,
       attachmentLayout: undefined,
+      maxUploadLimit: undefined,
     }
   },
 
@@ -134,6 +136,13 @@ export const UploadAttachment = Node.create<UploadAttachmentOptions>({
         (file: File) =>
         ({ tr, dispatch }: { tr: any; dispatch: any }) => {
           if (!dispatch || !this.options.uploadFn) return false
+          const maxFileSize = this.options.maxUploadLimit
+          if (maxFileSize) {
+            if (file.size > maxFileSize) {
+              console.error('File size exceeds the limit.')
+              return false
+            }
+          }
 
           const uploadId = Math.random().toString(36).substring(2, 9)
 

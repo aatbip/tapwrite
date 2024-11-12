@@ -15,7 +15,7 @@ export interface NotionLikeProps {
   suggestions?: any
   isTextInput?: boolean
   onBlur?: () => void
-  editorClass: string
+  editorClass?: string
   handleEditorAttachments?: (file: File) => Promise<void>
   deleteEditorAttachments?: (id: string) => Promise<void>
   hardbreak?: boolean
@@ -35,6 +35,7 @@ export interface NotionLikeProps {
     isUploading: boolean
   }) => React.ReactNode
   addAttachmentButton?: boolean
+  maxUploadLimit?: number
 }
 
 export const Tapwrite = ({
@@ -54,6 +55,7 @@ export const Tapwrite = ({
   onActiveStatusChange,
   attachmentLayout,
   addAttachmentButton,
+  maxUploadLimit,
 }: NotionLikeProps) => {
   return (
     <AppContextProvider>
@@ -74,6 +76,7 @@ export const Tapwrite = ({
         onActiveStatusChange={onActiveStatusChange}
         attachmentLayout={attachmentLayout}
         addAttachmentButton={addAttachmentButton}
+        maxUploadLimit={maxUploadLimit}
       />
     </AppContextProvider>
   )
