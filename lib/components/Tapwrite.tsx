@@ -113,7 +113,7 @@ export const Editor = ({
             // Allow Shift+Enter for line break if hardbreak is true
             'Shift-Enter': () => {
               if (hardbreak) {
-                return this.editor.commands.setHardBreak()
+                return this.editor.commands.splitBlock() //using splitBlock() to create another node on enter instead of using setHardBreak() which applies <br> on the same node which causes anomaly on options like list and headings.
               }
               return false
             },
