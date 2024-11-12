@@ -35,6 +35,7 @@ export interface NotionLikeProps {
     isUploading: boolean
   }) => React.ReactNode
   addAttachmentButton?: boolean
+  parentContainerStyle?: React.CSSProperties
 }
 
 export const Tapwrite = ({
@@ -54,6 +55,7 @@ export const Tapwrite = ({
   onActiveStatusChange,
   attachmentLayout,
   addAttachmentButton,
+  parentContainerStyle
 }: NotionLikeProps) => {
   return (
     <AppContextProvider>
@@ -74,6 +76,7 @@ export const Tapwrite = ({
         onActiveStatusChange={onActiveStatusChange}
         attachmentLayout={attachmentLayout}
         addAttachmentButton={addAttachmentButton}
+        parentContainerStyle={parentContainerStyle}
       />
     </AppContextProvider>
   )
