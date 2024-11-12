@@ -64,6 +64,7 @@ export const Editor = ({
   attachmentLayout,
   addAttachmentButton,
   maxUploadLimit,
+  parentContainerStyle
 }: NotionLikeProps) => {
   const initialEditorContent = placeholder ?? 'Type "/" for commands'
 
@@ -276,7 +277,7 @@ export const Editor = ({
   return (
     <>
       <div
-        style={{
+        style={parentContainerStyle ?? {
           width: '100%',
           height: '100%',
           maxWidth: '600px',
