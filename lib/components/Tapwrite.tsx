@@ -40,7 +40,7 @@ import { UploadImage } from './tiptap/image/imageUpload'
 import { ImageResize } from './tiptap/image/image'
 import { EditorState } from '@tiptap/pm/state'
 import { UploadAttachment } from './tiptap/attachments/attachmentUpload'
-import { IconButton } from '@mui/material'
+import { Box, IconButton } from '@mui/material'
 import { AttachmentIcon } from '../icons'
 import { uploadCommand } from '../utils/uploadCommand'
 // import suggestion from "../components/tiptap/mention/suggestion.ts";
@@ -64,7 +64,7 @@ export const Editor = ({
   attachmentLayout,
   addAttachmentButton,
   maxUploadLimit,
-  parentContainerStyle
+  parentContainerStyle,
 }: NotionLikeProps) => {
   const initialEditorContent = placeholder ?? 'Type "/" for commands'
 
@@ -283,14 +283,16 @@ export const Editor = ({
   return (
     <>
       <div
-        style={parentContainerStyle ?? {
-          width: '100%',
-          height: '100%',
-          maxWidth: '600px',
-          display: 'flex',
-          flexDirection: 'column',
-          gap: '12px',
-        }}
+        style={
+          parentContainerStyle ?? {
+            width: '100%',
+            height: '100%',
+            maxWidth: '600px',
+            display: 'flex',
+            flexDirection: 'column',
+            gap: '12px',
+          }
+        }
       >
         {!readonly && (
           <div>
@@ -318,17 +320,25 @@ export const Editor = ({
           onFocus={() => editor.commands.focus()}
           tabIndex={0}
         />
-        {uploadFn && addAttachmentButton && editor.isEditable && (
-          <IconButton
+        {uploadFn && addAttachmentButton && (
+          <Box
             style={{
               alignSelf: 'flex-end',
             }}
-            onClick={() =>
-              uploadCommand({ editor, range: editor.state.selection })
-            }
           >
-            <AttachmentIcon />
-          </IconButton>
+            {editor.isEditable && (
+              <IconButton
+                style={{
+                  display: editor.isEditable ? 'flex' : 'none',
+                }}
+                onClick={() =>
+                  uploadCommand({ editor, range: editor.state.selection })
+                }
+              >
+                <AttachmentIcon />
+              </IconButton>
+            )}
+          </Box>
         )}
       </div>
     </>
