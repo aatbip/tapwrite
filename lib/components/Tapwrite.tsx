@@ -317,7 +317,7 @@ export const Editor = ({
           onFocus={() => editor.commands.focus()}
           tabIndex={0}
         />
-        {uploadFn && addAttachmentButton && (
+        {uploadFn && addAttachmentButton && editor.isEditable && (
           <IconButton
             style={{
               alignSelf: 'flex-end',
