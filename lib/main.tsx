@@ -36,6 +36,7 @@ export interface NotionLikeProps {
   }) => React.ReactNode
   addAttachmentButton?: boolean
   maxUploadLimit?: number
+  parentContainerStyle?: React.CSSProperties
 }
 
 export const Tapwrite = ({
@@ -56,6 +57,7 @@ export const Tapwrite = ({
   attachmentLayout,
   addAttachmentButton,
   maxUploadLimit,
+  parentContainerStyle
 }: NotionLikeProps) => {
   return (
     <AppContextProvider>
@@ -77,6 +79,7 @@ export const Tapwrite = ({
         attachmentLayout={attachmentLayout}
         addAttachmentButton={addAttachmentButton}
         maxUploadLimit={maxUploadLimit}
+        parentContainerStyle={parentContainerStyle}
       />
     </AppContextProvider>
   )

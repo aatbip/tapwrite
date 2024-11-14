@@ -40,7 +40,7 @@ import { UploadImage } from './tiptap/image/imageUpload'
 import { ImageResize } from './tiptap/image/image'
 import { EditorState } from '@tiptap/pm/state'
 import { UploadAttachment } from './tiptap/attachments/attachmentUpload'
-import { IconButton } from '@mui/material'
+import { Box, IconButton } from '@mui/material'
 import { AttachmentIcon } from '../icons'
 import { uploadCommand } from '../utils/uploadCommand'
 // import suggestion from "../components/tiptap/mention/suggestion.ts";
@@ -64,6 +64,7 @@ export const Editor = ({
   attachmentLayout,
   addAttachmentButton,
   maxUploadLimit,
+  parentContainerStyle,
 }: NotionLikeProps) => {
   const initialEditorContent = placeholder ?? 'Type "/" for commands'
 
@@ -112,6 +113,12 @@ export const Editor = ({
             },
             // Allow Shift+Enter for line break if hardbreak is true
             'Shift-Enter': () => {
+              if (
+                this.editor?.isActive('bulletList') ||
+                this.editor?.isActive('orderedList')
+              ) {
+                return this.editor.commands.setHardBreak()
+              }
               if (hardbreak) {
                 return this.editor.commands.splitBlock() //using splitBlock() to create another node on enter instead of using setHardBreak() which applies <br> on the same node which causes anomaly on options like list and headings.
               }
@@ -276,14 +283,16 @@ export const Editor = ({
   return (
     <>
       <div
-        style={{
-          width: '100%',
-          height: '100%',
-          maxWidth: '600px',
-          display: 'flex',
-          flexDirection: 'column',
-          gap: '12px',
-        }}
+        style={
+          parentContainerStyle ?? {
+            width: '100%',
+            height: '100%',
+            maxWidth: '600px',
+            display: 'flex',
+            flexDirection: 'column',
+            gap: '12px',
+          }
+        }
       >
         {!readonly && (
           <div>
@@ -312,16 +321,24 @@ export const Editor = ({
           tabIndex={0}
         />
         {uploadFn && addAttachmentButton && (
-          <IconButton
+          <Box
             style={{
               alignSelf: 'flex-end',
             }}
-            onClick={() =>
-              uploadCommand({ editor, range: editor.state.selection })
-            }
           >
-            <AttachmentIcon />
-          </IconButton>
+            {editor.isEditable && (
+              <IconButton
+                style={{
+                  display: editor.isEditable ? 'flex' : 'none',
+                }}
+                onClick={() =>
+                  uploadCommand({ editor, range: editor.state.selection })
+                }
+              >
+                <AttachmentIcon />
+              </IconButton>
+            )}
+          </Box>
         )}
       </div>
     </>
