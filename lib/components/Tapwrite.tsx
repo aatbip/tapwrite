@@ -290,7 +290,6 @@ export const Editor = ({
             maxWidth: '600px',
             display: 'flex',
             flexDirection: 'column',
-            gap: '12px',
           }
         }
       >
@@ -328,8 +327,13 @@ export const Editor = ({
           >
             {editor.isEditable && (
               <IconButton
-                style={{
+                sx={{
                   display: editor.isEditable ? 'flex' : 'none',
+                  transition: 'background-color 0.3s, border 0.3s',
+                  '&:hover': {
+                    borderRadius: '4px',
+                    background: '#F8F9FB',
+                  },
                 }}
                 onClick={() =>
                   uploadCommand({ editor, range: editor.state.selection })
