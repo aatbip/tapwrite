@@ -290,6 +290,7 @@ export const Editor = ({
             maxWidth: '600px',
             display: 'flex',
             flexDirection: 'column',
+            gap: '12px',
           }
         }
       >
