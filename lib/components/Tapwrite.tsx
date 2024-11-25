@@ -329,7 +329,7 @@ export const Editor = ({
               <IconButton
                 sx={{
                   display: editor.isEditable ? 'flex' : 'none',
-                  transition: 'background-color 0.3s, border 0.3s',
+
                   '&:hover': {
                     borderRadius: '4px',
                     background: '#F8F9FB',
