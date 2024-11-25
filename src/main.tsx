@@ -30,7 +30,6 @@ const App = () => {
           console.log(newContent)
         }}
         editorClass=''
-        addAttachmentButton
       />
     </div>
   )
