@@ -328,8 +328,13 @@ export const Editor = ({
           >
             {editor.isEditable && (
               <IconButton
-                style={{
+                sx={{
                   display: editor.isEditable ? 'flex' : 'none',
+
+                  '&:hover': {
+                    borderRadius: '4px',
+                    background: '#F8F9FB',
+                  },
                 }}
                 onClick={() =>
                   uploadCommand({ editor, range: editor.state.selection })
