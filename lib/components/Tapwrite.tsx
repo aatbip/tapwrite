@@ -51,7 +51,7 @@ export const Editor = ({
   uploadFn,
   getContent,
   content,
-  readonly,
+  readonly = false,
   className,
   placeholder,
   onFocus,
@@ -250,9 +250,7 @@ export const Editor = ({
         appState?.setUploadFn(uploadFn)
       }
 
-      if (readonly) {
-        editor.setEditable(!readonly)
-      }
+      editor.setEditable(!readonly)
     }
   }, [editor, readonly])
 
