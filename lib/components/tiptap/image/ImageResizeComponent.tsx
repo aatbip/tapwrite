@@ -39,7 +39,7 @@ export const ImageResizeComponent = (props: any) => {
       if (typeof props.node.attrs.height !== 'number') {
         props.updateAttributes({ height: naturalHeight })
       }
-      if (naturalWidth < 40) {
+      if (naturalWidth && naturalWidth < 40) {
         props.updateAttributes({
           width: 40,
           height: 40 / (naturalWidth / naturalHeight),

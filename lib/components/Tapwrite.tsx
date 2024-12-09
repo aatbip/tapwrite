@@ -251,7 +251,7 @@ export const Editor = ({
       }
 
       if (readonly) {
-        editor.setEditable(false)
+        editor.setEditable(!readonly)
       }
     }
   }, [editor, readonly])
