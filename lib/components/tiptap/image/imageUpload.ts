@@ -162,7 +162,11 @@ export const UploadImage = Node.create<UploadImageOptions>({
         ({ state, dispatch }) => {
           const { selection } = state
           const node = state.doc.nodeAt(selection.from)
-          if (node && node.type.name === this.name) {
+          if (
+            node &&
+            (node.type.name === this.name ||
+              node.type.name === 'uploadAttachment') //also handles deletion of attachments
+          ) {
             const imageUrl = node.attrs.src
             dispatch &&
               dispatch(
@@ -194,6 +198,12 @@ export const UploadImage = Node.create<UploadImageOptions>({
         },
       }),
     ]
+  },
+  addKeyboardShortcuts() {
+    return {
+      Backspace: ({ editor }) => editor.commands.deleteCurrentNode(),
+      Delete: ({ editor }) => editor.commands.deleteCurrentNode(),
+    }
   },
   addProseMirrorPlugins() {
     return [

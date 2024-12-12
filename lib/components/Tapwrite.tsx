@@ -37,7 +37,6 @@ import './../globals.css'
 import { useAppState } from '../context/useAppState'
 import { NotionLikeProps } from '../main'
 import { UploadImage } from './tiptap/image/imageUpload'
-import { ImageResize } from './tiptap/image/image'
 import { EditorState } from '@tiptap/pm/state'
 import { UploadAttachment } from './tiptap/attachments/attachmentUpload'
 import { Box, IconButton } from '@mui/material'
@@ -165,9 +164,7 @@ export const Editor = ({
           class: 'list-disc',
         },
       }),
-      ImageResize.configure({
-        deleteImage: deleteEditorAttachments && deleteEditorAttachments,
-      }),
+
       UploadImage.configure({
         uploadFn: uploadFn,
         deleteImage: deleteEditorAttachments && deleteEditorAttachments,

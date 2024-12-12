@@ -135,87 +135,49 @@ export const UploadAttachment = Node.create<UploadAttachmentOptions>({
     return {
       addAttachment:
         (file: File) =>
-          ({ tr, dispatch }: { tr: any; dispatch: any }) => {
-            if (!dispatch || !this.options.uploadFn) return false
-            const maxFileSize = this.options.maxUploadLimit
-            if (maxFileSize) {
-              if (file.size > maxFileSize) {
-                console.error('File size exceeds the limit.')
-                return false
-              }
+        ({ tr, dispatch }: { tr: any; dispatch: any }) => {
+          if (!dispatch || !this.options.uploadFn) return false
+          const maxFileSize = this.options.maxUploadLimit
+          if (maxFileSize) {
+            if (file.size > maxFileSize) {
+              console.error('File size exceeds the limit.')
+              return false
             }
+          }
 
-            const uploadId = Math.random().toString(36).substring(2, 9)
+          const uploadId = Math.random().toString(36).substring(2, 9)
 
-            // Create the loading node
-            const loadingNode = this.type.create({
-              fileName: file.name,
-              fileType: file.type,
-              fileSize: file.size,
-              isUploading: true,
-              uploadId,
-            })
+          // Create the loading node
+          const loadingNode = this.type.create({
+            fileName: file.name,
+            fileType: file.type,
+            fileSize: file.size,
+            isUploading: true,
+            uploadId,
+          })
 
-            // Insert at current selection
-            tr.replaceSelectionWith(loadingNode)
-            tr.setMeta('addToHistory', false)
+          // Insert at current selection
+          tr.replaceSelectionWith(loadingNode)
+          tr.setMeta('addToHistory', false)
 
-            // Ensure there's a paragraph after the attachment
-            const pos = tr.selection.from
-            if (!tr.doc.nodeAt(pos + loadingNode.nodeSize)?.isTextblock) {
-              const paragraphNode = this.editor.schema.nodes.paragraph.create()
-              tr.insert(pos + loadingNode.nodeSize, paragraphNode)
-            }
+          // Ensure there's a paragraph after the attachment
+          const pos = tr.selection.from
+          if (!tr.doc.nodeAt(pos + loadingNode.nodeSize)?.isTextblock) {
+            const paragraphNode = this.editor.schema.nodes.paragraph.create()
+            tr.insert(pos + loadingNode.nodeSize, paragraphNode)
+          }
 
-            // Set cursor after the paragraph to allow user to continue typing
-            const nextPos = pos + loadingNode.nodeSize + 1
-            tr.setSelection(TextSelection.create(tr.doc, nextPos))
-            tr.setMeta('addToHistory', true)
-            dispatch(tr)
+          // Set cursor after the paragraph to allow user to continue typing
+          const nextPos = pos + loadingNode.nodeSize + 1
+          tr.setSelection(TextSelection.create(tr.doc, nextPos))
+          tr.setMeta('addToHistory', true)
+          dispatch(tr)
 
-            // Handle the upload
-            this.options
-              .uploadFn(file)
-              .then((url) => {
-                if (url) {
-                  this.editor.commands.command(({ tr, dispatch }) => {
-                    if (!dispatch) return false
-
-                    let uploadNodePos = -1
-                    tr.doc.descendants((node, pos) => {
-                      if (
-                        node.type.name === this.name &&
-                        node.attrs.uploadId === uploadId
-                      ) {
-                        uploadNodePos = pos
-                        return false
-                      }
-                    })
-
-                    if (uploadNodePos > -1) {
-                      const updatedNode = this.type.create({
-                        src: url,
-                        fileName: file.name,
-                        fileType: file.type,
-                        fileSize: file.size,
-                        isUploading: false,
-                        uploadId,
-                      })
-                      tr.replaceWith(
-                        uploadNodePos,
-                        uploadNodePos + 1,
-                        updatedNode
-                      )
-                      tr.setMeta('addToHistory', false)
-                      dispatch(tr)
-                    }
-
-                    return true
-                  })
-                }
-              })
-              .catch((error) => {
-                console.error('Upload failed:', error)
+          // Handle the upload
+          this.options
+            .uploadFn(file)
+            .then((url) => {
+              if (url) {
                 this.editor.commands.command(({ tr, dispatch }) => {
                   if (!dispatch) return false
 
@@ -231,43 +193,92 @@ export const UploadAttachment = Node.create<UploadAttachmentOptions>({
                   })
 
                   if (uploadNodePos > -1) {
-                    tr.delete(uploadNodePos, uploadNodePos + 1)
+                    const updatedNode = this.type.create({
+                      src: url,
+                      fileName: file.name,
+                      fileType: file.type,
+                      fileSize: file.size,
+                      isUploading: false,
+                      uploadId,
+                    })
+                    tr.replaceWith(
+                      uploadNodePos,
+                      uploadNodePos + 1,
+                      updatedNode
+                    )
+                    tr.setMeta('addToHistory', false)
                     dispatch(tr)
                   }
 
                   return true
                 })
-              })
+              }
+            })
+            .catch((error) => {
+              console.error('Upload failed:', error)
+              this.editor.commands.command(({ tr, dispatch }) => {
+                if (!dispatch) return false
 
-            return true
-          },
+                let uploadNodePos = -1
+                tr.doc.descendants((node, pos) => {
+                  if (
+                    node.type.name === this.name &&
+                    node.attrs.uploadId === uploadId
+                  ) {
+                    uploadNodePos = pos
+                    return false
+                  }
+                })
+
+                if (uploadNodePos > -1) {
+                  tr.delete(uploadNodePos, uploadNodePos + 1)
+                  dispatch(tr)
+                }
+
+                return true
+              })
+            })
+
+          return true
+        },
 
       deleteCurrentNode:
         () =>
-          ({ state, dispatch }) => {
-            const { selection } = state
-            const node = state.doc.nodeAt(selection.from)
+        ({ state, dispatch }) => {
+          const { selection } = state
+          const node = state.doc.nodeAt(selection.from)
 
-            if (!node || node.type.name !== this.name) return false
-
-            if (node && node.type.name === this.name) {
-              const attachmentUrl = node.attrs.src
-              dispatch &&
-                dispatch(
-                  state.tr.replaceWith(
-                    selection.from,
-                    selection.to,
-                    state.schema.nodes.paragraph.create()
-                  )
-                )
-              if (deleteAttachment) {
-                deleteAttachment(attachmentUrl)
-              }
-
-              return true
-            }
+          if (!node) {
             return false
-          },
+          }
+
+          if (
+            node &&
+            (node.type.name === this.name || node.type.name === 'uploadImage') //also handles delete callback for images
+          ) {
+            const attachmentUrl = node.attrs.src
+            dispatch &&
+              dispatch(
+                state.tr.replaceWith(
+                  selection.from,
+                  selection.to,
+                  state.schema.nodes.paragraph.create()
+                )
+              )
+            if (deleteAttachment) {
+              deleteAttachment(attachmentUrl)
+            }
+
+            return true
+          }
+          return false
+        },
+    }
+  },
+  addKeyboardShortcuts() {
+    return {
+      Backspace: ({ editor }) => editor.commands.deleteCurrentNode(),
+      Delete: ({ editor }) => editor.commands.deleteCurrentNode(),
     }
   },
 
