@@ -1,3 +1,5 @@
+<p><i><b>This repository for Tapwrite is not maintained often. Please find the updated and maintained repo  <a href="https://github.com/pagevamp/tapwrite" target="__blank">HERE</a>.</i></b></p>
+<br/>
 <h1 align="center">Tapwrite</h1>
 <p align="center">
 <img width="100px" src="https://github-production-user-asset-6210df.s3.amazonaws.com/38468429/331266341-ae2abd1c-e1be-40ed-89f4-5d92296b92c1.png?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Credential=AKIAVCODYLSA53PQK4ZA%2F20240516%2Fus-east-1%2Fs3%2Faws4_request&X-Amz-Date=20240516T160306Z&X-Amz-Expires=300&X-Amz-Signature=8027eaf25899414cea88dc21091186c75144eb40418c986dab4e67cba11c5920&X-Amz-SignedHeaders=host&actor_id=38468429&key_id=0&repo_id=798623870" alt="Tapwrite">
