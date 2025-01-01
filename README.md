@@ -1,4 +1,4 @@
-<p><i><b>This repository for Tapwrite is not maintained often. Please find the updated and maintained repo  <a href="https://github.com/pagevamp/tapwrite" target="__blank">HERE</a>.</i></b></p>
+<p><i><b>This repository for Tapwrite is not maintained often. Please find the updated and maintained repo  <a href="https://github.com/pagevamp/tapwrite" target="_blank">HERE</a>.</i></b></p>
 <br/>
 <h1 align="center">Tapwrite</h1>
 <p align="center">
