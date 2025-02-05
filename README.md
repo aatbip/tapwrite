@@ -11,9 +11,6 @@ Building text editors for browsers from scratch is challenging, with few options
 
 ![tapwrite](https://github-production-user-asset-6210df.s3.amazonaws.com/38468429/331266752-59539467-32a6-4df0-bf70-e13a8c04c0f3.png?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Credential=AKIAVCODYLSA53PQK4ZA%2F20240516%2Fus-east-1%2Fs3%2Faws4_request&X-Amz-Date=20240516T160401Z&X-Amz-Expires=300&X-Amz-Signature=b54903d1e25dfcbf914349f6f7366224c7531bac4e61de1f63d1a8fe61fa85ad&X-Amz-SignedHeaders=host&actor_id=38468429&key_id=0&repo_id=798623870)
 
- ### Demo
-
-[View Demo](https://github.com/pagevamp/tapwrite/assets/38468429/e2f6b2d4-8746-459d-a279-015a07cffdea)
 
 ### Installation
 
@@ -22,6 +19,47 @@ Install `Tapwrite` with npm by running the following command:
 ```bash
 npm i tapwrite
 ```
+
+### Testing Locally
+
+- Clone the `Tapwrite` repository and apply your changes.
+- Run `npm run build` to transpile your changes.
+- Run `npm pack` which creates a `.tgz`(tarball) file of the build. It essentially bundles your package just like npm publish but without actually publishing it.
+   ![image](https://github.com/user-attachments/assets/9dcb0063-8867-44d3-85b2-b789d1582a49)
+- In your `package.json`, replace the value of tapwrite in dependencies with the path of your `.tgz` file.
+   ![image](https://github.com/user-attachments/assets/e45d483b-6556-42de-a561-84bc15ec86e5)
+- Run `npm install`
+- To revert the changes and use the published version, simply run `npm i tapwrite`
+   
+
+### Coding Standards 
+
+- [x] Linting: Use ESLint and Prettier to maintain code consistency.
+- [x] TypeScript: Ensure all contributions are typed.
+- [x] Documentation: Update relevant documentation (e.g., README, inline comments) for new features.
+- [x] Commit Messages: Follow Conventional Commits.
+
+### Contribution Guidelines
+
+## Submitting Pull Requests 
+
+- Use descriptive branch names.
+- Pull Request Template :
+    - Describe changes and motivation.
+    - Reference related issues if there are any.
+    - Attach screenshots/videos for testing and UI changes.
+- Be responsive to feedback.
+
+## Reporting issues 
+
+- Use the [GitHub Issues](https://github.com/pagevamp/tapwrite/issues) template.
+- Please describe :
+     - Steps to Reproduce in detail.
+     - Expected vs. Actual Behavior comparison.
+     - Screenshots/Logs.
+     - Environment.
+
+
 
 ### Usage
 
@@ -33,17 +71,20 @@ import { Tapwrite, ImagePickerUtils } from 'tapwrite';
 <Tapwrite
   // Function triggered after a file is selected. Parameter uploadFn is optional.
   uploadFn={async (file, tiptapEditorUtils) => {
-    // 'file' is the selected image or PDF.
-
-    // Utilize setImage or insertPdf methods from tiptapEditorUtils to render the file on the editor.
-    tiptapEditorUtils.setImage(url || "");
+    // 'file' is the selected image or attachments of type File. The uploadFn should return a url for src of the file. 
   }}
-  // Pass the initial content to be rendered in the editor.
-  content=""
-  // Function to output the current content of the editor.
-  getContent={(content) => console.log(content)}
+  content=""  // Pass the initial content to be rendered in the editor.
+  getContent={(content) => console.log(content)}  // Function to output the current content of the editor.
+  deleteEditorAttachments = {async(id) => { }}  // Function to invoke after deleting attachments/Images from the editor.
+  editorClass={editorClass} // custom classname for Editor.
+  hardbreak={false} // applies hardbreak on the editor.
+  attachmentLayout={attachmentLayout} // custom React node for attachments.
 />
 ```
+
+### Demo
+
+[View Demo](https://github.com/pagevamp/tapwrite/assets/38468429/e2f6b2d4-8746-459d-a279-015a07cffdea)
 
 ### Contributions
 
