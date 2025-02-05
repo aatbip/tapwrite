@@ -25,9 +25,13 @@ npm i tapwrite
 - Clone the `Tapwrite` repository and apply your changes.
 - Run `npm run build` to transpile your changes.
 - Run `npm pack` which creates a `.tgz`(tarball) file of the build. It essentially bundles your package just like npm publish but without actually publishing it.
+  
    ![image](https://github.com/user-attachments/assets/9dcb0063-8867-44d3-85b2-b789d1582a49)
+  
 - In your `package.json`, replace the value of tapwrite in dependencies with the path of your `.tgz` file.
+  
    ![image](https://github.com/user-attachments/assets/e45d483b-6556-42de-a561-84bc15ec86e5)
+
 - Run `npm install`
 - To revert the changes and use the published version, simply run `npm i tapwrite`
    
@@ -39,9 +43,9 @@ npm i tapwrite
 - [x] Documentation: Update relevant documentation (e.g., README, inline comments) for new features.
 - [x] Commit Messages: Follow Conventional Commits.
 
-### Contribution Guidelines
+## Contribution Guidelines
 
-## Submitting Pull Requests 
+### Submitting Pull Requests 
 
 - Use descriptive branch names.
 - Pull Request Template :
@@ -50,7 +54,7 @@ npm i tapwrite
     - Attach screenshots/videos for testing and UI changes.
 - Be responsive to feedback.
 
-## Reporting issues 
+### Reporting issues 
 
 - Use the [GitHub Issues](https://github.com/pagevamp/tapwrite/issues) template.
 - Please describe :
