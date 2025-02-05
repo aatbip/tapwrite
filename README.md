@@ -32,17 +32,22 @@ import { Tapwrite, ImagePickerUtils } from 'tapwrite';
     // 'file' is the selected image or attachments of type File. The uploadFn should return a url for src of the file. 
   }}
   content=""  // Pass the initial content to be rendered in the editor.
+  readonly    // Make the editor read-only.
+  onBlur = () => {} //callback function to call on blurring the editor.
+
   getContent={(content) => console.log(content)}  // Function to output the current content of the editor.
   deleteEditorAttachments = {async(id) => { }}  // Function to invoke after deleting attachments/Images from the editor.
-  editorClass={editorClass} // custom classname for Editor.
+  className={className} // custom classname for Editor.
   hardbreak={false} // applies hardbreak on the editor.
   attachmentLayout={attachmentLayout} // custom React node for attachments.
+  maxUploadLimit ={maxUploadLimit} //for limiting the size of attachments.
+  
 />
 ```
 
 ### Demo
 
-[View Demo](https://github.com/pagevamp/tapwrite/assets/38468429/e2f6b2d4-8746-459d-a279-015a07cffdea)
+[DEMO video](https://github.com/user-attachments/assets/f1ac68d7-028d-4530-94e8-217f209a6e74)
 
 
 ## Testing Locally
@@ -100,8 +105,8 @@ Contributions are vital for the continuous improvement of `Tapwrite`. If you're 
 
 We have plans on enhancing Tapwrite in the future versions. The immediate requirements are:
 
-- Support for links 
-- Support for iframe
+- Implement mentions.
+- Optimize custom node view extensions : Image, Attachments, Mentions.
 - Add ability to style the editor, slash command menu, and bubble menu. 
 - Ability to extend the Titap editor plugins to include custom features
 - Ability to add further commands in the slash command menu/bubble menu
