@@ -20,51 +20,6 @@ Install `Tapwrite` with npm by running the following command:
 npm i tapwrite
 ```
 
-### Testing Locally
-
-- Clone the `Tapwrite` repository and apply your changes.
-- Run `npm run build` to transpile your changes.
-- Run `npm pack` which creates a `.tgz`(tarball) file of the build. It essentially bundles your package just like npm publish but without actually publishing it.
-  
-   ![image](https://github.com/user-attachments/assets/9dcb0063-8867-44d3-85b2-b789d1582a49)
-  
-- In your `package.json`, replace the value of tapwrite in dependencies with the path of your `.tgz` file.
-  
-   ![image](https://github.com/user-attachments/assets/e45d483b-6556-42de-a561-84bc15ec86e5)
-
-- Run `npm install`
-- To revert the changes and use the published version, simply run `npm i tapwrite`
-   
-
-### Coding Standards 
-
-- [x] Linting: Use ESLint and Prettier to maintain code consistency.
-- [x] TypeScript: Ensure all contributions are typed.
-- [x] Documentation: Update relevant documentation (e.g., README, inline comments) for new features.
-- [x] Commit Messages: Follow Conventional Commits.
-
-## Contribution Guidelines
-
-### Submitting Pull Requests 
-
-- Use descriptive branch names.
-- Pull Request Template :
-    - Describe changes and motivation.
-    - Reference related issues if there are any.
-    - Attach screenshots/videos for testing and UI changes.
-- Be responsive to feedback.
-
-### Reporting issues 
-
-- Use the [GitHub Issues](https://github.com/pagevamp/tapwrite/issues) template.
-- Please describe :
-     - Steps to Reproduce in detail.
-     - Expected vs. Actual Behavior comparison.
-     - Screenshots/Logs.
-     - Environment.
-
-
-
 ### Usage
 
 Here’s how to implement `Tapwrite` in your project:
@@ -90,11 +45,59 @@ import { Tapwrite, ImagePickerUtils } from 'tapwrite';
 
 [View Demo](https://github.com/pagevamp/tapwrite/assets/38468429/e2f6b2d4-8746-459d-a279-015a07cffdea)
 
-### Contributions
+
+## Testing Locally
+
+- Clone the `Tapwrite` repository and apply your changes.
+- Run `npm run build` to transpile your changes.
+- Run `npm pack` which creates a `.tgz`(tarball) file of the build. It essentially bundles your package just like npm publish but without actually publishing it.
+  
+   ![image](https://github.com/user-attachments/assets/9dcb0063-8867-44d3-85b2-b789d1582a49)
+  
+- In your `package.json`, replace the value of tapwrite in dependencies with the path of your `.tgz` file.
+  
+   ![image](https://github.com/user-attachments/assets/e45d483b-6556-42de-a561-84bc15ec86e5)
+
+- Run `npm install`
+- To revert the changes and use the published version, simply run `npm i tapwrite`
+   
+
+
+
+## Contributions
 
 Contributions are vital for the continuous improvement of `Tapwrite`. If you're interested in contributing, please feel free to submit pull requests or share your ideas and feedback through issues on our GitHub repository.
 
-### Future Enhancements
+
+## Contribution Guidelines
+
+### Coding Standards 
+
+- [x] Linting: Use ESLint and Prettier to maintain code consistency.
+- [x] TypeScript: Ensure all contributions are typed.
+- [x] Documentation: Update relevant documentation (e.g., README, inline comments) for new features.
+- [x] Commit Messages: Follow Conventional Commits.
+
+### Submitting Pull Requests 
+
+- Use descriptive branch names.
+- Pull Request Template :
+    - Describe changes and motivation.
+    - Reference related issues if there are any.
+    - Attach screenshots/videos for testing and UI changes.
+- Be responsive to feedback.
+
+### Reporting issues 
+
+- Use the [GitHub Issues](https://github.com/pagevamp/tapwrite/issues) template.
+- Please describe :
+     - Steps to Reproduce in detail.
+     - Expected vs. Actual Behavior comparison.
+     - Screenshots/Logs.
+     - Environment.
+
+
+## Future Enhancements
 
 We have plans on enhancing Tapwrite in the future versions. The immediate requirements are:
 
@@ -104,6 +107,6 @@ We have plans on enhancing Tapwrite in the future versions. The immediate requir
 - Ability to extend the Titap editor plugins to include custom features
 - Ability to add further commands in the slash command menu/bubble menu
 
-### Philosophy
+## Philosophy
 
 We strive for Tapwrite to seamlessly integrate with your app without extensive configuration requirements. However, we also value its potential for extension, such as the ability to customize Tiptap editor plugins to include custom features, which is part of our future enhancements plan. Our aim is for Tapwrite to operate with zero configuration while offering simple, minimal configuration options for customizing and enhancing its core behavior. We actively encourage contributors to uphold this philosophy when working on feature enhancements.
