@@ -1,6 +1,6 @@
 <h1 align="center">Tapwrite</h1>
 <p align="center">
-![image](https://github.com/user-attachments/assets/3993c0c7-29eb-4164-a6df-7cebc4c20963)
+![1715876181350](https://github.com/user-attachments/assets/ed15ea43-9485-43df-8639-bb8fa9c555b1)
 </p>
 <p align="center">
 Enhance your web applications with `Tapwrite`, a robust WYSIWYG rich text editor component for React built on top of Tiptap designed to integrate seamlessly into your projects. This component supports image and PDF file handling within the text editor environment, Table, and Slash command menu, simplifying content management for users and developers alike. 
