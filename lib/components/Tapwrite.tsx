@@ -39,7 +39,7 @@ import { NotionLikeProps } from '../main'
 import { UploadImage } from './tiptap/image/imageUpload'
 import { EditorState } from '@tiptap/pm/state'
 import { UploadAttachment } from './tiptap/attachments/attachmentUpload'
-import { Box, IconButton } from '@mui/material'
+import { Box, IconButton, Stack } from '@mui/material'
 import { AttachmentIcon } from '../icons'
 import { uploadCommand } from '../utils/uploadCommand'
 // import suggestion from "../components/tiptap/mention/suggestion.ts";
@@ -64,6 +64,7 @@ export const Editor = ({
   addAttachmentButton,
   maxUploadLimit,
   parentContainerStyle,
+  endButtons,
 }: NotionLikeProps) => {
   const initialEditorContent = placeholder ?? 'Type "/" for commands'
 
@@ -315,31 +316,34 @@ export const Editor = ({
           onFocus={() => editor.commands.focus()}
           tabIndex={0}
         />
-        {uploadFn && addAttachmentButton && (
-          <Box
-            style={{
-              alignSelf: 'flex-end',
-            }}
-          >
-            {editor.isEditable && (
-              <IconButton
-                sx={{
-                  display: editor.isEditable ? 'flex' : 'none',
+        <Stack
+          direction='row'
+          columnGap={'12px'}
+          sx={{ alignSelf: 'self-end' }}
+        >
+          {uploadFn && addAttachmentButton && (
+            <Box>
+              {editor.isEditable && (
+                <IconButton
+                  sx={{
+                    display: editor.isEditable ? 'flex' : 'none',
 
-                  '&:hover': {
-                    borderRadius: '4px',
-                    background: '#F8F9FB',
-                  },
-                }}
-                onClick={() =>
-                  uploadCommand({ editor, range: editor.state.selection })
-                }
-              >
-                <AttachmentIcon />
-              </IconButton>
-            )}
-          </Box>
-        )}
+                    '&:hover': {
+                      borderRadius: '4px',
+                      background: '#F8F9FB',
+                    },
+                  }}
+                  onClick={() =>
+                    uploadCommand({ editor, range: editor.state.selection })
+                  }
+                >
+                  <AttachmentIcon />
+                </IconButton>
+              )}
+            </Box>
+          )}
+          {endButtons}
+        </Stack>
       </div>
     </>
   )
