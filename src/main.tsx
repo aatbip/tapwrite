@@ -1,7 +1,6 @@
 import React, { useState } from 'react'
 import ReactDOM from 'react-dom/client'
 import { Tapwrite } from '../lib/main.tsx'
-import { ImagePickerUtils } from '../lib/utils/imagePickerUtils.ts'
 
 const App = () => {
   const [content, setContent] = useState<string>(
