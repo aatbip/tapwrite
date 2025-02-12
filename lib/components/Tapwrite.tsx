@@ -65,6 +65,7 @@ export const Editor = ({
   maxUploadLimit,
   parentContainerStyle,
   endButtons,
+  editorRef,
 }: NotionLikeProps) => {
   const initialEditorContent = placeholder ?? 'Type "/" for commands'
 
@@ -313,8 +314,9 @@ export const Editor = ({
           className={
             isTextInput ? `${className} ${isTextInputClassName}` : className
           }
-          onFocus={() => editor.commands.focus()}
+          onFocus={() => editor.commands.focus('end')}
           tabIndex={0}
+          ref={editorRef}
         />
         <Stack
           direction='row'
