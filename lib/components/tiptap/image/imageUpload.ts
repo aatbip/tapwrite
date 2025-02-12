@@ -4,6 +4,7 @@ import { Decoration, DecorationSet } from '@tiptap/pm/view'
 import { mergeAttributes, Node, nodeInputRule } from '@tiptap/core'
 import { Editor, ReactNodeViewRenderer } from '@tiptap/react'
 import { ImageResizeComponent } from './ImageResizeComponent'
+import { MouseEvent } from 'react'
 export const inputRegex =
   /(?:^|\s)(!\[(.+|:?)]\((\S+)(?:(?:\s+)["'](\S+)["'])?\))$/
 let imagePreview: string | null = null
@@ -13,6 +14,9 @@ interface UploadImageOptions {
   HTMLAttributes: Record<string, any>
   uploadFn: ((file: File) => Promise<string | undefined>) | null
   deleteImage?: (id: string) => Promise<void>
+  handleImageClick?: (
+    event: React.MouseEvent<HTMLImageElement, MouseEvent>
+  ) => unknown
 }
 
 export const UploadImage = Node.create<UploadImageOptions>({

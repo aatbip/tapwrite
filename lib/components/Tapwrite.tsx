@@ -48,13 +48,13 @@ import { uploadCommand } from '../utils/uploadCommand'
 
 export const Editor = ({
   uploadFn,
-  handleImagePreview,
   getContent,
   content,
   readonly = false,
   className,
   placeholder,
   onFocus,
+  handleImageClick,
   // suggestions,
   isTextInput,
   editorClass,
@@ -170,7 +170,7 @@ export const Editor = ({
       UploadImage.configure({
         uploadFn,
         deleteImage: deleteEditorAttachments && deleteEditorAttachments,
-        handleImagePreview,
+        handleImageClick,
       }),
       UploadAttachment.configure({
         uploadFn,

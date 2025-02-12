@@ -6,13 +6,15 @@ import { TiptapEditorUtils } from './utils/tiptapEditorUtils'
 
 export interface NotionLikeProps {
   uploadFn?: (file: File) => Promise<string | undefined>
-  handleImagePreview?: (url: string) => void
   getContent: (content: string) => void
   content: string
   readonly?: boolean
   className?: string
   placeholder?: string
   onFocus?: () => void
+  handleImageClick?: (
+    event: React.MouseEvent<HTMLImageElement, MouseEvent>
+  ) => unknown
   suggestions?: any
   isTextInput?: boolean
   onBlur?: () => void
@@ -43,13 +45,13 @@ export interface NotionLikeProps {
 
 export const Tapwrite = ({
   uploadFn,
-  handleImagePreview,
   getContent,
   content,
   readonly,
   className,
   placeholder,
   onFocus,
+  handleImageClick,
   isTextInput = false,
   suggestions,
   onBlur,
@@ -67,7 +69,7 @@ export const Tapwrite = ({
     <AppContextProvider>
       <Editor
         uploadFn={uploadFn}
-        handleImagePreview={handleImagePreview}
+        handleImageClick={handleImageClick}
         getContent={getContent}
         content={content}
         readonly={readonly}

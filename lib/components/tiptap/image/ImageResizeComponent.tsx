@@ -1,6 +1,12 @@
-import React, { useState, useCallback, useRef, useEffect } from 'react'
 import { NodeViewWrapper } from '@tiptap/react'
 import { Resizable } from 're-resizable'
+import React, {
+  MouseEvent,
+  useCallback,
+  useEffect,
+  useRef,
+  useState,
+} from 'react'
 import { LoadingPlaceholder } from './loadingPlaceholder'
 import { Resize } from './resizeIcon'
 
@@ -163,6 +169,9 @@ export const ImageResizeComponent = (props: any) => {
             ref={imageRef}
             className='postimage'
             onLoad={handleImageLoad}
+            onClick={(event: React.MouseEvent<HTMLImageElement, MouseEvent>) =>
+              props.extension.options.handleImageClick?.(event)
+            }
             style={{
               width: '100%',
               height: '100%',
