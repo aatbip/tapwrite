@@ -1,7 +1,6 @@
 import React, { useRef, useState } from 'react'
 import ReactDOM from 'react-dom/client'
 import { Tapwrite } from '../lib/main.tsx'
-import { ImagePickerUtils } from '../lib/utils/imagePickerUtils.ts'
 
 const App = () => {
   const [content, setContent] = useState<string>(
@@ -24,6 +23,10 @@ const App = () => {
           const url = await simulateDelay()
           return url || ''
         }}
+        handleImageClick={(event) => console.log(`\n\nClick`, event)}
+        handleImageDoubleClick={(event) =>
+          console.log(`\n\nDouble Click`, event)
+        }
         content={content}
         getContent={(newContent) => {
           setContent(newContent)

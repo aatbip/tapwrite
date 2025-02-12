@@ -1,7 +1,7 @@
 import * as React from 'react'
-import './globals.css'
 import { Editor } from './components/Tapwrite'
 import { AppContextProvider } from './context'
+import './globals.css'
 import { TiptapEditorUtils } from './utils/tiptapEditorUtils'
 import { RefObject } from 'react'
 
@@ -13,7 +13,13 @@ export interface NotionLikeProps {
   className?: string
   placeholder?: string
   onFocus?: () => void
-  suggestions?: any
+  handleImageClick?: (
+    event: React.MouseEvent<HTMLImageElement, MouseEvent>
+  ) => unknown
+  handleImageDoubleClick?: (
+    event: React.MouseEvent<HTMLImageElement, MouseEvent>
+  ) => unknown
+  // suggestions?: any
   isTextInput?: boolean
   onBlur?: () => void
   editorClass?: string
@@ -50,8 +56,10 @@ export const Tapwrite = ({
   className,
   placeholder,
   onFocus,
+  handleImageClick,
+  handleImageDoubleClick,
   isTextInput = false,
-  suggestions,
+  // suggestions,
   onBlur,
   editorClass,
   deleteEditorAttachments,
@@ -74,7 +82,9 @@ export const Tapwrite = ({
         className={className}
         placeholder={placeholder}
         onFocus={onFocus}
-        suggestions={suggestions}
+        handleImageClick={handleImageClick}
+        handleImageDoubleClick={handleImageDoubleClick}
+        // suggestions={suggestions}
         isTextInput={isTextInput}
         onBlur={onBlur}
         editorClass={editorClass}

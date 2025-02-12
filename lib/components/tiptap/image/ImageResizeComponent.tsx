@@ -1,6 +1,12 @@
-import React, { useState, useCallback, useRef, useEffect } from 'react'
 import { NodeViewWrapper } from '@tiptap/react'
 import { Resizable } from 're-resizable'
+import React, {
+  MouseEvent,
+  useCallback,
+  useEffect,
+  useRef,
+  useState,
+} from 'react'
 import { LoadingPlaceholder } from './loadingPlaceholder'
 import { Resize } from './resizeIcon'
 
@@ -88,6 +94,30 @@ export const ImageResizeComponent = (props: any) => {
       height: newHeight,
     })
   }
+  const clickTimeout = useRef<NodeJS.Timeout | null>(null)
+
+  const handleClick = (
+    event: React.MouseEvent<HTMLImageElement, MouseEvent>
+  ) => {
+    if (clickTimeout.current) {
+      clearTimeout(clickTimeout.current)
+    }
+    // Use a timeout to only call single click callback after 250ms to prevent clashing with double click
+    clickTimeout.current = setTimeout(() => {
+      props.extension.options.handleImageClick?.(event)
+      clickTimeout.current = null
+    }, 250)
+  }
+
+  const handleDoubleClick = (
+    event: React.MouseEvent<HTMLImageElement, MouseEvent>
+  ) => {
+    if (clickTimeout.current) {
+      clearTimeout(clickTimeout.current)
+      clickTimeout.current = null
+    }
+    props.extension.options.handleImageDoubleClick?.(event)
+  }
 
   const onResizeStop = (_e: any, _direction: any, ref: any, _d: any) => {
     const newWidth = parseFloat(ref.style.width)
@@ -163,6 +193,8 @@ export const ImageResizeComponent = (props: any) => {
             ref={imageRef}
             className='postimage'
             onLoad={handleImageLoad}
+            onClick={handleClick}
+            onDoubleClick={handleDoubleClick}
             style={{
               width: '100%',
               height: '100%',
