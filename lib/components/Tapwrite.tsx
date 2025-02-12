@@ -55,6 +55,7 @@ export const Editor = ({
   placeholder,
   onFocus,
   handleImageClick,
+  handleImageDoubleClick,
   // suggestions,
   isTextInput,
   editorClass,
@@ -171,6 +172,7 @@ export const Editor = ({
         uploadFn,
         deleteImage: deleteEditorAttachments && deleteEditorAttachments,
         handleImageClick,
+        handleImageDoubleClick,
       }),
       UploadAttachment.configure({
         uploadFn,

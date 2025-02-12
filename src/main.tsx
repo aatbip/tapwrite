@@ -24,6 +24,9 @@ const App = () => {
           return url || ''
         }}
         handleImageClick={(event) => console.log(`\n\nClick`, event)}
+        handleImageDoubleClick={(event) =>
+          console.log(`\n\nDouble Click`, event)
+        }
         content={content}
         getContent={(newContent) => {
           setContent(newContent)

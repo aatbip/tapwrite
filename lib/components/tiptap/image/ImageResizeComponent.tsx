@@ -172,6 +172,9 @@ export const ImageResizeComponent = (props: any) => {
             onClick={(event: React.MouseEvent<HTMLImageElement, MouseEvent>) =>
               props.extension.options.handleImageClick?.(event)
             }
+            onDoubleClick={(
+              event: React.MouseEvent<HTMLImageElement, MouseEvent>
+            ) => props.extension.options.handleImageDoubleClick?.(event)}
             style={{
               width: '100%',
               height: '100%',

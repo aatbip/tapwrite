@@ -15,7 +15,10 @@ export interface NotionLikeProps {
   handleImageClick?: (
     event: React.MouseEvent<HTMLImageElement, MouseEvent>
   ) => unknown
-  suggestions?: any
+  handleImageDoubleClick?: (
+    event: React.MouseEvent<HTMLImageElement, MouseEvent>
+  ) => unknown
+  // suggestions?: any
   isTextInput?: boolean
   onBlur?: () => void
   editorClass?: string
@@ -52,8 +55,9 @@ export const Tapwrite = ({
   placeholder,
   onFocus,
   handleImageClick,
+  handleImageDoubleClick,
   isTextInput = false,
-  suggestions,
+  // suggestions,
   onBlur,
   editorClass,
   deleteEditorAttachments,
@@ -69,14 +73,15 @@ export const Tapwrite = ({
     <AppContextProvider>
       <Editor
         uploadFn={uploadFn}
-        handleImageClick={handleImageClick}
         getContent={getContent}
         content={content}
         readonly={readonly}
         className={className}
         placeholder={placeholder}
         onFocus={onFocus}
-        suggestions={suggestions}
+        handleImageClick={handleImageClick}
+        handleImageDoubleClick={handleImageDoubleClick}
+        // suggestions={suggestions}
         isTextInput={isTextInput}
         onBlur={onBlur}
         editorClass={editorClass}

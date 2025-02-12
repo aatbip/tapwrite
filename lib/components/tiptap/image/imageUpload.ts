@@ -17,6 +17,9 @@ interface UploadImageOptions {
   handleImageClick?: (
     event: React.MouseEvent<HTMLImageElement, MouseEvent>
   ) => unknown
+  handleImageDoubleClick?: (
+    event: React.MouseEvent<HTMLImageElement, MouseEvent>
+  ) => unknown
 }
 
 export const UploadImage = Node.create<UploadImageOptions>({
