@@ -23,6 +23,7 @@ const App = () => {
           const url = await simulateDelay()
           return url || ''
         }}
+        handleImagePreview={(url: string) => console.log(`\n\nClick`, url)}
         content={content}
         getContent={(newContent) => {
           setContent(newContent)

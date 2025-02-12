@@ -48,6 +48,7 @@ import { uploadCommand } from '../utils/uploadCommand'
 
 export const Editor = ({
   uploadFn,
+  handleImagePreview,
   getContent,
   content,
   readonly = false,
@@ -167,11 +168,12 @@ export const Editor = ({
       }),
 
       UploadImage.configure({
-        uploadFn: uploadFn,
+        uploadFn,
         deleteImage: deleteEditorAttachments && deleteEditorAttachments,
+        handleImagePreview,
       }),
       UploadAttachment.configure({
-        uploadFn: uploadFn,
+        uploadFn,
         deleteAttachment: deleteEditorAttachments && deleteEditorAttachments,
         attachmentLayout: attachmentLayout && attachmentLayout,
         maxUploadLimit: maxUploadLimit && maxUploadLimit,

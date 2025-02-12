@@ -6,6 +6,7 @@ import { TiptapEditorUtils } from './utils/tiptapEditorUtils'
 
 export interface NotionLikeProps {
   uploadFn?: (file: File) => Promise<string | undefined>
+  handleImagePreview?: (url: string) => void
   getContent: (content: string) => void
   content: string
   readonly?: boolean
@@ -42,6 +43,7 @@ export interface NotionLikeProps {
 
 export const Tapwrite = ({
   uploadFn,
+  handleImagePreview,
   getContent,
   content,
   readonly,
@@ -65,6 +67,7 @@ export const Tapwrite = ({
     <AppContextProvider>
       <Editor
         uploadFn={uploadFn}
+        handleImagePreview={handleImagePreview}
         getContent={getContent}
         content={content}
         readonly={readonly}

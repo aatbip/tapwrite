@@ -14,6 +14,7 @@ interface UploadImageOptions {
   uploadFn: ((file: File) => Promise<string | undefined>) | null
   deleteImage?: (id: string) => Promise<void>
 }
+
 export const UploadImage = Node.create<UploadImageOptions>({
   name: 'uploadImage',
   onCreate() {
@@ -291,6 +292,7 @@ export const UploadImage = Node.create<UploadImageOptions>({
     ]
   },
 })
+
 // Plugin for placeholder
 const placeholderPlugin = new Plugin({
   state: {
@@ -325,6 +327,7 @@ const placeholderPlugin = new Plugin({
     },
   },
 })
+
 // Find the placeholder in the editor
 function findPlaceholder(state: any, id: any): number | null {
   const decos = placeholderPlugin.getState(state)
@@ -332,6 +335,7 @@ function findPlaceholder(state: any, id: any): number | null {
     decos && decos.find(undefined, undefined, (spec) => spec.id === id)
   return found && found.length ? found[0].from : null
 }
+
 function startImageUpload(
   view: any,
   file: File,
@@ -344,29 +348,23 @@ function startImageUpload(
   const id = {}
   // Replace the selection with a placeholder
   let tr = view.state.tr
-
   if (!tr.selection.empty) tr.deleteSelection()
   const paragraphNode = schema.nodes.paragraph.create()
   tr = tr.insert(tr.selection.from, paragraphNode)
-
   tr.setMeta(placeholderPlugin, { add: { id, pos: tr.selection.from } })
   tr = tr.setSelection(
     TextSelection.near(tr.doc.resolve(tr.selection.from + 1))
   )
-
   view.dispatch(tr)
 
   uploadFn?.(file).then(
     async (url: string | undefined) => {
       if (url) {
         await loadImageInBackground(url)
-
         const pos = findPlaceholder(view.state, id)
-
         if (pos == null) return
         const paragraphNode = schema.nodes.paragraph.create()
         // If the content around the placeholder has been deleted, drop the image
-
         // Insert the uploaded image at the placeholder's position
         !isPaste
           ? view.dispatch(
