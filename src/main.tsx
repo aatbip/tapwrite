@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useRef, useState } from 'react'
 import ReactDOM from 'react-dom/client'
 import { Tapwrite } from '../lib/main.tsx'
 import { ImagePickerUtils } from '../lib/utils/imagePickerUtils.ts'
@@ -7,7 +7,7 @@ const App = () => {
   const [content, setContent] = useState<string>(
     '<p> ashdkasd </p> <img src = "https://picsum.photos/200/300" width ="75" height="112" /> <p> hello </p>'
   )
-
+  const editRef = useRef<HTMLDivElement>(null)
   return (
     <div style={{ padding: '1.5em' }}>
       <Tapwrite
@@ -30,7 +30,18 @@ const App = () => {
           console.log(newContent)
         }}
         editorClass=''
+        editorRef={editRef}
       />
+      <button
+        onClick={() => {
+          if (editRef.current) {
+            editRef.current.focus()
+          }
+        }}
+      >
+        {' '}
+        hi
+      </button>
     </div>
   )
 }

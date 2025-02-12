@@ -3,6 +3,7 @@ import './globals.css'
 import { Editor } from './components/Tapwrite'
 import { AppContextProvider } from './context'
 import { TiptapEditorUtils } from './utils/tiptapEditorUtils'
+import { RefObject } from 'react'
 
 export interface NotionLikeProps {
   uploadFn?: (file: File) => Promise<string | undefined>
@@ -38,6 +39,7 @@ export interface NotionLikeProps {
   maxUploadLimit?: number
   parentContainerStyle?: React.CSSProperties
   endButtons?: React.ReactNode
+  editorRef?: RefObject<HTMLDivElement>
 }
 
 export const Tapwrite = ({
@@ -60,6 +62,7 @@ export const Tapwrite = ({
   maxUploadLimit,
   parentContainerStyle,
   endButtons,
+  editorRef,
 }: NotionLikeProps) => {
   return (
     <AppContextProvider>
@@ -83,6 +86,7 @@ export const Tapwrite = ({
         maxUploadLimit={maxUploadLimit}
         parentContainerStyle={parentContainerStyle}
         endButtons={endButtons}
+        editorRef={editorRef}
       />
     </AppContextProvider>
   )
