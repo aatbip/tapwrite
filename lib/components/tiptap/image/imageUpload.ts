@@ -3,7 +3,7 @@ import { Node, mergeAttributes, nodeInputRule } from '@tiptap/core'
 import { Plugin, TextSelection, Transaction } from '@tiptap/pm/state'
 import { Decoration, DecorationSet } from '@tiptap/pm/view'
 import { Editor, ReactNodeViewRenderer } from '@tiptap/react'
-import { MouseEvent } from 'react'
+
 import { ImageResizeComponent } from './ImageResizeComponent'
 
 export const inputRegex =
