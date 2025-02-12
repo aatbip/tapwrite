@@ -1,12 +1,14 @@
 /* eslint-disable */
+import { Node, mergeAttributes, nodeInputRule } from '@tiptap/core'
 import { Plugin, TextSelection, Transaction } from '@tiptap/pm/state'
 import { Decoration, DecorationSet } from '@tiptap/pm/view'
-import { mergeAttributes, Node, nodeInputRule } from '@tiptap/core'
 import { Editor, ReactNodeViewRenderer } from '@tiptap/react'
-import { ImageResizeComponent } from './ImageResizeComponent'
 import { MouseEvent } from 'react'
+import { ImageResizeComponent } from './ImageResizeComponent'
+
 export const inputRegex =
   /(?:^|\s)(!\[(.+|:?)]\((\S+)(?:(?:\s+)["'](\S+)["'])?\))$/
+
 let imagePreview: string | null = null
 
 interface UploadImageOptions {

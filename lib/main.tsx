@@ -1,7 +1,7 @@
 import * as React from 'react'
-import './globals.css'
 import { Editor } from './components/Tapwrite'
 import { AppContextProvider } from './context'
+import './globals.css'
 import { TiptapEditorUtils } from './utils/tiptapEditorUtils'
 
 export interface NotionLikeProps {
