@@ -17,6 +17,7 @@ interface UploadAttachmentOptions {
     fileSize: string
     fileType: string
     isUploading: boolean
+    onDelete: () => void
   }) => React.ReactNode
   maxUploadLimit: number | undefined
 }
