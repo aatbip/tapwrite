@@ -21,10 +21,12 @@ interface AttachmentProps {
         fileSize: string
         fileType: string
         isUploading: boolean
+        onDelete: () => void
       }) => React.ReactNode
     }
   }
   editor: Editor
+  getPos: () => number
 }
 
 export const AttachmentComponent: React.FC<AttachmentProps> = ({
@@ -32,6 +34,7 @@ export const AttachmentComponent: React.FC<AttachmentProps> = ({
   selected,
   extension,
   editor,
+  getPos,
 }) => {
   const { src, fileName, fileType, fileSize, isUploading } = node.attrs
   const { attachmentLayout } = extension.options
@@ -45,6 +48,14 @@ export const AttachmentComponent: React.FC<AttachmentProps> = ({
     return '📎' // Default icon for unknown file types
   }
 
+  const handleDelete = () => {
+    if (typeof getPos === 'function') {
+      const pos = getPos()
+      editor.commands.setNodeSelection(pos)
+      editor.commands.deleteCurrentNode()
+    }
+  }
+
   const attachmentProps = {
     selected: selected && editable,
     src: src,
@@ -52,6 +63,7 @@ export const AttachmentComponent: React.FC<AttachmentProps> = ({
     fileSize: fileSize,
     fileType: fileType,
     isUploading: isUploading,
+    onDelete: handleDelete,
   }
 
   if (isUploading) {
