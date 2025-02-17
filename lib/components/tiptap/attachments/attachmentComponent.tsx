@@ -39,16 +39,10 @@ export const AttachmentComponent: React.FC<AttachmentProps> = ({
   const { src, fileName, fileType, fileSize, isUploading } = node.attrs
   const { attachmentLayout } = extension.options
   const [isEditable, setIsEditable] = useState(editor.isEditable)
-  const [isSelected, setIsSelected] = useState(selected)
 
   useEffect(() => {
     const updateEditableState = () => {
       setIsEditable(editor.isEditable)
-      if (!editor.isEditable) {
-        setIsSelected(false)
-      } else {
-        setIsSelected(selected)
-      }
     }
     editor.on('update', updateEditableState)
     return () => {
@@ -73,7 +67,7 @@ export const AttachmentComponent: React.FC<AttachmentProps> = ({
   }
 
   const attachmentProps = {
-    selected: isSelected,
+    selected: selected && isEditable,
     src: src,
     fileName: fileName,
     fileSize: fileSize,
