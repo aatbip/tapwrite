@@ -1,5 +1,5 @@
 import { Editor, NodeViewWrapper } from '@tiptap/react'
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 
 interface AttachmentProps {
   node: {
@@ -38,7 +38,23 @@ export const AttachmentComponent: React.FC<AttachmentProps> = ({
 }) => {
   const { src, fileName, fileType, fileSize, isUploading } = node.attrs
   const { attachmentLayout } = extension.options
-  const editable = editor.isEditable
+  const [isEditable, setIsEditable] = useState(editor.isEditable)
+  const [isSelected, setIsSelected] = useState(selected)
+
+  useEffect(() => {
+    const updateEditableState = () => {
+      setIsEditable(editor.isEditable)
+      if (!editor.isEditable) {
+        setIsSelected(false)
+      } else {
+        setIsSelected(selected)
+      }
+    }
+    editor.on('update', updateEditableState)
+    return () => {
+      editor.off('update', updateEditableState)
+    }
+  }, [editor])
 
   const renderIcon = () => {
     // Render an icon based on file type (e.g., PDF icon for PDFs)
@@ -57,13 +73,14 @@ export const AttachmentComponent: React.FC<AttachmentProps> = ({
   }
 
   const attachmentProps = {
-    selected: selected && editable,
+    selected: isSelected,
     src: src,
     fileName: fileName,
     fileSize: fileSize,
     fileType: fileType,
     isUploading: isUploading,
     onDelete: handleDelete,
+    isEditable: isEditable,
   }
 
   if (isUploading) {
