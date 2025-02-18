@@ -40,6 +40,8 @@ export interface NotionLikeProps {
     fileSize: string
     fileType: string
     isUploading: boolean
+    onDelete: () => void
+    isEditable: boolean
   }) => React.ReactNode
   addAttachmentButton?: boolean
   maxUploadLimit?: number

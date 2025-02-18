@@ -12,7 +12,6 @@ import { Resize } from './resizeIcon'
 
 export const ImageResizeComponent = (props: any) => {
   const { editor } = props
-  const editable = editor.isEditable
   const [loading, setLoading] = useState(true)
   const [size, setSize] = useState({
     width: props.node.attrs.width,
@@ -27,8 +26,21 @@ export const ImageResizeComponent = (props: any) => {
   const [maxWidth, setMaxWidth] = useState<number>(0) // Dynamically calculate max width
   const [maxHeight, setMaxHeight] = useState<number>(0) // Dynamically calculate max width
 
-  // Dynamically update the max width based on the container size
+  const [isEditable, setIsEditable] = useState(editor.isEditable)
 
+  useEffect(() => {
+    const updateEditableState = () => {
+      setIsEditable(editor.isEditable)
+    }
+
+    editor.on('update', updateEditableState)
+
+    return () => {
+      editor.off('update', updateEditableState)
+    }
+  }, [editor])
+
+  // Dynamically update the max width based on the container size
   const updateDimensions = useCallback(() => {
     if (imageRef.current && containerRef.current) {
       const naturalWidth = imageRef.current.naturalWidth
@@ -156,7 +168,7 @@ export const ImageResizeComponent = (props: any) => {
           minHeight={40}
           minWidth={40}
           enable={
-            editable
+            isEditable
               ? {
                   top: false,
                   right: true,
@@ -170,7 +182,7 @@ export const ImageResizeComponent = (props: any) => {
               : false
           }
           handleComponent={{
-            left: editable && (
+            left: isEditable && (
               <div
                 className='resize-trigger left'
                 style={{ cursor: 'ew-resize', width: '10px', height: '25%' }}
@@ -178,7 +190,7 @@ export const ImageResizeComponent = (props: any) => {
                 <Resize />
               </div>
             ),
-            right: editable && (
+            right: isEditable && (
               <div
                 className='resize-trigger right'
                 style={{ cursor: 'ew-resize', width: '10px', height: '25%' }}
@@ -201,7 +213,7 @@ export const ImageResizeComponent = (props: any) => {
               objectFit: 'contain',
               borderRadius: '5px',
               outline:
-                props.selected && editable ? '1.5px solid #212B36' : 'none',
+                props.selected && isEditable ? '1.5px solid #212B36' : 'none',
               outlineOffset: '-1.5px',
             }}
           />
