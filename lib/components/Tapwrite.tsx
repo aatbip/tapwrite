@@ -78,7 +78,6 @@ export const Editor = ({
         class: editorClass ?? '',
       },
     },
-
     extensions: [
       AutofillExtension,
       IframeExtension.configure({
@@ -120,6 +119,12 @@ export const Editor = ({
                 this.editor?.isActive('orderedList')
               ) {
                 return this.editor.commands.setHardBreak()
+              }
+              if (
+                this.editor?.isActive('uploadImage') ||
+                this.editor?.isActive('uploadAttachment')
+              ) {
+                return this.editor.commands.createParagraphNear() //splitBlock only works for text based nodes.
               }
               if (hardbreak) {
                 return this.editor.commands.splitBlock() //using splitBlock() to create another node on enter instead of using setHardBreak() which applies <br> on the same node which causes anomaly on options like list and headings.
