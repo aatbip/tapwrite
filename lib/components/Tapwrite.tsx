@@ -70,6 +70,13 @@ export const Editor = ({
 }: NotionLikeProps) => {
   const initialEditorContent = placeholder ?? 'Type "/" for commands'
 
+  const isMobile = () => {
+    return (
+      /Mobi|Android|iPhone|iPad|iPod/i.test(navigator.userAgent) ||
+      window.innerWidth < 600
+    )
+  }
+
   const isTextInputClassName =
     'p-1.5 px-2.5  focus-within:border-black border-gray-300 bg-white border focus:border-black rounded-100  text-sm resize-y overflow-auto'
   const editor = useEditor({
@@ -78,7 +85,6 @@ export const Editor = ({
         class: editorClass ?? '',
       },
     },
-
     extensions: [
       AutofillExtension,
       IframeExtension.configure({
@@ -107,6 +113,25 @@ export const Editor = ({
               ) {
                 return false
               }
+
+              if (isMobile()) {
+                if (
+                  this.editor?.isActive('bulletList') ||
+                  this.editor?.isActive('orderedList')
+                ) {
+                  return this.editor.commands.setHardBreak()
+                }
+                if (
+                  this.editor?.isActive('uploadImage') ||
+                  this.editor?.isActive('uploadAttachment')
+                ) {
+                  return this.editor.commands.createParagraphNear()
+                }
+                if (hardbreak) {
+                  return this.editor.commands.splitBlock()
+                }
+                return false
+              }
               if (hardbreak) {
                 return true
               }
@@ -115,11 +140,20 @@ export const Editor = ({
             },
             // Allow Shift+Enter for line break if hardbreak is true
             'Shift-Enter': () => {
+              if (isMobile()) {
+                return false
+              }
               if (
                 this.editor?.isActive('bulletList') ||
                 this.editor?.isActive('orderedList')
               ) {
                 return this.editor.commands.setHardBreak()
+              }
+              if (
+                this.editor?.isActive('uploadImage') ||
+                this.editor?.isActive('uploadAttachment')
+              ) {
+                return this.editor.commands.createParagraphNear() //splitBlock only works for text based nodes.
               }
               if (hardbreak) {
                 return this.editor.commands.splitBlock() //using splitBlock() to create another node on enter instead of using setHardBreak() which applies <br> on the same node which causes anomaly on options like list and headings.

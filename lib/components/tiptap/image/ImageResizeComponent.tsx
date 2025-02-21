@@ -211,7 +211,7 @@ export const ImageResizeComponent = (props: any) => {
               width: '100%',
               height: '100%',
               objectFit: 'contain',
-              borderRadius: '5px',
+              borderRadius: '2px',
               outline:
                 props.selected && isEditable ? '1.5px solid #212B36' : 'none',
               outlineOffset: '-1.5px',
