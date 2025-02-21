@@ -311,6 +311,13 @@ const placeholderPlugin = new Plugin({
     apply(tr: Transaction, set: DecorationSet) {
       // Adjust decoration positions to changes made by the transaction
       set = set.map(tr.mapping, tr.doc)
+
+      const decos = set.find()
+      for (const deco of decos) {
+        if (deco.from < 0 || deco.from > tr.doc.content.size) {
+          set = set.remove([deco])
+        }
+      }
       const action = tr.getMeta(placeholderPlugin)
       if (action?.add) {
         const widget = document.createElement('div')
@@ -318,7 +325,8 @@ const placeholderPlugin = new Plugin({
         widget.classList.add('image-uploading')
         img.src = imagePreview ?? ''
         widget.appendChild(img)
-        const deco = Decoration.widget(action.add.pos, widget, {
+        const pos = Math.min(action.add.pos, tr.doc.content.size)
+        const deco = Decoration.widget(pos, widget, {
           id: action.add.id,
         })
         set = set.add(tr.doc, [deco])
