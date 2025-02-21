@@ -94,7 +94,29 @@ export const floatingMenuSuggestion = (
             if (target.files?.length) {
               const file = target.files[0]
               tiptapEditorUtils.setAttachment(file) // show everything as attachments from upload menu suggestion
-              editor.view.focus()
+              editor.commands.focus()
+            }
+          })
+
+          fileHolder.click()
+        },
+      })
+      items.push({
+        title: 'Image',
+        command: async ({ editor, range }: { editor: Editor; range: any }) => {
+          const tiptapEditorUtils = new TiptapEditorUtils(editor)
+          tiptapEditorUtils.deleteRange(range)
+          const fileHolder = document.createElement('input')
+          fileHolder.setAttribute('type', 'file')
+          fileHolder.setAttribute('accept', 'image/*')
+          fileHolder.setAttribute('style', 'visibility:hidden')
+          document.body.appendChild(fileHolder)
+          fileHolder.addEventListener('change', (e: Event) => {
+            const target = e.target as HTMLInputElement
+            if (target.files?.length) {
+              const file = target.files[0]
+              tiptapEditorUtils.setImage(file)
+              editor.commands.focus()
             }
           })
 

@@ -10,7 +10,9 @@ import {
   UploadIcon2,
   CalloutIcon,
   TableIcon,
+  ImageUploadIcon,
 } from './../../../icons'
+
 import { useAppState } from '../../../context/useAppState'
 
 const FloatingContainerBtn = ({
@@ -50,6 +52,8 @@ const FloatingContainerBtn = ({
           <NumberedListIcon />
         ) : label === 'Upload' ? (
           <UploadIcon2 />
+        ) : label === 'Image' ? (
+          <ImageUploadIcon />
         ) : label === 'Table' ? (
           <TableIcon />
         ) : label === 'Callout' ? (
