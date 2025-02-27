@@ -17,6 +17,7 @@ export const ImageResizeComponent = (props: any) => {
     width: props.node.attrs.width,
     height: props.node.attrs.height,
   })
+
   const [aspectRatio, setAspectRatio] = useState(1)
   const imageRef = useRef<HTMLImageElement | null>(null)
   const containerRef = useRef<HTMLImageElement | null>(null)
