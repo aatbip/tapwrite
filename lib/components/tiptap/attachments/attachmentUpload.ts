@@ -132,8 +132,6 @@ export const UploadAttachment = Node.create<UploadAttachmentOptions>({
   },
 
   addCommands() {
-    const { deleteAttachment } = this.options
-
     return {
       addAttachment:
         (file: File) =>

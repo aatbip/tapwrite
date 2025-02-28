@@ -166,7 +166,6 @@ export const UploadImage = Node.create<CustomImageOptions>({
         ({
           tr,
           dispatch,
-          state,
           editor,
         }: {
           tr: Transaction
@@ -390,7 +389,7 @@ export const UploadImage = Node.create<CustomImageOptions>({
             },
 
             // Handle paste
-            paste: (view: EditorView, event: ClipboardEvent) => {
+            paste: (_view: EditorView, event: ClipboardEvent) => {
               const items = event?.clipboardData?.items
               const { uploadFn } = this.options
 
