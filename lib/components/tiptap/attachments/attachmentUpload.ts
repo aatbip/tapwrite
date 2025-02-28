@@ -59,7 +59,7 @@ export const UploadAttachment = Node.create<UploadAttachmentOptions>({
     return this.options.inline ? 'inline' : 'block'
   },
 
-  draggable: true,
+  draggable: false,
 
   addAttributes(): Record<keyof AttachmentAttributes, any> {
     return {
@@ -267,7 +267,7 @@ export const UploadAttachment = Node.create<UploadAttachmentOptions>({
           ) {
             return false
           }
-          console.log(selection.from)
+
           const attachmentUrl = node.attrs.src
           const tr = state.tr.replaceWith(
             selection.from,

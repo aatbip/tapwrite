@@ -55,7 +55,6 @@ function loadImageInBackground(url: string): Promise<HTMLImageElement> {
 }
 
 const createPlaceholderPlugin = () => {
-  console.log('runningplaceholder')
   return new Plugin({
     key: uploadKey,
     state: {
@@ -103,7 +102,6 @@ const createPlaceholderPlugin = () => {
     },
   })
 }
-console.log('running plugin')
 
 export const UploadImage = Node.create<CustomImageOptions>({
   name: 'uploadImage',
@@ -126,7 +124,7 @@ export const UploadImage = Node.create<CustomImageOptions>({
     return this.options.inline ? 'inline' : 'block'
   },
 
-  draggable: true,
+  draggable: false,
 
   addAttributes() {
     return {
@@ -178,7 +176,6 @@ export const UploadImage = Node.create<CustomImageOptions>({
         }) => {
           if (!dispatch || !file) return false
           const uploadFn = this.options.uploadFn
-          console.log('running add')
 
           if (!uploadFn) return false
           const { schema } = editor
@@ -247,7 +244,7 @@ export const UploadImage = Node.create<CustomImageOptions>({
         () =>
         ({ state, dispatch }) => {
           const { selection } = state
-          console.log('running deleteNode')
+
           if (
             !selection ||
             selection.from < 0 ||
@@ -255,7 +252,7 @@ export const UploadImage = Node.create<CustomImageOptions>({
           ) {
             return false
           }
-          console.log('hey')
+
           const node = state.doc.nodeAt(selection.from)
 
           if (
@@ -279,7 +276,6 @@ export const UploadImage = Node.create<CustomImageOptions>({
             dispatch(tr)
           }
 
-          console.log('dispatching')
           if (this.options.deleteImage && imageUrl) {
             this.options.deleteImage(imageUrl).catch((err) => {
               console.error('Failed to delete image:', err)
@@ -352,14 +348,12 @@ export const UploadImage = Node.create<CustomImageOptions>({
   },
 
   addProseMirrorPlugins() {
-    console.log('running')
     return [
       createPlaceholderPlugin(),
       new Plugin({
         props: {
           handleDOMEvents: {
             drop: (view: EditorView, event: DragEvent) => {
-              console.log('running drop')
               const { uploadFn } = this.options
 
               if (!uploadFn || !event.dataTransfer?.files.length) {
@@ -397,8 +391,6 @@ export const UploadImage = Node.create<CustomImageOptions>({
 
             // Handle paste
             paste: (view: EditorView, event: ClipboardEvent) => {
-              console.log('running paste')
-
               const items = event?.clipboardData?.items
               const { uploadFn } = this.options
 

@@ -34,6 +34,7 @@ const App = () => {
         }}
         editorClass=''
         editorRef={editRef}
+        hardbreak
       />
       <button
         onClick={() => {
