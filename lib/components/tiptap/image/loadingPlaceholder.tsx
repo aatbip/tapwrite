@@ -8,6 +8,7 @@ export const LoadingPlaceholder = ({
   height: number
 }) => {
   const proseMirrorContainerDiv = document.querySelector('.node-uploadImage')
+
   return (
     <div className='image-placeholder'>
       <div className='blur'>
@@ -19,9 +20,11 @@ export const LoadingPlaceholder = ({
             maxWidth: proseMirrorContainerDiv
               ? proseMirrorContainerDiv.clientWidth
               : 'auto',
-            maxHeight: proseMirrorContainerDiv
-              ? proseMirrorContainerDiv.clientWidth / (width / height)
-              : 'auto',
+            maxHeight:
+              proseMirrorContainerDiv &&
+              proseMirrorContainerDiv.clientWidth / (width / height)
+                ? proseMirrorContainerDiv.clientWidth / (width / height)
+                : 'auto',
           }}
         />
       </div>

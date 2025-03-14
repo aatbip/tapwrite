@@ -1,10 +1,10 @@
 <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
 <g id="Icons">
-<path id="Vector" d="M3.5 3.5L4.125 13.5C4.15469 14.0778 4.575 14.5 5.125 14.5H10.875C11.4272 14.5 11.8397 14.0778 11.875 13.5L12.5 3.5" stroke="#C9CBCD" stroke-width="1.25" stroke-linecap="round" stroke-linejoin="round"/>
-<path id="Vector_2" d="M2.5 3.5H13.5" stroke="#C9CBCD" stroke-width="1.25" stroke-miterlimit="10" stroke-linecap="round"/>
-<path id="Vector_3" d="M6 3.5V2.25C5.99971 2.15143 6.01892 2.05377 6.05651 1.96265C6.09409 1.87152 6.14933 1.78873 6.21903 1.71903C6.28873 1.64933 6.37152 1.59409 6.46265 1.55651C6.55377 1.51892 6.65143 1.49971 6.75 1.5H9.25C9.34858 1.49971 9.44623 1.51892 9.53736 1.55651C9.62848 1.59409 9.71128 1.64933 9.78098 1.71903C9.85068 1.78873 9.90591 1.87152 9.9435 1.96265C9.98109 2.05377 10.0003 2.15143 10 2.25V3.5" stroke="#C9CBCD" stroke-width="1.25" stroke-linecap="round" stroke-linejoin="round"/>
-<path id="Vector_4" d="M8 5.5V12.5" stroke="#C9CBCD" stroke-width="1.25" stroke-linecap="round" stroke-linejoin="round"/>
-<path id="Vector_5" d="M5.75 5.5L6 12.5" stroke="#C9CBCD" stroke-width="1.25" stroke-linecap="round" stroke-linejoin="round"/>
-<path id="Vector_6" d="M10.25 5.5L10 12.5" stroke="#C9CBCD" stroke-width="1.25" stroke-linecap="round" stroke-linejoin="round"/>
+<path id="Vector" d="M3.5 3.5L4.125 13.5C4.15469 14.0778 4.575 14.5 5.125 14.5H10.875C11.4272 14.5 11.8397 14.0778 11.875 13.5L12.5 3.5" stroke="#C9CBCD" strokeWidth="1.25" strokeLinecap="round" strokeLinejoin="round"/>
+<path id="Vector_2" d="M2.5 3.5H13.5" stroke="#C9CBCD" strokeWidth="1.25" stroke-miterlimit="10" strokeLinecap="round"/>
+<path id="Vector_3" d="M6 3.5V2.25C5.99971 2.15143 6.01892 2.05377 6.05651 1.96265C6.09409 1.87152 6.14933 1.78873 6.21903 1.71903C6.28873 1.64933 6.37152 1.59409 6.46265 1.55651C6.55377 1.51892 6.65143 1.49971 6.75 1.5H9.25C9.34858 1.49971 9.44623 1.51892 9.53736 1.55651C9.62848 1.59409 9.71128 1.64933 9.78098 1.71903C9.85068 1.78873 9.90591 1.87152 9.9435 1.96265C9.98109 2.05377 10.0003 2.15143 10 2.25V3.5" stroke="#C9CBCD" strokeWidth="1.25" strokeLinecap="round" strokeLinejoin="round"/>
+<path id="Vector_4" d="M8 5.5V12.5" stroke="#C9CBCD" strokeWidth="1.25" strokeLinecap="round" strokeLinejoin="round"/>
+<path id="Vector_5" d="M5.75 5.5L6 12.5" stroke="#C9CBCD" strokeWidth="1.25" strokeLinecap="round" strokeLinejoin="round"/>
+<path id="Vector_6" d="M10.25 5.5L10 12.5" stroke="#C9CBCD" strokeWidth="1.25" strokeLinecap="round" strokeLinejoin="round"/>
 </g>
 </svg>

@@ -1,17 +1,29 @@
-/* eslint-disable */
-import { Node, mergeAttributes, nodeInputRule } from '@tiptap/core'
-import { Plugin, TextSelection, Transaction } from '@tiptap/pm/state'
-import { Decoration, DecorationSet } from '@tiptap/pm/view'
-import { Editor, ReactNodeViewRenderer } from '@tiptap/react'
-
+import { Node, mergeAttributes } from '@tiptap/core'
+import {
+  Plugin,
+  PluginKey,
+  Transaction,
+  EditorState,
+  TextSelection,
+} from '@tiptap/pm/state'
+import { Decoration, DecorationSet, EditorView } from '@tiptap/pm/view'
+import { ReactNodeViewRenderer, Editor } from '@tiptap/react'
 import { ImageResizeComponent } from './ImageResizeComponent'
 
-export const inputRegex =
-  /(?:^|\s)(!\[(.+|:?)]\((\S+)(?:(?:\s+)["'](\S+)["'])?\))$/
+const uploadKey = new PluginKey('upload-image')
 
-let imagePreview: string | null = null
+interface UploadAction {
+  add?: {
+    id: Record<string, never>
+    pos: number
+    src?: string
+  }
+  remove?: {
+    id: Record<string, never>
+  }
+}
 
-interface UploadImageOptions {
+export interface CustomImageOptions {
   inline: boolean
   HTMLAttributes: Record<string, any>
   uploadFn: ((file: File) => Promise<string | undefined>) | null
@@ -24,380 +36,13 @@ interface UploadImageOptions {
   ) => unknown
 }
 
-export const UploadImage = Node.create<UploadImageOptions>({
-  name: 'uploadImage',
-  onCreate() {
-    //leaving this empty because to prevent props being globally overridden.
-  },
-  addOptions() {
-    return {
-      inline: false,
-      group: 'block',
-      draggable: 'true',
-      HTMLAttributes: {},
-      uploadFn: null,
-      deleteImage: undefined,
-    }
-  },
-  inline() {
-    return this.options.inline
-  },
-  group() {
-    return this.options.inline ? 'inline' : 'block'
-  },
-  draggable: true,
-  addAttributes() {
-    return {
-      src: {
-        default: null,
-      },
-      alt: {
-        default: null,
-      },
-      title: {
-        default: null,
-      },
-      width: {
-        default: '100%',
-        renderHTML: (attributes: Record<string, any>) => {
-          return {
-            width: attributes.width,
-          }
-        },
-      },
-      height: {
-        default: 'auto',
-        renderHTML: (attributes: Record<string, any>) => {
-          return {
-            height: attributes.height,
-          }
-        },
-      },
-      isDraggable: {
-        default: true,
-        renderHTML: () => {
-          return {}
-        },
-      },
-    }
-  },
-  parseHTML() {
-    return [
-      {
-        tag: 'img[src]',
-      },
-    ]
-  },
-  renderHTML({ HTMLAttributes }) {
-    return ['img', mergeAttributes(this.options.HTMLAttributes, HTMLAttributes)]
-  },
-  addNodeView() {
-    return ReactNodeViewRenderer(ImageResizeComponent)
-  },
-  addCommands() {
-    const { deleteImage } = this.options
-    return {
-      addImage:
-        (file: File) =>
-        ({
-          tr,
-          dispatch,
-          state,
-          editor,
-        }: {
-          tr: any
-          dispatch: any
-          state: any
-          editor: Editor
-        }) => {
-          if (!dispatch || !file) return false
-
-          const schema = editor.schema
-          const uploadFn = this.options.uploadFn
-
-          if (!state.selection.$from.parent.inlineContent) return false
-
-          // Create a unique ID for this upload
-          const id = {}
-          imagePreview = URL.createObjectURL(file)
-
-          // Set up the initial transaction
-          let transaction = tr
-
-          if (!transaction.selection.empty) {
-            transaction = transaction.deleteSelection()
-          }
-
-          // Insert paragraph node and placeholder
-          const paragraphNode = schema.nodes.paragraph.create()
-          transaction = transaction
-            .insert(transaction.selection.from, paragraphNode)
-            .setMeta(placeholderPlugin, {
-              add: { id, pos: transaction.selection.from },
-            })
-            .setSelection(
-              TextSelection.near(
-                transaction.doc.resolve(transaction.selection.from + 1)
-              )
-            )
-
-          dispatch(transaction)
-
-          // Handle the upload
-          uploadFn?.(file).then(
-            async (url: string | undefined) => {
-              if (url) {
-                await loadImageInBackground(url)
-                const pos = findPlaceholder(editor.state, id)
-                if (pos == null) return
-                const imageNode = schema.nodes.uploadImage.create({ src: url })
-                const finalTr = editor.state.tr
-                  .replaceWith(pos, pos + 1, imageNode)
-                  .setMeta(placeholderPlugin, { remove: { id } })
-                editor.view.dispatch(finalTr)
-              }
-            },
-            () => {
-              const cleanupTr = editor.state.tr.setMeta(placeholderPlugin, {
-                remove: { id },
-              })
-              editor.view.dispatch(cleanupTr)
-            }
-          )
-          return true
-        }, //addCommand refactored because of the range error
-
-      deleteCurrentNode:
-        () =>
-        ({ state, dispatch }) => {
-          const { selection } = state
-          const node = state.doc.nodeAt(selection.from)
-          if (
-            node &&
-            (node.type.name === this.name ||
-              node.type.name === 'uploadAttachment') //also handles deletion of attachments
-          ) {
-            const imageUrl = node.attrs.src
-            dispatch &&
-              dispatch(
-                state.tr.replaceWith(
-                  selection.from,
-                  selection.to,
-                  state.schema.nodes.paragraph.create()
-                )
-              )
-
-            if (deleteImage) {
-              deleteImage(imageUrl)
-            }
-
-            return true
-          }
-          return false
-        },
-    }
-  },
-  addInputRules() {
-    return [
-      nodeInputRule({
-        find: inputRegex,
-        type: this.type,
-        getAttributes: (match) => {
-          const [, , alt, src, title, height, width, isDraggable] = match
-          return { src, alt, title, height, width, isDraggable }
-        },
-      }),
-    ]
-  },
-  addKeyboardShortcuts() {
-    return {
-      Backspace: ({ editor }) => editor.commands.deleteCurrentNode(),
-      Delete: ({ editor }) => editor.commands.deleteCurrentNode(),
-    }
-  },
-  addProseMirrorPlugins() {
-    return [
-      placeholderPlugin,
-      new Plugin({
-        props: {
-          handleDOMEvents: {
-            drop: (view, event) => {
-              const uploadFn = this.options.uploadFn
-              const hasFiles =
-                event.dataTransfer &&
-                event.dataTransfer.files &&
-                event.dataTransfer.files.length > 0
-
-              if (!hasFiles || !uploadFn) {
-                return false
-              } // checking uploadFn exists or not for dnd of images.
-
-              event.preventDefault()
-
-              const images = Array.from(event.dataTransfer.files).filter(
-                (file) => /image/i.test(file.type)
-              )
-
-              if (images.length === 0) {
-                return false
-              }
-
-              const { schema } = view.state
-
-              const file = images[0]
-
-              const tr = view.state.tr.setSelection(
-                TextSelection.create(view.state.doc, view.state.selection.from)
-              )
-              view.dispatch(tr)
-
-              file && startImageUpload(view, file, schema, uploadFn, true)
-
-              return true
-            },
-            paste: (view, event) => {
-              const items = event?.clipboardData?.items
-              const uploadFn = this.options.uploadFn
-
-              const images = []
-              if (items) {
-                for (let i = 0; i < items.length; i++) {
-                  const item = items[i]
-                  if (item.type.startsWith('image') && uploadFn) {
-                    images.push(item.getAsFile())
-                  } // checking uploadFn exists or not for copy pasting images.
-                  else if (item.type === 'text/html' && !uploadFn) {
-                    const html = event.clipboardData.getData('text/html')
-                    if (html.includes('<img')) {
-                      event.preventDefault()
-
-                      return true
-                    }
-                  }
-                }
-              }
-
-              if (images.length === 0) {
-                return false
-              }
-
-              event.preventDefault()
-
-              const file = images[0]
-              const { schema } = view.state
-
-              const tr = view.state.tr.setSelection(
-                TextSelection.create(view.state.doc, view.state.selection.from)
-              )
-              view.dispatch(tr)
-
-              file && startImageUpload(view, file, schema, uploadFn, true)
-
-              return true
-            },
-          },
-        },
-      }),
-    ]
-  },
-})
-
-// Plugin for placeholder
-const placeholderPlugin = new Plugin({
-  state: {
-    init() {
-      return DecorationSet.empty
-    },
-    apply(tr: Transaction, set: DecorationSet) {
-      // Adjust decoration positions to changes made by the transaction
-      set = set.map(tr.mapping, tr.doc)
-      const action = tr.getMeta(placeholderPlugin)
-      if (action?.add) {
-        const widget = document.createElement('div')
-        const img = document.createElement('img')
-        widget.classList.add('image-uploading')
-        img.src = imagePreview ?? ''
-        widget.appendChild(img)
-        const deco = Decoration.widget(action.add.pos, widget, {
-          id: action.add.id,
-        })
-        set = set.add(tr.doc, [deco])
-      } else if (action?.remove) {
-        set = set.remove(
-          set.find(undefined, undefined, (spec) => spec.id === action.remove.id)
-        )
-      }
-      return set
-    },
-  },
-  props: {
-    decorations(state) {
-      return this.getState(state)
-    },
-  },
-})
-
-// Find the placeholder in the editor
-function findPlaceholder(state: any, id: any): number | null {
-  const decos = placeholderPlugin.getState(state)
-  const found =
-    decos && decos.find(undefined, undefined, (spec) => spec.id === id)
-  return found && found.length ? found[0].from : null
-}
-
-function startImageUpload(
-  view: any,
-  file: File,
-  schema: any,
-  uploadFn: ((file: File) => Promise<string | undefined>) | null, // handing uploadFn separately on startImageUpload for preventing overriding of uploadFn props for multiple tapwrite instances.
-  isPaste: boolean = false
-) {
-  imagePreview = URL.createObjectURL(file)
-  // A fresh object to act as the ID for this upload
-  const id = {}
-  // Replace the selection with a placeholder
-  let tr = view.state.tr
-  if (!tr.selection.empty) tr.deleteSelection()
-  const paragraphNode = schema.nodes.paragraph.create()
-  tr = tr.insert(tr.selection.from, paragraphNode)
-  tr.setMeta(placeholderPlugin, { add: { id, pos: tr.selection.from } })
-  tr = tr.setSelection(
-    TextSelection.near(tr.doc.resolve(tr.selection.from + 1))
-  )
-  view.dispatch(tr)
-
-  uploadFn?.(file).then(
-    async (url: string | undefined) => {
-      if (url) {
-        await loadImageInBackground(url)
-        const pos = findPlaceholder(view.state, id)
-        if (pos == null) return
-        const paragraphNode = schema.nodes.paragraph.create()
-        // If the content around the placeholder has been deleted, drop the image
-        // Insert the uploaded image at the placeholder's position
-        !isPaste
-          ? view.dispatch(
-              view.state.tr
-                .replaceWith(
-                  pos,
-                  pos + 1,
-                  schema.nodes.uploadImage.create({ src: url }),
-                  paragraphNode
-                )
-                .setMeta(placeholderPlugin, { remove: { id } })
-            )
-          : view.dispatch(
-              view.state.tr
-                .insert(pos, schema.nodes.uploadImage.create({ src: url }))
-                .setMeta(placeholderPlugin, { remove: { id } })
-            )
-      }
-    },
-    () => {
-      // On failure, clean up the placeholder
-      view.dispatch(tr.setMeta(placeholderPlugin, { remove: { id } }))
-    }
-  )
+function findPlaceholder(
+  state: EditorState,
+  id: Record<string, never>
+): number | null {
+  const decos = uploadKey.getState(state) as DecorationSet
+  const found = decos.find(undefined, undefined, (spec) => spec.id === id)
+  return found.length ? found[0].from : null
 }
 
 function loadImageInBackground(url: string): Promise<HTMLImageElement> {
@@ -408,3 +53,370 @@ function loadImageInBackground(url: string): Promise<HTMLImageElement> {
     img.onerror = reject
   })
 }
+
+const createPlaceholderPlugin = () => {
+  return new Plugin({
+    key: uploadKey,
+    state: {
+      init(): DecorationSet {
+        return DecorationSet.empty
+      },
+      apply(tr: Transaction, set: DecorationSet): DecorationSet {
+        set = set.map(tr.mapping, tr.doc)
+
+        const action = tr.getMeta(uploadKey) as UploadAction | undefined
+
+        if (action?.add) {
+          const { id, pos, src } = action.add
+          if (pos >= tr.doc.content.size) return set
+
+          const placeholder = document.createElement('div')
+          placeholder.setAttribute('class', 'image-uploading')
+
+          if (src) {
+            const image = document.createElement('img')
+            image.setAttribute('class', 'imageClass')
+            image.src = src
+            placeholder.appendChild(image)
+          }
+
+          const deco = Decoration.widget(pos, placeholder, { id })
+          set = set.add(tr.doc, [deco])
+        } else if (action?.remove) {
+          set = set.remove(
+            set.find(
+              undefined,
+              undefined,
+              (spec) => spec.id === action.remove?.id
+            )
+          )
+        }
+
+        return set
+      },
+    },
+    props: {
+      decorations(state: EditorState) {
+        return this.getState(state)
+      },
+    },
+  })
+}
+
+export const UploadImage = Node.create<CustomImageOptions>({
+  name: 'uploadImage',
+
+  addOptions() {
+    return {
+      inline: false,
+      HTMLAttributes: {},
+      uploadFn: null,
+      deleteImage: undefined,
+      imageClass: 'editor-image',
+    }
+  },
+
+  inline() {
+    return this.options.inline
+  },
+
+  group() {
+    return this.options.inline ? 'inline' : 'block'
+  },
+
+  draggable: false,
+
+  addAttributes() {
+    return {
+      src: { default: null },
+      alt: { default: null },
+      title: { default: null },
+      width: {
+        default: '100%',
+        renderHTML: (attributes: Record<string, any>) => ({
+          width: attributes.width,
+        }),
+      },
+      height: {
+        default: 'auto',
+        renderHTML: (attributes: Record<string, any>) => ({
+          height: attributes.height,
+        }),
+      },
+    }
+  },
+
+  parseHTML() {
+    return [{ tag: 'img[src]' }]
+  },
+
+  renderHTML({ HTMLAttributes }) {
+    return ['img', mergeAttributes(this.options.HTMLAttributes, HTMLAttributes)]
+  },
+
+  // Connect your custom React component
+  addNodeView() {
+    return ReactNodeViewRenderer(ImageResizeComponent)
+  },
+
+  addCommands() {
+    return {
+      addImage:
+        (file: File) =>
+        ({
+          tr,
+          dispatch,
+          editor,
+        }: {
+          tr: Transaction
+          dispatch: ((tr: Transaction) => void) | undefined
+          state: EditorState
+          editor: Editor
+        }) => {
+          if (!dispatch || !file) return false
+          const uploadFn = this.options.uploadFn
+
+          if (!uploadFn) return false
+          const { schema } = editor
+
+          const id = {} as Record<string, never>
+
+          const previewUrl = URL.createObjectURL(file)
+
+          let transaction = tr
+          if (!transaction.selection.empty) {
+            transaction = transaction.deleteSelection()
+          }
+
+          const paragraphNode = editor.schema.nodes.paragraph.create()
+          transaction = transaction.insert(
+            transaction.selection.from,
+            paragraphNode
+          )
+
+          transaction = transaction.setMeta(uploadKey, {
+            add: {
+              id,
+              pos: transaction.selection.from,
+              src: previewUrl,
+            },
+          })
+
+          dispatch(transaction)
+
+          // Handle the upload
+          uploadFn(file).then(
+            async (url: string | undefined) => {
+              if (url) {
+                // Preload image
+                await loadImageInBackground(url)
+
+                // Find the placeholder position
+                const pos = findPlaceholder(editor.state, id)
+                if (pos == null) return
+
+                // Create image node
+                const imageNode = schema.nodes.uploadImage.create({ src: url })
+
+                // Replace placeholder with actual image
+                const finalTr = editor.state.tr
+                  .replaceWith(pos, pos, imageNode)
+                  .setMeta(uploadKey, { remove: { id } })
+
+                editor.view.dispatch(finalTr)
+              }
+            },
+            (error: Error) => {
+              // Clean up on error
+              const cleanupTr = editor.state.tr.setMeta(uploadKey, {
+                remove: { id },
+              })
+
+              editor.view.dispatch(cleanupTr)
+              console.error('Image upload failed', error)
+            }
+          )
+
+          return true
+        },
+      deleteCurrentNode:
+        () =>
+        ({ state, dispatch }) => {
+          const { selection } = state
+
+          if (
+            !selection ||
+            selection.from < 0 ||
+            selection.from >= state.doc.content.size
+          ) {
+            return false
+          }
+
+          const node = state.doc.nodeAt(selection.from)
+
+          if (
+            !node ||
+            (node.type.name !== this.name &&
+              node.type.name !== 'uploadAttachment')
+          ) {
+            return false
+          }
+
+          const imageUrl = node.attrs.src
+          const tr = state.tr
+            .replaceWith(
+              selection.from,
+              selection.from + node.nodeSize,
+              state.schema.nodes.paragraph.create()
+            )
+            .setSelection(TextSelection.near(state.doc.resolve(selection.from)))
+
+          if (dispatch) {
+            dispatch(tr)
+          }
+
+          if (this.options.deleteImage && imageUrl) {
+            this.options.deleteImage(imageUrl).catch((err) => {
+              console.error('Failed to delete image:', err)
+            })
+          }
+          return true
+        },
+    }
+  },
+
+  addKeyboardShortcuts() {
+    return {
+      Backspace: ({ editor }) => {
+        const { selection } = editor.state
+
+        if (!selection || selection.empty) {
+          return false
+        }
+
+        const docSize = editor.state.doc.content.size
+        if (selection.from < 0 || selection.from >= docSize) {
+          return false
+        }
+
+        try {
+          const node = editor.state.doc.nodeAt(selection.from)
+
+          if (
+            !node ||
+            (node.type.name !== this.name && node.type.name !== 'uploadImage')
+          ) {
+            return false
+          }
+
+          return editor.commands.deleteCurrentNode()
+        } catch (error) {
+          console.error('Error handling Backspace:', error)
+          return false
+        }
+      },
+      Delete: ({ editor }) => {
+        const { selection } = editor.state
+
+        if (!selection || selection.empty) {
+          return false
+        }
+
+        const docSize = editor.state.doc.content.size
+        if (selection.from < 0 || selection.from >= docSize) {
+          return false
+        }
+
+        try {
+          const node = editor.state.doc.nodeAt(selection.from)
+
+          if (
+            !node ||
+            (node.type.name !== this.name && node.type.name !== 'uploadImage')
+          ) {
+            return false
+          }
+
+          return editor.commands.deleteCurrentNode()
+        } catch (error) {
+          console.error('Error handling Delete:', error)
+          return false
+        }
+      },
+    }
+  },
+
+  addProseMirrorPlugins() {
+    return [
+      createPlaceholderPlugin(),
+      new Plugin({
+        props: {
+          handleDOMEvents: {
+            drop: (view: EditorView, event: DragEvent) => {
+              const { uploadFn } = this.options
+
+              if (!uploadFn || !event.dataTransfer?.files.length) {
+                return false
+              }
+
+              const images = Array.from(event.dataTransfer.files).filter(
+                (file) => /image/i.test(file.type)
+              )
+
+              if (images.length === 0) return false
+
+              event.preventDefault()
+
+              // Get coordinates
+              const coords = view.posAtCoords({
+                left: event.clientX,
+                top: event.clientY,
+              })
+
+              if (!coords) return false
+
+              const tr = view.state.tr.setSelection(
+                (view.state.selection.constructor as any).near(
+                  view.state.doc.resolve(coords.pos)
+                )
+              )
+              view.dispatch(tr)
+
+              //@ts-expect-error addImage() is a method
+              this.editor.commands.addImage(images[0])
+
+              return true
+            },
+
+            // Handle paste
+            paste: (_view: EditorView, event: ClipboardEvent) => {
+              const items = event?.clipboardData?.items
+              const { uploadFn } = this.options
+
+              if (!items || !uploadFn) return false
+
+              const images: File[] = []
+              for (let i = 0; i < items.length; i++) {
+                const item = items[i]
+                if (item.type.startsWith('image')) {
+                  const file = item.getAsFile()
+                  if (file) images.push(file)
+                }
+              }
+
+              if (images.length === 0) return false
+
+              event.preventDefault()
+
+              // Execute the addImage command with the file
+              //@ts-expect-error addImage() is a method
+              this.editor.commands.addImage(images[0])
+
+              return true
+            },
+          },
+        },
+      }),
+    ]
+  },
+})
