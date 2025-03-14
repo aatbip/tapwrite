@@ -114,7 +114,7 @@
 .tiptap ul,
 .tiptap ol {
   padding: 0 2.5rem;
-  color: #6b6f76;
+  color: var(--text-primary);
   font-size: 14px;
   font-style: normal;
   font-weight: 400;
