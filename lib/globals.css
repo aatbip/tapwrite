@@ -2,6 +2,10 @@
 @tailwind components;
 @tailwind utilities;
 
+:root {
+  --text-primary: #212b36;
+}
+
 .editable .pill-extension {
   display: inline-flex;
   flex-wrap: wrap;
@@ -22,6 +26,7 @@
   flex-grow: 0;
   max-width: calc(100% - 12px);
 }
+
 .embed:hover .resize-trigger {
   opacity: 1;
 }
@@ -74,7 +79,7 @@
   font-style: normal !important;
   font-weight: 500 !important;
   line-height: 24px !important;
-  color: #212b36 !important;
+  color: var(--text-primary) !important;
 }
 
 .tiptap h2 {
@@ -82,7 +87,7 @@
   font-style: normal !important;
   font-weight: 500 !important;
   line-height: 22px !important;
-  color: #212b36 !important;
+  color: var(--text-primary) !important;
 }
 
 .tiptap h3 {
@@ -90,7 +95,7 @@
   font-style: normal !important;
   font-weight: 500 !important;
   line-height: 21px !important;
-  color: #212b36 !important;
+  color: var(--text-primary) !important;
 }
 
 .tiptap p {
@@ -98,7 +103,7 @@
   font-style: normal !important;
   font-weight: 400 !important;
   line-height: 22px !important;
-  color: #212b36 !important;
+  color: var(--text-primary) !important;
 }
 
 .tiptap a {
@@ -193,12 +198,12 @@ table {
   word-break: break-word;
 }
 
-.callout-container > .callout-icon {
+.callout-container>.callout-icon {
   align-self: center;
   margin-left: 16px;
 }
 
-.callout-container > .label {
+.callout-container>.label {
   margin-left: 1rem;
   background-color: #0d0d0d;
   font-size: 0.6rem;
@@ -212,7 +217,7 @@ table {
   border-radius: 0 0 0.5rem 0.5rem;
 }
 
-.callout-container > .content {
+.callout-container>.content {
   margin: 16px;
 }
 
@@ -236,6 +241,7 @@ table {
   padding: 0.4rem;
   position: relative;
 }
+
 .Button {
   align-items: center;
   background-color: transparent;
@@ -327,6 +333,7 @@ table {
 
   object-fit: cover;
 }
+
 .blur {
   filter: blur(5px);
 }
