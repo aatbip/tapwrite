@@ -59,7 +59,7 @@ export const UploadAttachment = Node.create<UploadAttachmentOptions>({
     return this.options.inline ? 'inline' : 'block'
   },
 
-  draggable: true,
+  draggable: false,
 
   addAttributes(): Record<keyof AttachmentAttributes, any> {
     return {
@@ -132,8 +132,6 @@ export const UploadAttachment = Node.create<UploadAttachmentOptions>({
   },
 
   addCommands() {
-    const { deleteAttachment } = this.options
-
     return {
       addAttachment:
         (file: File) =>
@@ -248,6 +246,13 @@ export const UploadAttachment = Node.create<UploadAttachmentOptions>({
         () =>
         ({ state, dispatch }) => {
           const { selection } = state
+          if (
+            !selection ||
+            selection.from < 0 ||
+            selection.from >= state.doc.content.size
+          ) {
+            return false
+          }
           const node = state.doc.nodeAt(selection.from)
 
           if (!node) {
@@ -255,32 +260,91 @@ export const UploadAttachment = Node.create<UploadAttachmentOptions>({
           }
 
           if (
-            node &&
-            (node.type.name === this.name || node.type.name === 'uploadImage') //also handles delete callback for images
+            !node ||
+            (node.type.name !== this.name && node.type.name !== 'uploadImage')
           ) {
-            const attachmentUrl = node.attrs.src
-            dispatch &&
-              dispatch(
-                state.tr.replaceWith(
-                  selection.from,
-                  selection.to,
-                  state.schema.nodes.paragraph.create()
-                )
-              )
-            if (deleteAttachment) {
-              deleteAttachment(attachmentUrl)
-            }
-
-            return true
+            return false
           }
-          return false
+
+          const attachmentUrl = node.attrs.src
+          const tr = state.tr.replaceWith(
+            selection.from,
+            selection.from + node.nodeSize,
+            state.schema.nodes.paragraph.create()
+          )
+
+          if (dispatch) {
+            dispatch(tr)
+          }
+
+          if (this.options.deleteAttachment && attachmentUrl) {
+            this.options.deleteAttachment(attachmentUrl)
+          }
+
+          return true
         },
     }
   },
   addKeyboardShortcuts() {
     return {
-      Backspace: ({ editor }) => editor.commands.deleteCurrentNode(),
-      Delete: ({ editor }) => editor.commands.deleteCurrentNode(),
+      Backspace: ({ editor }) => {
+        const { selection } = editor.state
+
+        if (!selection || selection.empty) {
+          return false
+        }
+
+        const docSize = editor.state.doc.content.size
+        if (selection.from < 0 || selection.from >= docSize) {
+          return false
+        }
+
+        try {
+          const node = editor.state.doc.nodeAt(selection.from)
+
+          if (
+            !node ||
+            (node.type.name !== this.name &&
+              node.type.name !== 'uploadAttachment')
+          ) {
+            return false
+          }
+
+          return editor.commands.deleteCurrentNode()
+        } catch (error) {
+          console.error('Error handling Backspace:', error)
+          return false
+        }
+      },
+      Delete: ({ editor }) => {
+        const { selection } = editor.state
+
+        if (!selection || selection.empty) {
+          return false
+        }
+
+        const docSize = editor.state.doc.content.size
+        if (selection.from < 0 || selection.from >= docSize) {
+          return false
+        }
+
+        try {
+          const node = editor.state.doc.nodeAt(selection.from)
+
+          if (
+            !node ||
+            (node.type.name !== this.name &&
+              node.type.name !== 'uploadAttachment')
+          ) {
+            return false
+          }
+
+          return editor.commands.deleteCurrentNode()
+        } catch (error) {
+          console.error('Error handling Delete:', error)
+          return false
+        }
+      },
     }
   },
 
