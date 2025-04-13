@@ -43,8 +43,6 @@ const App = () => {
           }
         }}
       >
-        {' '}
-        hi
       </button>
     </div>
   )
