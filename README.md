@@ -1,4 +1,4 @@
-<p><i><b>It began with a simple script. Then came the linters, the transpilers, the 14,000 dependencies... and somewhere along the way, I lost myself. Once had a love affair with the JS ecosystem... but like all toxic relationships, it was time to move on. Tapwrite now lives on with its new foster parents at <a href="https://github.com/pagevamp/tapwrite" target="__blank">THIS address</a>.</b></i></p>
+<p><i><b>It began with a simple script. Then came the linters, the transpilers, the 14,000 dependencies... and somewhere along the way, I lost myself. Once had a love affair with the JS ecosystem... but like all toxic relationships, it was time to move on. Tapwrite now lives on with its new foster parents at <a href="https://github.com/pagevamp/tapwrite" target="_blank">THIS address</a>.</b></i></p>
 <br/>
 <h1 align="center">Tapwrite</h1>
 <p align="center">
